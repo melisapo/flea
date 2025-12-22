@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>flea_WebProj</RootNamespace>
-    </PropertyGroup>
+      <UserSecretsId>509afec7-0f63-42a0-ad45-a6bbc2709ff1</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Npgsql" Version="10.0.1" />
@@ -13,6 +14,7 @@
 
     <ItemGroup>
       <Folder Include="Data\Repositories\" />
+      <Folder Include="Models\ViewModels\" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
-using flea_WebProj.Enums;
+using flea_WebProj.Models.Enums;
 
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Product;
 
 public class PostCardViewModel
 {

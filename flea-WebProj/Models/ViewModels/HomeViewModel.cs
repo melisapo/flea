@@ -1,3 +1,6 @@
+using flea_WebProj.Models.Entities;
+using flea_WebProj.Models.ViewModels.Product;
+
 namespace flea_WebProj.Models.ViewModels;
 
 public class HomeViewModel

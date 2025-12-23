@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Address;
 
 public class AddressViewModel
 {

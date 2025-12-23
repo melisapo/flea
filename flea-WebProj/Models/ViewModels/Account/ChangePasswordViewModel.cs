@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Account;
 
 public class ChangePasswordViewModel
 {

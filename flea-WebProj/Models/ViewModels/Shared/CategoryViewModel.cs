@@ -1,4 +1,4 @@
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Shared;
 
 public class CategoryViewModel
 {

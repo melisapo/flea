@@ -1,6 +1,7 @@
-using flea_WebProj.Enums;
+using flea_WebProj.Models.Enums;
+using flea_WebProj.Models.ViewModels.Shared;
 
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Product;
 
 public class ProductDetailViewModel
 {

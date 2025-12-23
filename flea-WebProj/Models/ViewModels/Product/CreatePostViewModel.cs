@@ -1,13 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using flea_WebProj.Enums;
+using flea_WebProj.Models.Entities;
 
-namespace flea_WebProj.Models.ViewModels;
+namespace flea_WebProj.Models.ViewModels.Product;
 
-public class EditPostViewModel
+public class CreatePostViewModel
 {
-    public long PostId { get; set; }
-    public long ProductId { get; set; }
-
     [Required(ErrorMessage = "El título es requerido")]
     [StringLength(255, MinimumLength = 5, ErrorMessage = "El título debe tener entre 5 y 255 caracteres")]
     public string Title { get; set; } = string.Empty;
@@ -20,17 +17,11 @@ public class EditPostViewModel
     [Range(0.01, 999999.99, ErrorMessage = "El precio debe estar entre 0.01 y 999,999.99")]
     public decimal Price { get; set; }
 
-    [Required(ErrorMessage = "El estado es requerido")]
-    public ProductStatus Status { get; set; }
-
     [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
     public List<int> CategoryIds { get; set; } = [];
-    
-    public List<ImageViewModel> ExistingImages { get; set; } = [];
-    
-    public List<IFormFile>? NewImages { get; set; }
-    
-    public List<int> ImagesToDelete { get; set; } = [];
+
+    [Required(ErrorMessage = "Debe subir al menos una imagen")]
+    public List<IFormFile> Images { get; set; } = [];
     
     public List<Category> AvailableCategories { get; set; } = [];
 }

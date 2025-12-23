@@ -1,4 +1,4 @@
-namespace flea_WebProj.Enums;
+namespace flea_WebProj.Models.Enums;
 
 public enum RoleType
 {

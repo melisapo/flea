@@ -1,4 +1,4 @@
-namespace flea_WebProj.Models;
+namespace flea_WebProj.Models.ViewModels;
 
 public class ErrorViewModel
 {

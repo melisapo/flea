@@ -12,4 +12,5 @@ public class Post
     
     public Product? Product { get; set; }
     public User? Author { get; set; }
+    public List<Image> Images { get; set; } = [];
 }

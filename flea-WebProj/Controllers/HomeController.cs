@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using flea_WebProj.Models;
+using flea_WebProj.Models.ViewModels;
 
 namespace flea_WebProj.Controllers;
 

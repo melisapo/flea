@@ -9,8 +9,8 @@ public class User
     public string ProfilePicture { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    
-    public List<Role>? Roles { get; set; }
-    public List<Address>? Addresses { get; set; }
+
+    public List<Role>? Roles { get; set; } = [];
+    public List<Address>? Addresses { get; set; } = [];
     public Contact? Contact { get; set; }
 }

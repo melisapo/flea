@@ -28,7 +28,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                                  """;
 
             var parameters = new[] { new NpgsqlParameter("@id", id) };
-            var users = await dbContext.ExecuteQueryAsync<User>(query, MapUser, parameters);
+            var users = await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
             return users.FirstOrDefault();
         }
 
@@ -41,7 +41,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                                  """;
 
             var parameters = new[] { new NpgsqlParameter("@username", username) };
-            var users = await dbContext.ExecuteQueryAsync<User>(query, MapUser, parameters);
+            var users = await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
             return users.FirstOrDefault();
         }
 
@@ -132,7 +132,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                                  """;
 
             var parameters = new[] { new NpgsqlParameter("@userId", id) };
-            user.Roles = await dbContext.ExecuteQueryAsync<Role>(query, MapRole, parameters);
+            user.Roles = await dbContext.ExecuteQueryAsync(query, MapRole, parameters);
             return user;
         }
 
@@ -149,7 +149,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                                         """;
 
             var addressParams = new[] { new NpgsqlParameter("@userId", id) };
-            user.Addresses = await dbContext.ExecuteQueryAsync<Address>(addressQuery, MapAddress, addressParams);
+            user.Addresses = await dbContext.ExecuteQueryAsync(addressQuery, MapAddress, addressParams);
 
             // Obtener contacto
             const string contactQuery = """
@@ -159,7 +159,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                                         """;
 
             var contactParams = new[] { new NpgsqlParameter("@userId", id) };
-            var contacts = await dbContext.ExecuteQueryAsync<Contact>(contactQuery, MapContact, contactParams);
+            var contacts = await dbContext.ExecuteQueryAsync(contactQuery, MapContact, contactParams);
             user.Contact = contacts.FirstOrDefault();
 
             return user;
@@ -181,10 +181,10 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                 new NpgsqlParameter("@limit", limit)
             };
 
-            return await dbContext.ExecuteQueryAsync<Post>(query, MapPost, parameters);
+            return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
         }
 
-        private User MapUser(NpgsqlDataReader reader)
+        private static User MapUser(NpgsqlDataReader reader)
         {
             return new User
             {
@@ -198,7 +198,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             };
         }
 
-        private Role MapRole(NpgsqlDataReader reader)
+        private static Role MapRole(NpgsqlDataReader reader)
         {
             return new Role
             {
@@ -207,7 +207,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             };
         }
 
-        private Address MapAddress(NpgsqlDataReader reader)
+        private static Address MapAddress(NpgsqlDataReader reader)
         {
             return new Address
             {
@@ -219,7 +219,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             };
         }
 
-        private Contact MapContact(NpgsqlDataReader reader)
+        private static Contact MapContact(NpgsqlDataReader reader)
         {
             return new Contact
             {
@@ -231,7 +231,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             };
         }
 
-        private Post MapPost(NpgsqlDataReader reader)
+        private static Post MapPost(NpgsqlDataReader reader)
         {
             return new Post
             {

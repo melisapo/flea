@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Repositories\" />
-      <Folder Include="Models\ViewModels\" />
     </ItemGroup>
 
 </Project>

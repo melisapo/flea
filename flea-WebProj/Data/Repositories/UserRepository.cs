@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<User?> GetByUsernameAsync(string username);
     Task<bool> UsernameExistsAsync(string username);
     Task<bool> EmailExistsAsync(string email);
-    Task<long> CreateAsync(User user);
+    Task<int> CreateAsync(User user);
     Task<bool> UpdateAsync(User user);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
@@ -61,9 +61,9 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             return Convert.ToInt64(result) > 0;
         }
 
-        public async Task<long> CreateAsync(User user)
+        public async Task<int> CreateAsync(User user)
         {
-            const string query = $"""
+            const string query = """
                                   INSERT INTO users (id, username, name, password_hash, profile_pic, created_at, updated_at)
                                   VALUES (@id, @username, @name, @password_hash, @profile_pic, @created_at, @updated_at)
                                   RETURNING id
@@ -84,7 +84,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             };
 
             var result = await dbContext.ExecuteScalarAsync(query, parameters);
-            return Convert.ToInt64(result);
+            return Convert.ToInt32(result);
         }
 
         public async Task<bool> UpdateAsync(User user)
@@ -140,8 +140,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         {
             var user = await GetWithRolesAsync(id);
             if (user == null) return null;
-
-            // Obtener direcciones
+            
             const string addressQuery = """
                                         SELECT id, city, state_province, country, user_id
                                         FROM addresses
@@ -150,8 +149,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
 
             var addressParams = new[] { new NpgsqlParameter("@userId", id) };
             user.Addresses = await dbContext.ExecuteQueryAsync(addressQuery, MapAddress, addressParams);
-
-            // Obtener contacto
+            
             const string contactQuery = """
                                         SELECT id, email, phone_number, telegram_user, user_id
                                         FROM contacts

@@ -11,15 +11,8 @@ public interface IContactRepository
     Task<bool> DeleteAsync(int id);
 }
 
-public class ContactRepository : IContactRepository
+public class ContactRepository(DatabaseContext dbContext) : IContactRepository
 {
-    private readonly DatabaseContext _dbContext;
-
-    public ContactRepository(DatabaseContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-    
     public async Task<Contact?> GetByUserIdAsync(int userId)
     {
         const string query = """
@@ -28,7 +21,7 @@ public class ContactRepository : IContactRepository
                              WHERE user_id = @userId";"
                              """;
         var parameters = new[] { new NpgsqlParameter("@userId", userId) };
-        var contacts = await _dbContext.ExecuteQueryAsync(query, MapContact, parameters);
+        var contacts = await dbContext.ExecuteQueryAsync(query, MapContact, parameters);
         return contacts.FirstOrDefault();
     }
     
@@ -49,7 +42,7 @@ public class ContactRepository : IContactRepository
             new NpgsqlParameter("@telegram_user", (object?)contact.TelegramUser ?? DBNull.Value),
             new NpgsqlParameter("@user_id", contact.UserId)
         };
-        var result = await _dbContext.ExecuteScalarAsync(query, parameters);
+        var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt32(result);
     }
 
@@ -69,7 +62,7 @@ public class ContactRepository : IContactRepository
             new NpgsqlParameter("@phone_number", (object?)contact.PhoneNumber ?? DBNull.Value),
             new NpgsqlParameter("@telegram_user", (object?)contact.TelegramUser ?? DBNull.Value),
         };
-        var rowsAffected = await _dbContext.ExecuteNonQueryAsync(query, parameters);
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
         return rowsAffected > 0;
     }
 
@@ -77,7 +70,7 @@ public class ContactRepository : IContactRepository
     {
         const string query = "DELETE FROM contacts WHERE id = @id";
         var parameters = new [] {new NpgsqlParameter("@id", id)};
-        var rowsAffected = await _dbContext.ExecuteNonQueryAsync(query, parameters);
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
         return rowsAffected > 0;
     }
     

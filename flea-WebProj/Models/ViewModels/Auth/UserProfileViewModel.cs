@@ -1,6 +1,6 @@
 using flea_WebProj.Models.ViewModels.Shared;
 
-namespace flea_WebProj.Models.ViewModels.Account;
+namespace flea_WebProj.Models.ViewModels.Auth;
 
 public class UserProfileViewModel
 {

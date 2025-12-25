@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace flea_WebProj.Models.ViewModels.Account;
+namespace flea_WebProj.Models.ViewModels.Auth;
 
 public class EditProfileViewModel
 {

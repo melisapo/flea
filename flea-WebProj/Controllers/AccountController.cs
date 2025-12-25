@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using flea_WebProj.Services;
-using flea_WebProj.Models.ViewModels.Account;
 using flea_WebProj.Helpers;
+using flea_WebProj.Middleware;
+using flea_WebProj.Models.ViewModels.Auth;
 
 namespace flea_WebProj.Controllers
 {
@@ -109,11 +110,9 @@ namespace flea_WebProj.Controllers
 
         // GET: /Account/Profile
         [HttpGet]
+        [RequireAuth]
         public async Task<IActionResult> Profile()
         {
-            if (!HttpContext.Session.IsAuthenticated())
-                return RedirectToAction("Login", new { returnUrl = "/Account/Profile" });
-
             var userId = HttpContext.Session.GetUserId();
             if (!userId.HasValue)
                 return RedirectToAction("Login");

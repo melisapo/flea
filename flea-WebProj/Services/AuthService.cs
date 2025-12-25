@@ -1,7 +1,7 @@
 using flea_WebProj.Data.Repositories;
 using flea_WebProj.Models.Entities;
-using flea_WebProj.Models.ViewModels.Account;
 using flea_WebProj.Models.Enums;
+using flea_WebProj.Models.ViewModels.Auth;
 
 namespace flea_WebProj.Services
 {
@@ -27,14 +27,10 @@ namespace flea_WebProj.Services
             try
             {
                 if (await userRepository.UsernameExistsAsync(model.Username))
-                {
                     return (false, "El nombre de usuario ya está en uso", null);
-                }
                 
                 if (await userRepository.EmailExistsAsync(model.Email))
-                {
                     return (false, "El email ya está registrado", null);
-                }
                 
                 var user = new User
                 {
@@ -73,9 +69,7 @@ namespace flea_WebProj.Services
                 
                 var userRole = await roleRepository.GetByNameAsync(nameof(RoleType.User));
                 if (userRole != null)
-                {
                     await roleRepository.AssignRoleToUserAsync(userId, userRole.Id);
-                }
                 
                 var registeredUser = await userRepository.GetWithRolesAsync(userId);
 
@@ -95,12 +89,9 @@ namespace flea_WebProj.Services
                 var user = await userRepository.GetByUsernameAsync(model.Username);
 
                 if (user == null || !passwordHasher.Verify(model.Password, user.PasswordHash))
-                {
                     return (false, "Usuario o contraseña incorrectos", null);
-                }
                 
                 var userWithRoles = await userRepository.GetWithRolesAsync(user.Id);
-
                 return (true, "Login exitoso", userWithRoles);
             }
             catch (Exception ex)
@@ -111,14 +102,11 @@ namespace flea_WebProj.Services
 
         // Obtener usuario por ID
         public async Task<User?> GetUserByIdAsync(int userId)
-        {
-            return await userRepository.GetByIdAsync(userId);
-        }
+            => await userRepository.GetByIdAsync(userId);
 
         // Obtener usuario con roles
         public async Task<User?> GetUserWithRolesAsync(int userId)
-        {
-            return await userRepository.GetWithRolesAsync(userId);
-        }
+            => await userRepository.GetWithRolesAsync(userId);
+        
     }
 }

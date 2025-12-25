@@ -8,6 +8,9 @@ public interface IRoleRepository
     Task<Role?> GetByIdAsync(int id);
     Task<Role?> GetByNameAsync(string name);
     Task<List<Role>> GetAllAsync();
+    Task<int> CreateAsync(Role role);
+    Task<bool> UpdateAsync(Role role);
+    Task<bool> DeleteAsync(int roleId);
     Task<bool> AssignRoleToUserAsync(int userId, int roleId);
     Task<bool> RemoveRoleFromUserAsync(int userId, int roleId);
     Task<List<Role>> GetUserRolesAsync(int userId);
@@ -35,6 +38,62 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
     {
         const string query = "SELECT id, name FROM roles ORDER BY name";
         return await dbContext.ExecuteQueryAsync(query, MapRole);
+    }
+
+    public async Task<int> CreateAsync(Role role)
+    {
+        const string query = """
+                             INSERT INTO roles (id, name)
+                             VALUES (@id, @name)
+                             RETURNING id
+                             """;
+        role.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", role.Id),
+            new NpgsqlParameter("@name", role.Name)
+        };
+        var result = await dbContext.ExecuteScalarAsync(query, parameters);
+        return Convert.ToInt32(result);
+    }
+
+    public async Task<bool> UpdateAsync(Role role)
+    {
+        const string checkQuery =
+            """
+            SELECT COUNT(*) FROM roles 
+            WHERE name  = @name 
+            """;
+
+        var checkParams = new[] { new NpgsqlParameter("@name", role.Name) };
+
+        var exists =
+            Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
+        if (exists)
+            return true;
+        
+        const string query = """
+                             UPDATE roles
+                             SET name = @name,
+                             WHERE id = @id
+                             """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", role.Id),
+            new NpgsqlParameter("@name", role.Name)
+        };
+
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool> DeleteAsync(int roleId)
+    {
+        const string query = "DELETE FROM roles WHERE id = @id";
+        var parameters = new[] { new NpgsqlParameter("@id", roleId) };
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
     }
 
     public async Task<bool> AssignRoleToUserAsync(int userId, int roleId)

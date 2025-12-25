@@ -8,6 +8,9 @@ public interface ICategoryRepository
     Task<Category?> GetByIdAsync(int id);
     Task<Category?> GetBySlugAsync(string slug);
     Task<List<Category>> GetAllAsync();
+    Task<int> CreateAsync(Category category);
+    Task<bool> UpdateAsync(Category category);
+    Task<bool> DeleteAsync(int id);
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
     Task<List<Category>> GetProductCategoryAsync(int productId);
@@ -35,6 +38,65 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
     {
         const string query =  "SELECT id, name, slug FROM categories ORDER BY slug";
         return await dbContext.ExecuteQueryAsync(query, MapCategory);
+    }
+
+    public async Task<int> CreateAsync(Category category)
+    {
+        const string query = """
+                             INSERT INTO  categories (id, name, slug)
+                             VALUES  (@id, @name, @slug)
+                             RETURNING id
+                             """;
+        category.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", category.Id),
+            new NpgsqlParameter( "@name", category.Name),
+            new NpgsqlParameter( "@slug", category.Slug),
+        };
+        var result = await dbContext.ExecuteScalarAsync(query, parameters);
+        return Convert.ToInt32(result);
+    }
+
+    public async Task<bool> UpdateAsync(Category category)
+    {
+        const string checkQuery =
+            """
+            SELECT COUNT(*) FROM categories
+            WHERE slug = @slug
+            """;
+
+        var checkParams = new[] { new NpgsqlParameter("@slug", category.Slug) };
+
+        var exists =
+            Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
+        if (exists)
+            return false;
+        
+        const string query = """
+                             UPDATE categories
+                             SET name = @name,
+                                slug = @slug
+                             WHERE id = @id
+                             """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", category.Id),
+            new NpgsqlParameter("@name", category.Name),
+            new NpgsqlParameter("@slug", category.Slug)
+        };
+
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        const string query = "DELETE FROM addresses WHERE id = @id";
+        var parameters = new[] { new NpgsqlParameter("@id", id) };
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
     }
 
     public async Task<bool> AssignCategoryToProductAsync(int productId, int categoryId)

@@ -6,10 +6,9 @@ public class AuthenticationMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        // Obtener ruta actual
         var path = context.Request.Path.Value?.ToLower() ?? "";
             
-        // Rutas públicas (no requieren autenticación)
+        // Rutas públicas
         var publicPaths = new[]
         {
             "/",
@@ -28,8 +27,7 @@ public class AuthenticationMiddleware(RequestDelegate next)
             await next(context);
             return;
         }
-
-        // Verificar si está autenticado para otras rutas
+        
         if (!context.Session.IsAuthenticated())
         {
             // Guardar URL a la que intentaba acceder

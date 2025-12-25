@@ -13,6 +13,7 @@ public interface IUserRepository
     Task<bool> UpdateAsync(User user);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
+    Task<List<User>> GetByRoleIdAsync(int roleId);
     Task<User?> GetFullUserAsync(int id);
     Task<List<Post>> GetUserPostsAsync(int userId, int limit = 10);
 }
@@ -135,6 +136,18 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             user.Roles = await dbContext.ExecuteQueryAsync(query, MapRole, parameters);
             return user;
         }
+        
+        public async Task<List<User>> GetByRoleIdAsync(int roleId)
+        {
+            const string query = """
+                                 SELECT u.id, u.username, u.name, u.created_at
+                                 FROM users u
+                                 JOIN user_roles ur ON u.id = ur.user_id
+                                 WHERE ur.role_id = @roleId;
+                                 """;
+            var parameters = new[] { new NpgsqlParameter("@roleId", roleId) };
+            return await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
+        }
 
         public async Task<User?> GetFullUserAsync(int id)
         {
@@ -183,8 +196,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         }
 
         private static User MapUser(NpgsqlDataReader reader)
-        {
-            return new User
+            => new User
             {
                 Id = reader.GetInt32(0),
                 Username = reader.GetString(1),
@@ -194,16 +206,15 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                 CreatedAt = reader.GetDateTime(5),
                 UpdatedAt = reader.IsDBNull(6) ? null : reader.GetDateTime(6)
             };
-        }
+        
 
         private static Role MapRole(NpgsqlDataReader reader)
-        {
-            return new Role
+            => new Role
             {
                 Id = reader.GetInt32(0),
                 Name = reader.GetString(1)
             };
-        }
+        
 
         private static Address MapAddress(NpgsqlDataReader reader)
         {
@@ -218,8 +229,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         }
 
         private static Contact MapContact(NpgsqlDataReader reader)
-        {
-            return new Contact
+            => new Contact
             {
                 Id = reader.GetInt32(0),
                 Email = reader.GetString(1),
@@ -227,11 +237,9 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                 TelegramUser = reader.IsDBNull(3) ? null : reader.GetString(3),
                 UserId = reader.GetInt32(4)
             };
-        }
 
         private static Post MapPost(NpgsqlDataReader reader)
-        {
-            return new Post
+            => new Post
             {
                 Id = reader.GetInt32(0),
                 Title = reader.GetString(1),
@@ -241,5 +249,5 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                 ProductId = reader.GetInt32(5),
                 AuthorId = reader.GetInt32(6)
             };
-        }
+    
 }

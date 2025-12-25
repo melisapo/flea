@@ -107,8 +107,11 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
         return await dbContext.ExecuteQueryAsync(query, MapRole, parameters);
     }
 
-    private static Role MapRole(NpgsqlDataReader reader)
-    {
-        return new Role { Id = reader.GetInt32(0), Name = reader.GetString(1) };
-    }
+    private static Role MapRole(NpgsqlDataReader reader) 
+        => new Role
+        {
+            Id = reader.GetInt32(0), 
+            Name = reader.GetString(1)
+        };
+    
 }

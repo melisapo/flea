@@ -41,7 +41,7 @@ namespace flea_WebProj.Services
                     Username = model.Username,
                     Name = model.Name,
                     PasswordHash = passwordHasher.Hash(model.Password),
-                    ProfilePicture = "/images/default-avatar.png", // Imagen por defecto
+                    ProfilePicture = "/images/default-avatar.png",
                     CreatedAt = DateTime.UtcNow
                 };
 

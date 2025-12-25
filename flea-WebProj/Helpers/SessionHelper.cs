@@ -66,7 +66,7 @@ public static class SessionHelper
 
     public static bool IsAdmin(this ISession session)
         => session.HasRole(RoleType.Admin);
-
+    
     public static bool IsModerator(this ISession session)
         => session.HasRole(RoleType.Moderator);
 

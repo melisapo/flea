@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using flea_WebProj.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using flea_WebProj.Models.ViewModels;
 
@@ -8,6 +9,14 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
+        ViewBag.IsAuthenticated = HttpContext.Session.IsAuthenticated();
+
+        if (!HttpContext.Session.IsAuthenticated()) return View();
+        
+        ViewBag.Username = HttpContext.Session.GetUsername();
+        ViewBag.UserName = HttpContext.Session.GetUserName();
+        ViewBag.IsAdmin = HttpContext.Session.IsAdmin();
+        
         return View();
     }
 

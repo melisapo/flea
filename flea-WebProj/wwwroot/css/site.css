@@ -29,3 +29,19 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* Espaciado del main */
+main {
+  min-height: calc(100vh - 200px);
+}
+
+/* Footer pegado al fondo */
+.footer {
+  background-color: #f8f9fa;
+}
+
+/* Hover en navbar */
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 5px;
+}

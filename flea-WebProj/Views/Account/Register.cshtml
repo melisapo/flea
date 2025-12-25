@@ -1,0 +1,110 @@
+@model flea_WebProj.Models.ViewModels.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registrarse";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Crear Cuenta</h2>
+                    
+                    <form asp-action="Register" asp-controller="Account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <h5 class="mb-3">Información de Usuario</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Username" class="form-label">Usuario *</label>
+                                <input asp-for="Username" class="form-control" placeholder="Ej: melissa123" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Name" class="form-label">Nombre Completo *</label>
+                                <input asp-for="Name" class="form-control" placeholder="Ej: Melissa García" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 mt-4">Información de Contacto</h5>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Email" class="form-label">Email *</label>
+                                <input asp-for="Email" class="form-control" placeholder="tu@email.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Teléfono (opcional)</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="+52 123 456 7890" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TelegramUser" class="form-label">Usuario de Telegram (opcional)</label>
+                                <input asp-for="TelegramUser" class="form-control" placeholder="@@tuusuario" />
+                                <span asp-validation-for="TelegramUser" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 mt-4">Dirección</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="City" class="form-label">Ciudad (opcional)</label>
+                                <input asp-for="City" class="form-control" placeholder="Ej: Provo" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StateProvince" class="form-label">Estado/Provincia *</label>
+                                <input asp-for="StateProvince" class="form-control" placeholder="Ej: Utah" />
+                                <span asp-validation-for="StateProvince" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Country" class="form-label">País *</label>
+                                <input asp-for="Country" class="form-control" placeholder="Ej: USA" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 mt-4">Contraseña</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label">Contraseña *</label>
+                                <input asp-for="Password" class="form-control" placeholder="Mínimo 6 caracteres" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña *</label>
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Repite la contraseña" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Crear Cuenta</button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="text-center mb-0">
+                        ¿Ya tienes cuenta? 
+                        <a asp-action="Login" asp-controller="Account" class="text-decoration-none">
+                            Inicia sesión aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

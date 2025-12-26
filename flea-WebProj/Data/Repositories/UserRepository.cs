@@ -67,12 +67,11 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
     {
         const string query = """
             INSERT INTO users (id, username, name, password_hash, profile_pic, created_at, updated_at)
-            VALUES (@id, @username, @name, @password_hash, @profile_pic, @created_at, @updated_at)
+            VALUES (@id, @username, @name, @password_hash, @profile_pic, CURRENT_TIMESTAMP, @updated_at)
             RETURNING id
             """;
 
         user.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
-        user.CreatedAt = DateTime.UtcNow;
 
         var parameters = new[]
         {
@@ -106,10 +105,9 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         const string query = """
             UPDATE users 
             SET username = @username, 
+                updated_at = CURRENT_TIMESTAMP
             WHERE id = @id
             """;
-
-        user.UpdatedAt = DateTime.UtcNow;
 
         var parameters = new[]
         {
@@ -127,7 +125,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             UPDATE users 
             SET name = @name, 
                profile_pic = @profile_pic, 
-               updated_at = @updated_at
+               updated_at = CURRENT_TIMESTAMP
             WHERE id = @id
             """;
 

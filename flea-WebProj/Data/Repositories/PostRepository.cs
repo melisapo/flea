@@ -80,12 +80,11 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
     {
         const string query = """
                              INSERT INTO posts (id, title, description, created_at, updated_at, product_id, author_id)
-                             VALUES (@id, @title, @description, @createdAt, @updatedAt, @productId, @authorId)
+                             VALUES (@id, @title, @description, CURRENT_TIMESTAMP, @updatedAt, @productId, @authorId)
                              RETURNING id
                              """;
         
         post.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
-        post.CreatedAt = DateTime.UtcNow;
         
         var parameters = new[]
         {
@@ -102,9 +101,29 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         return Convert.ToInt32(result);
     }
 
-    public Task<bool> UpdateAsync(Post post)
+    public async Task<bool> UpdateAsync(Post post)
     {
-        
+        const string query = """
+                             UPDATE "posts"
+                             SET 
+                                 "title" = @title,
+                                 "description" = @description,
+                                 "product_id" = @productId,
+                                 "updated_at" = CURRENT_TIMESTAMP
+                             WHERE 
+                                 "id" = @id 
+                                 AND "author_id" = @authorId;
+                             """;
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", post.Id),
+            new NpgsqlParameter("@title", post.Title),
+            new NpgsqlParameter("@description", post.Description),
+            new NpgsqlParameter("@productId", post.ProductId),
+            new NpgsqlParameter("@authorId", post.AuthorId),
+        };
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
     }
 
     public Task<bool> DeleteAsync(int id)

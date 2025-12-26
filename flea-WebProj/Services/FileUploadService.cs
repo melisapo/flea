@@ -60,7 +60,23 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
 
     public bool DeleteImage(string filePath)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return false;
+            
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            if (!File.Exists(fullPath)) return false;
+            
+            File.Delete(fullPath);
+            return true;
+
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public bool IsValidImage(IFormFile file)

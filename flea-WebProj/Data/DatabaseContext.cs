@@ -59,7 +59,7 @@ public class DatabaseContext(IConfiguration configuration)
         return await command.ExecuteScalarAsync();
     }
 
-    // Método para ejecutar transacciones (cuando necesites hacer múltiples operaciones)
+    // Método para ejecutar transacciones (cuando necesita hacer múltiples operaciones)
     public async Task ExecuteTransactionAsync(Func<NpgsqlConnection, NpgsqlTransaction, Task> action)
     {
         await using var connection = GetConnection();

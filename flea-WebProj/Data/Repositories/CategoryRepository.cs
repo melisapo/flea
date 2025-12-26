@@ -36,7 +36,11 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
 
     public async Task<List<Category>> GetAllAsync()
     {
-        const string query =  "SELECT id, name, slug FROM categories ORDER BY slug";
+        const string query = """
+                             SELECT id, name, slug 
+                             FROM categories 
+                             ORDER BY name
+                             """;
         return await dbContext.ExecuteQueryAsync(query, MapCategory);
     }
 
@@ -63,7 +67,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         const string checkQuery =
             """
             SELECT COUNT(*) FROM categories
-            WHERE slug = @slug
+            WHERE slug = @slug AND id != @id
             """;
 
         var checkParams = new[] { new NpgsqlParameter("@slug", category.Slug) };
@@ -93,7 +97,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
 
     public async Task<bool> DeleteAsync(int id)
     {
-        const string query = "DELETE FROM addresses WHERE id = @id";
+        const string query = "DELETE FROM categories WHERE id = @id";
         var parameters = new[] { new NpgsqlParameter("@id", id) };
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
         return rowsAffected > 0;

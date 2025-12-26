@@ -56,7 +56,7 @@ public class ImageRepository(DatabaseContext dbContext) : IImageRepository
                                  product_id = @productId
                              WHERE id = @id
                              """;
-
+        
         var parameters = new[]
         {
             new NpgsqlParameter("@id", image.Id),

@@ -43,15 +43,15 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
     public async Task<int> CreateAsync(Role role)
     {
         const string query = """
-                             INSERT INTO roles (id, name)
-                             VALUES (@id, @name)
-                             RETURNING id
-                             """;
+            INSERT INTO roles (id, name)
+            VALUES (@id, @name)
+            RETURNING id
+            """;
         role.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
         var parameters = new[]
         {
             new NpgsqlParameter("@id", role.Id),
-            new NpgsqlParameter("@name", role.Name)
+            new NpgsqlParameter("@name", role.Name),
         };
         var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt32(result);
@@ -59,8 +59,7 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
 
     public async Task<bool> UpdateAsync(Role role)
     {
-        const string checkQuery =
-            """
+        const string checkQuery = """
             SELECT COUNT(*) FROM roles 
             WHERE name  = @name 
             """;
@@ -71,17 +70,17 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
             Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
         if (exists)
             return true;
-        
-        const string query = """
-                             UPDATE roles
-                             SET name = @name,
-                             WHERE id = @id
-                             """;
 
+        const string query = """
+            UPDATE roles
+            SET name = @name,
+            WHERE id = @id
+            """;
+        
         var parameters = new[]
         {
             new NpgsqlParameter("@id", role.Id),
-            new NpgsqlParameter("@name", role.Name)
+            new NpgsqlParameter("@name", role.Name),
         };
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
@@ -99,8 +98,7 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
     public async Task<bool> AssignRoleToUserAsync(int userId, int roleId)
     {
         // Verificar si ya existe la relación
-        const string checkQuery =
-            """
+        const string checkQuery = """
             SELECT COUNT(*) FROM user_roles 
             WHERE user_id = @userId AND role_id = @roleId
             """;
@@ -115,9 +113,8 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
             Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
         if (exists)
             return true;
-        
-        const string insertQuery =
-            """
+
+        const string insertQuery = """
             INSERT INTO user_roles (id, user_id, role_id)
             VALUES (@id, @userId, @roleId)
             """;
@@ -136,8 +133,7 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
 
     public async Task<bool> RemoveRoleFromUserAsync(int userId, int roleId)
     {
-        const string query =
-            """
+        const string query = """
             DELETE FROM user_roles 
             WHERE user_id = @userId AND role_id = @roleId
             """;
@@ -154,8 +150,7 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)
     {
-        const string query =
-            """
+        const string query = """
             SELECT r.id, r.name
             FROM roles r
             INNER JOIN user_roles ur ON r.id = ur.role_id
@@ -166,11 +161,6 @@ public class RoleRepository(DatabaseContext dbContext) : IRoleRepository
         return await dbContext.ExecuteQueryAsync(query, MapRole, parameters);
     }
 
-    private static Role MapRole(NpgsqlDataReader reader) 
-        => new Role
-        {
-            Id = reader.GetInt32(0), 
-            Name = reader.GetString(1)
-        };
-    
+    private static Role MapRole(NpgsqlDataReader reader) =>
+        new Role { Id = reader.GetInt32(0), Name = reader.GetString(1) };
 }

@@ -126,9 +126,12 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         return rowsAffected > 0;
     }
 
-    public Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        const string query = "DELETE FROM posts WHERE id = @id";
+        var parameters = new[] { new NpgsqlParameter("@id", id) };
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
     }
 
     public Task<List<Post>> GetRecentPostsAsync(int limit = 12)

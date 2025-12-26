@@ -20,16 +20,11 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
         {
             // Validar archivo
             if (!IsValidImage(file))
-            {
                 return (false, null, "Archivo inválido. Solo se permiten imágenes JPG, PNG, GIF o WebP de máximo 5MB.");
-            }
-
-            // Crear carpeta si no existe
+            
             var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads", folder);
             if (!Directory.Exists(uploadFolder))
-            {
                 Directory.CreateDirectory(uploadFolder);
-            }
 
             // Generar nombre único para el archivo
             var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -37,10 +32,8 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
             var filePath = Path.Combine(uploadFolder, uniqueFileName);
 
             // Guardar archivo
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
+            await using (var stream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(stream);
-            }
 
             // Retornar ruta relativa (para guardar en BD)
             var relativePath = $"/uploads/{folder}/{uniqueFileName}";
@@ -54,7 +47,15 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
 
     public async Task<List<(bool success, string? filePath, string? error)>> UploadMultipleImagesAsync(List<IFormFile> files, string folder = "products")
     {
-        throw new NotImplementedException();
+        var results = new List<(bool success, string? filePath, string? error)>();
+
+        foreach (var file in files)
+        {
+            var result = await UploadImageAsync(file, folder);
+            results.Add(result);
+        }
+
+        return results;
     }
 
     public bool DeleteImage(string filePath)

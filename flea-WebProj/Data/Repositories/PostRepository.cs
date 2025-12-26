@@ -1,4 +1,5 @@
 using flea_WebProj.Models.Entities;
+using Npgsql;
 
 namespace flea_WebProj.Data.Repositories;
 
@@ -46,14 +47,28 @@ public interface IPostRepository
 
 public class PostRepository(DatabaseContext dbContext) : IPostRepository
 {
-    public Task<Post?> GetByIdAsync(int id)
+    public async Task<Post?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             SELECT id, title, description, created_at, updated_at, product_id, author_id
+                             FROM posts
+                             WHERE id = @id
+                             """;
+        var parameters = new[] { new NpgsqlParameter("@id", id) };
+        var products = await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
+        return products.FirstOrDefault();
     }
 
-    public Task<Post?> GetByProductIdAsync(int productId)
+    public async Task<Post?> GetByProductIdAsync(int productId)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             SELECT id, title, description, created_at, updated_at, product_id, author_id
+                             FROM posts
+                             WHERE product_id = @productId
+                             """;
+        var parameters = new[] { new NpgsqlParameter("@productId", productId) };
+        var products = await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
+        return products.FirstOrDefault();
     }
 
     public Task<Post?> GetWithFullDetailsAsync(int id)
@@ -61,14 +76,35 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         throw new NotImplementedException();
     }
 
-    public Task<int> CreateAsync(Post post)
+    public async Task<int> CreateAsync(Post post)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             INSERT INTO posts (id, title, description, created_at, updated_at, product_id, author_id)
+                             VALUES (@id, @title, @description, @createdAt, @updatedAt, @productId, @authorId)
+                             RETURNING id
+                             """;
+        
+        post.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        post.CreatedAt = DateTime.UtcNow;
+        
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", post.Id),
+            new NpgsqlParameter("@title", post.Title),
+            new NpgsqlParameter("@description", post.Description),
+            new NpgsqlParameter("@createdAt", post.CreatedAt),
+            new NpgsqlParameter("@updatedAt", (object?)post.UpdatedAt ?? DBNull.Value),
+            new NpgsqlParameter("@productId", post.ProductId),
+            new NpgsqlParameter("@authorId", post.AuthorId),
+        };
+        
+        var result = await dbContext.ExecuteScalarAsync(query, parameters);
+        return Convert.ToInt32(result);
     }
 
     public Task<bool> UpdateAsync(Post post)
     {
-        throw new NotImplementedException();
+        
     }
 
     public Task<bool> DeleteAsync(int id)
@@ -107,4 +143,16 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
     {
         throw new NotImplementedException();
     }
+
+    private static Post MapPost(NpgsqlDataReader reader)
+        => new()
+        {
+            Id = reader.GetInt32(0),
+            Title = reader.GetString(1),
+            Description = reader.GetString(2),
+            CreatedAt = reader.GetDateTime(3),
+            UpdatedAt = reader.GetDateTime(4),
+            ProductId = reader.GetInt32(5),
+            AuthorId = reader.GetInt32(6),
+        };
 }

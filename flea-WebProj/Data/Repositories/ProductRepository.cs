@@ -193,7 +193,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
     }
 
     private static Product MapProduct(NpgsqlDataReader reader) =>
-        new Product
+        new()
         {
             Id = reader.GetInt32(0),
             Price = reader.GetDecimal(1),
@@ -201,7 +201,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         };
 
     private static Category MapCategory(NpgsqlDataReader reader) =>
-        new Category
+        new()
         {
             Id = reader.GetInt32(0),
             Name = reader.GetString(1),
@@ -209,7 +209,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         };
 
     private static Image MapImage(NpgsqlDataReader reader) =>
-        new Image
+        new()
         {
             Id = reader.GetInt32(0),
             Path = reader.GetString(1),

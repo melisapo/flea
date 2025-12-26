@@ -13,7 +13,7 @@ public interface IPostRepository
     Task<bool> DeleteAsync(int id);
     
     // Obtener posts recientes (para home)
-    Task<List<Post>> GetRecentPostsAsync(int limit = 12);
+    Task<List<Post>> GetRecentPostsAsync(int limit = 20);
     
     // Obtener posts por autor (mis publicaciones)
     Task<List<Post>> GetByAuthorAsync(int authorId, int limit = 20);
@@ -134,14 +134,34 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         return rowsAffected > 0;
     }
 
-    public Task<List<Post>> GetRecentPostsAsync(int limit = 12)
+    public async Task<List<Post>> GetRecentPostsAsync(int limit = 20)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             SELECT id, title, description, created_at, updated_at, product_id, author_id
+                             FROM posts
+                             ORDER BY id DESC
+                             LIMIT  @limit
+                             """;
+        var parameters = new[] { new NpgsqlParameter("@limit", limit) };
+        var products = await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
+        return products;
     }
 
-    public Task<List<Post>> GetByAuthorAsync(int authorId, int limit = 20)
+    public async Task<List<Post>> GetByAuthorAsync(int authorId, int limit = 20)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             SELECT id, title, description, created_at, updated_at, product_id, author_id
+                             FROM posts
+                             WHERE author_id = @authorId
+                             LIMIT  @limit
+                             """;
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@authorId", authorId),
+            new NpgsqlParameter("@limit", limit)
+        };
+        var products = await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
+        return products;
     }
 
     public Task<List<Post>> SearchPostsAsync(string searchTerm, int limit = 20)

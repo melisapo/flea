@@ -11,7 +11,7 @@ public interface IUserRepository
     Task<bool> EmailExistsAsync(string email);
     Task<int> CreateAsync(User user);
     Task<bool> UpdateAsync(User user);
-    Task<bool> UpdateUsernameAsync(User user);
+    Task<bool> UpdateUsernameAsync(int userId, string newUsername);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
     Task<List<User>> GetByRoleIdAsync(int roleId);
@@ -88,36 +88,41 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         return Convert.ToInt32(result);
     }
 
-    public async Task<bool> UpdateUsernameAsync(User user)
+    public async Task<bool> UpdateUsernameAsync(int userId, string newUsername)
     {
         const string checkQuery = """
-            SELECT COUNT(*) FROM users 
-            WHERE username  = @username 
-            """;
+                                  SELECT COUNT(*) FROM users 
+                                  WHERE username = @username AND id != @id
+                                  """;
 
-        var checkParams = new[] { new NpgsqlParameter("@username", user.Username) };
+        var checkParams = new[]
+        {
+            new NpgsqlParameter("@username", newUsername),
+            new NpgsqlParameter("@id", userId)
+        };
 
-        var exists =
-            Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
+        var exists = Convert.ToInt64(await dbContext.ExecuteScalarAsync(checkQuery, checkParams)) > 0;
         if (exists)
             return false;
 
         const string query = """
-            UPDATE users 
-            SET username = @username, 
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = @id
-            """;
+                             UPDATE users 
+                             SET username = @username, 
+                                 updated_at = @updated_at
+                             WHERE id = @id
+                             """;
 
         var parameters = new[]
         {
-            new NpgsqlParameter("@id", user.Id),
-            new NpgsqlParameter("@username", user.Username),
+            new NpgsqlParameter("@id", userId),
+            new NpgsqlParameter("@username", newUsername),
+            new NpgsqlParameter("@updated_at", DateTime.UtcNow)
         };
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
         return rowsAffected > 0;
     }
+
 
     public async Task<bool> UpdateAsync(User user)
     {

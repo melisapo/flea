@@ -79,8 +79,19 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
         }
     }
 
-    public bool IsValidImage(IFormFile file)
+    public bool IsValidImage(IFormFile? file)
     {
-        throw new NotImplementedException();
+        if (file == null || file.Length == 0)
+            return false;
+        
+        if (file.Length > _maxFileSize)
+            return false;
+        
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!_allowedExtensions.Contains(extension))
+            return false;
+
+        var allowedMimeTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp" };
+        return allowedMimeTypes.Contains(file.ContentType.ToLower());
     }
 }

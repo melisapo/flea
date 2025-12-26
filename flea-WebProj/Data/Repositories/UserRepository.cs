@@ -12,6 +12,7 @@ public interface IUserRepository
     Task<int> CreateAsync(User user);
     Task<bool> UpdateAsync(User user);
     Task<bool> UpdateUsernameAsync(int userId, string newUsername);
+    Task<bool> UpdateProfilePicAsync(int userId, string newProfilePic);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
     Task<List<User>> GetByRoleIdAsync(int roleId);
@@ -129,19 +130,34 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         const string query = """
             UPDATE users 
             SET name = @name, 
-               profile_pic = @profile_pic, 
                updated_at = CURRENT_TIMESTAMP
             WHERE id = @id
             """;
-
-        user.UpdatedAt = DateTime.UtcNow;
 
         var parameters = new[]
         {
             new NpgsqlParameter("@id", user.Id),
             new NpgsqlParameter("@name", user.Name),
-            new NpgsqlParameter("@profile_pic", user.ProfilePicture),
             new NpgsqlParameter("@updated_at", user.UpdatedAt),
+        };
+
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
+    }
+    
+    public async Task<bool> UpdateProfilePicAsync(int userId, string newProfilePic)
+    {
+        const string query = """
+                             UPDATE users 
+                             SET profile_pic = @profile_pic, 
+                                 updated_at = current_timestamp
+                             WHERE id = @id
+                             """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", userId),
+            new NpgsqlParameter("@profile_pic", newProfilePic),
         };
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);

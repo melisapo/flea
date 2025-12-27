@@ -161,7 +161,7 @@ namespace flea_WebProj.Controllers
             // Actualizar foto de perfil si se subió una nueva
             if (model.NewProfilePic != null)
             {
-                var (success, message, newPath) = await userService.UpdateProfilePictureAsync(userId.Value, model.NewProfilePic);
+                var (success, _, newPath) = await userService.UpdateProfilePictureAsync(userId.Value, model.NewProfilePic);
         
                 if (success && newPath != null)
                 {

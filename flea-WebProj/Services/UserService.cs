@@ -17,24 +17,21 @@ public class UserService(
     IPasswordHasher passwordHasher,
     IFileUploadService fileUploadService) : IUserService
 {
-    private readonly IUserRepository _userRepository = userRepository;
-    private readonly IContactRepository _contactRepository = contactRepository;
-    private readonly IPasswordHasher _passwordHasher = passwordHasher;
-    private readonly IFileUploadService _fileUploadService = fileUploadService;
-
     public async Task<(bool success, string message)> ChangeUsernameAsync(int userId, ChangeUserViewModel model)
     {
         try
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null) 
                 return (false, $"Usuario no encontrado");
             
-            var validUser = await _userRepository.UsernameExistsAsync(model.Username);
+            var validUser = await userRepository.UsernameExistsAsync(model.Username);
             if (!validUser) return (false, "El nombre de usuario ya está en uso");
 
-            await _userRepository.UpdateUsernameAsync(userId, model.Username);
-            return (true, "Usuario actualizado exitosamente");
+            var updated = await userRepository.UpdateUsernameAsync(userId, model.Username);
+            return updated ? 
+                (true, "Usuario actualizado exitosamente") : 
+                (false, "Error al actualizar usuario");
         }
         catch (Exception ex)
         {
@@ -46,23 +43,25 @@ public class UserService(
     {
         try
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null) 
                 return (false, $"Usuario no encontrado");
 
             user.Name = model.Name;
-            await _userRepository.UpdateAsync(user);
+            await userRepository.UpdateAsync(user);
         
-            var contact = await _contactRepository.GetByUserIdAsync(userId);
+            var contact = await contactRepository.GetByUserIdAsync(userId);
             if (contact == null) return (false, "Contacto no encontrado");
             
             contact.Email = model.Email;
             contact.PhoneNumber = model.PhoneNumber;
             contact.TelegramUser = model.TelegramUser;
             
-            await _contactRepository.UpdateAsync(contact);
-            
-            return (true, "Perfil actualizado exitosamente");
+            var updated = await contactRepository.UpdateAsync(contact);
+
+            return updated ? 
+                (true, "Perfil actualizado exitosamente") : 
+                (false, "Error al actualizar perfil");
         }
         catch (Exception ex)
         {
@@ -74,17 +73,19 @@ public class UserService(
     {
         try
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await userRepository.GetByIdAsync(userId);
             if (user == null)
                 return (false, "Usuario no encontrado");
             
-            if (!_passwordHasher.Verify(model.CurrentPassword, user.PasswordHash))
+            if (!passwordHasher.Verify(model.CurrentPassword, user.PasswordHash))
                 return (false, "La contraseña actual es incorrecta");
             
-            var newPasswordHash = _passwordHasher.Hash(model.NewPassword);
-            var updated = await _userRepository.UpdatePasswordAsync(userId, newPasswordHash);
+            var newPasswordHash = passwordHasher.Hash(model.NewPassword);
+            var updated = await userRepository.UpdatePasswordAsync(userId, newPasswordHash);
 
-            return updated ? (true, "Contraseña actualizada exitosamente") : (false, "Error al actualizar contraseña");
+            return updated ? 
+                (true, "Contraseña actualizada exitosamente") : 
+                (false, "Error al actualizar contraseña");
         }
         catch (Exception ex)
         {
@@ -94,6 +95,29 @@ public class UserService(
 
     public async Task<(bool success, string message, string? newPath)> UpdateProfilePictureAsync(int userId, IFormFile newProfilePic)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return (false, "Usuario no encontrado", null);
+            
+            var (success, filePath, error) = await fileUploadService.UploadImageAsync(newProfilePic, "profiles");
+            
+            if (!success || filePath == null)
+                return (false, error ?? "Error al subir imagen", null);
+            
+            if (user.ProfilePicture != "/images/default-avatar.png")
+                fileUploadService.DeleteImage(user.ProfilePicture);
+
+            var updated = await userRepository.UpdateProfilePicAsync(userId, filePath);
+
+            return updated ? 
+                (true, "Foto de perfil actualizada", filePath) : 
+                (false, "Error al actualizar foto de perfil", null);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error al actualizar foto: {ex.Message}", null);
+        }
     }
 }

@@ -9,6 +9,7 @@ public interface IUserService
     Task<(bool success, string message)> UpdateProfileAsync(int userId, EditProfileViewModel model);
     Task<(bool success, string message)> ChangePasswordAsync(int userId, ChangePasswordViewModel model);
     Task<(bool success, string message, string? newPath)> UpdateProfilePictureAsync(int userId, IFormFile newProfilePic);
+    Task<EditProfileViewModel?> GetEditProfileDataAsync(int userId);
 }
 
 public class UserService(
@@ -119,5 +120,23 @@ public class UserService(
         {
             return (false, $"Error al actualizar foto: {ex.Message}", null);
         }
+    }
+
+    public async Task<EditProfileViewModel?> GetEditProfileDataAsync(int userId)
+    {
+        var user = await userRepository.GetByIdAsync(userId);
+        if (user == null)
+            return null;
+
+        var contact = await contactRepository.GetByUserIdAsync(userId);
+
+        return new EditProfileViewModel
+        {
+            Name = user.Name,
+            Email = contact?.Email ?? "",
+            PhoneNumber = contact?.PhoneNumber,
+            TelegramUser = contact?.TelegramUser,
+            CurrentProfilePic = user.ProfilePicture
+        };
     }
 }

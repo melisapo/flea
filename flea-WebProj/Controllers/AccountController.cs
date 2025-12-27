@@ -1,3 +1,4 @@
+using flea_WebProj.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using flea_WebProj.Services;
 using flea_WebProj.Helpers;
@@ -6,16 +7,17 @@ using flea_WebProj.Models.ViewModels.Auth;
 
 namespace flea_WebProj.Controllers
 {
-    public class AccountController(IAuthService authService) : Controller
+    public class AccountController(
+        IAuthService authService,
+        IUserService userService,
+        IFileUploadService fileUploadService) : Controller
     {
         // GET: /Account/Register
         [HttpGet]
         public IActionResult Register()
         {
             if (HttpContext.Session.IsAuthenticated())
-            {
                 return RedirectToAction("Index", "Home");
-            }
 
             return View();
         }
@@ -122,6 +124,63 @@ namespace flea_WebProj.Controllers
             
             HttpContext.Session.ClearUser();
             return RedirectToAction("Login");
+        }
+        
+        [HttpGet]
+        [RequireAuth]
+        public async Task<IActionResult> EditProfile()
+        {
+            var userId = HttpContext.Session.GetUserId();
+            if (!userId.HasValue)
+                return RedirectToAction("Login");
+
+            var model = await userService.GetEditProfileDataAsync(userId.Value);
+    
+            if (model == null)
+                return RedirectToAction("Login");
+
+            return View(model);
+        }
+
+        // POST: /Account/EditProfile
+        [HttpPost]
+        [RequireAuth]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var userId = HttpContext.Session.GetUserId();
+            if (!userId.HasValue)
+                return RedirectToAction("Login");
+
+            // Actualizar foto de perfil si se subió una nueva
+            if (model.NewProfilePic != null)
+            {
+                var (success, message, newPath) = await userService.UpdateProfilePictureAsync(userId.Value, model.NewProfilePic);
+        
+                if (success && newPath != null)
+                {
+                    model.CurrentProfilePic = newPath;
+                    // Actualizar sesión con nueva foto
+                    var updatedUser = await authService.GetUserWithRolesAsync(userId.Value);
+                    if (updatedUser != null) 
+                        HttpContext.Session.SetUser(updatedUser);
+                }
+            }
+
+            // Actualizar resto del perfil
+            var (profileSuccess, profileMessage) = await userService.UpdateProfileAsync(userId.Value, model);
+
+            if (profileSuccess)
+            {
+                TempData["SuccessMessage"] = "Perfil actualizado exitosamente";
+                return RedirectToAction("Profile");
+            }
+
+            ModelState.AddModelError("", profileMessage);
+            return View(model);
         }
 
         // GET: /Account/AccessDenied

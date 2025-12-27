@@ -13,6 +13,7 @@ public interface IUserRepository
     Task<bool> UpdateAsync(User user);
     Task<bool> UpdateUsernameAsync(int userId, string newUsername);
     Task<bool> UpdateProfilePicAsync(int userId, string newProfilePic);
+    Task<bool> UpdatePasswordAsync(int userId, string newPasswordHash);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
     Task<List<User>> GetByRoleIdAsync(int roleId);
@@ -157,6 +158,26 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         {
             new NpgsqlParameter("@id", userId),
             new NpgsqlParameter("@profile_pic", newProfilePic),
+        };
+
+        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
+        return rowsAffected > 0;
+    }
+    
+    public async Task<bool> UpdatePasswordAsync(int userId, string newPasswordHash)
+    {
+        const string query = """
+                             UPDATE users 
+                             SET password_hash = @password_hash, 
+                                 updated_at = @updated_at
+                             WHERE id = @id
+                             """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@id", userId),
+            new NpgsqlParameter("@password_hash", newPasswordHash),
+            new NpgsqlParameter("@updated_at", DateTime.UtcNow)
         };
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);

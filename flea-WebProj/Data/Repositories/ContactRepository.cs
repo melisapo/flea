@@ -74,9 +74,8 @@ public class ContactRepository(DatabaseContext dbContext) : IContactRepository
         return rowsAffected > 0;
     }
     
-    private static Contact MapContact(NpgsqlDataReader reader)
-    {
-        return new Contact
+    private static Contact MapContact(NpgsqlDataReader reader) 
+        => new()
         {
             Id = reader.GetInt32(0),
             Email = reader.GetString(1),
@@ -84,5 +83,4 @@ public class ContactRepository(DatabaseContext dbContext) : IContactRepository
             TelegramUser = reader.IsDBNull(3) ? null : reader.GetString(3),
             UserId = reader.GetInt32(4)
         };
-    }
 }

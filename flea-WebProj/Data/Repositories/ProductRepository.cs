@@ -12,7 +12,9 @@ public interface IProductRepository
     Task<bool> DeleteAsync(int id);
     Task<bool> UpdateStatusAsync(int productId, string status);
     Task<List<Product>> GetByStatusAsync(string status, int limit = 20);
-    Task<List<Product>> GetByCategoryAsync(int categoryId, int limit = 20);
+    Task<List<Category>> GetProductCategories(int productId);
+    Task<List<Image>> GetProductImages(int productId);
+    
     Task<List<Product>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice, int limit = 20);
 }
 
@@ -45,28 +47,8 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         if (product == null)
             return null;
 
-        const string categoriesQuery = """
-                    SELECT c.id, c.name, c.slug
-                    FROM categories c
-                    INNER JOIN product_categories pc ON c.id = pc.category_id
-                    WHERE pc.product_id = @productId
-            """;
-
-        var categoryParams = new[] { new NpgsqlParameter("@productId", id) };
-        product.Categories = await dbContext.ExecuteQueryAsync(
-            categoriesQuery,
-            MapCategory,
-            categoryParams
-        );
-
-        const string imagesQuery = """
-                    SELECT id, path, product_id
-                    FROM images
-                    WHERE product_id = @productId
-            """;
-
-        var imageParams = new[] { new NpgsqlParameter("@productId", id) };
-        product.Images = await dbContext.ExecuteQueryAsync(imagesQuery, MapImage, imageParams);
+        product.Categories = await GetProductCategories(id);
+        product.Images = await GetProductImages(id);
 
         return product;
     }
@@ -150,23 +132,31 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         return products;
     }
 
-    public async Task<List<Product>> GetByCategoryAsync(int categoryId, int limit = 20)
+    public async Task<List<Category>> GetProductCategories(int productId)
     {
-        const string query = """
-            SELECT p.id, p.price, p.status
-            FROM products p
-            INNER JOIN product_categories pc ON p.id = pc.product_id
-            WHERE pc.category_id = @categoryId
-            ORDER BY p.id DESC
-            LIMIT @limit
-            """;
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@categoryId", categoryId),
-            new NpgsqlParameter("@limit", limit),
-        };
-        var products = await dbContext.ExecuteQueryAsync(query, MapProduct, parameters);
-        return products;
+        const string categoriesQuery = """
+                                       SELECT c.id, c.name, c.slug
+                                       FROM categories c
+                                       INNER JOIN product_categories pc ON c.id = pc.category_id
+                                       WHERE pc.product_id = @productId
+                                       """;
+            
+        var categoryParams = new[] { new NpgsqlParameter("@productId", productId) };
+        var categories = await dbContext.ExecuteQueryAsync(categoriesQuery, MapCategory, categoryParams);
+        return categories;
+    }
+
+    public async Task<List<Image>> GetProductImages(int productId)
+    {
+        const string imagesQuery = """
+                                   SELECT id, path, product_id
+                                   FROM images
+                                   WHERE product_id = @productId
+                                   """;
+            
+        var imageParams = new[] { new NpgsqlParameter("@productId", productId) };
+        var images = await dbContext.ExecuteQueryAsync(imagesQuery, MapImage, imageParams);
+        return images;
     }
 
     public async Task<List<Product>> GetByPriceRangeAsync(

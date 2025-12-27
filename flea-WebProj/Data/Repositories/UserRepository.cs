@@ -17,7 +17,6 @@ public interface IUserRepository
     Task<User?> GetWithRolesAsync(int id);
     Task<List<User>> GetByRoleIdAsync(int roleId);
     Task<User?> GetFullUserAsync(int id);
-    Task<List<Post>> GetUserPostsAsync(int userId, int limit = 10);
 }
 
 public class UserRepository(DatabaseContext dbContext) : IUserRepository
@@ -204,53 +203,20 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
 
     public async Task<User?> GetFullUserAsync(int id)
     {
+        var addressRepository = new AddressRepository(dbContext);
+        var contactRepository = new ContactRepository(dbContext);
+        
         var user = await GetWithRolesAsync(id);
         if (user == null)
             return null;
-
-        const string addressQuery = """
-            SELECT id, city, state_province, country, user_id
-            FROM addresses
-            WHERE user_id = @userId
-            """;
-
-        var addressParams = new[] { new NpgsqlParameter("@userId", id) };
-        user.Addresses = await dbContext.ExecuteQueryAsync(addressQuery, MapAddress, addressParams);
-
-        const string contactQuery = """
-            SELECT id, email, phone_number, telegram_user, user_id
-            FROM contacts
-            WHERE user_id = @userId
-            """;
-
-        var contactParams = new[] { new NpgsqlParameter("@userId", id) };
-        var contacts = await dbContext.ExecuteQueryAsync(contactQuery, MapContact, contactParams);
-        user.Contact = contacts.FirstOrDefault();
+        user.Addresses = await addressRepository.GetByUserIdAsync(id);
+        user.Contact = await contactRepository.GetByUserIdAsync(id);
 
         return user;
     }
 
-    public async Task<List<Post>> GetUserPostsAsync(int userId, int limit = 10)
-    {
-        const string query = """
-            SELECT p.id, p.title, p.description, p.created_at, p.updated_at, p.product_id, p.author_id
-            FROM posts p
-            WHERE p.author_id = @userId
-            ORDER BY p.created_at DESC
-            LIMIT @limit
-            """;
-
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@userId", userId),
-            new NpgsqlParameter("@limit", limit),
-        };
-
-        return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
-    }
-
-    private static User MapUser(NpgsqlDataReader reader) =>
-        new User
+    private static User MapUser(NpgsqlDataReader reader) 
+        => new()
         {
             Id = reader.GetInt32(0),
             Username = reader.GetString(1),
@@ -261,40 +227,11 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             UpdatedAt = reader.IsDBNull(6) ? null : reader.GetDateTime(6),
         };
 
-    private static Role MapRole(NpgsqlDataReader reader) =>
-        new Role { Id = reader.GetInt32(0), Name = reader.GetString(1) };
-
-    private static Address MapAddress(NpgsqlDataReader reader)
-    {
-        return new Address
+    private static Role MapRole(NpgsqlDataReader reader) 
+        => new()
         {
             Id = reader.GetInt32(0),
-            City = reader.IsDBNull(1) ? null : reader.GetString(1),
-            StateProvince = reader.GetString(2),
-            Country = reader.GetString(3),
-            UserId = reader.GetInt32(4),
+            Name = reader.GetString(1)
         };
-    }
-
-    private static Contact MapContact(NpgsqlDataReader reader) =>
-        new Contact
-        {
-            Id = reader.GetInt32(0),
-            Email = reader.GetString(1),
-            PhoneNumber = reader.IsDBNull(2) ? null : reader.GetString(2),
-            TelegramUser = reader.IsDBNull(3) ? null : reader.GetString(3),
-            UserId = reader.GetInt32(4),
-        };
-
-    private static Post MapPost(NpgsqlDataReader reader) =>
-        new Post
-        {
-            Id = reader.GetInt32(0),
-            Title = reader.GetString(1),
-            Description = reader.GetString(2),
-            CreatedAt = reader.GetDateTime(3),
-            UpdatedAt = reader.IsDBNull(4) ? null : reader.GetDateTime(4),
-            ProductId = reader.GetInt32(5),
-            AuthorId = reader.GetInt32(6),
-        };
+    
 }

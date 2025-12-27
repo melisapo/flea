@@ -86,8 +86,7 @@ public class AddressRepository(DatabaseContext dbContext) : IAddressRepository
         return rowsAffected > 0;
     }
     private static Address MapAddress(NpgsqlDataReader reader)
-    {
-        return new Address
+        => new()
         {
             Id = reader.GetInt32(0),
             City = reader.IsDBNull(1) ? null : reader.GetString(1),
@@ -95,5 +94,5 @@ public class AddressRepository(DatabaseContext dbContext) : IAddressRepository
             Country = reader.GetString(3),
             UserId = reader.GetInt32(4)
         };
-    }
+    
 }

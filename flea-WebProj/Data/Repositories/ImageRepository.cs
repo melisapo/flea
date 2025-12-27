@@ -77,7 +77,7 @@ public class ImageRepository(DatabaseContext dbContext) : IImageRepository
     }
 
     private static Image MapImage(NpgsqlDataReader reader)
-        => new Image
+        => new()
         {
             Id = reader.GetInt32(0),
             Path = reader.GetString(1),

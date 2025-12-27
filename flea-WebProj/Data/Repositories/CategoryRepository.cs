@@ -174,7 +174,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
     }
     
     private static Category MapCategory(NpgsqlDataReader reader)
-        => new Category
+        => new()
         {
             Id = reader.GetInt32(0), 
             Name = reader.GetString(1), 

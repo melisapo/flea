@@ -13,6 +13,7 @@ builder.Services.AddScoped<DatabaseContext>();
 // Services
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

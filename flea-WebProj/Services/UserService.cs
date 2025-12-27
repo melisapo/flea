@@ -57,7 +57,24 @@ public class UserService(
 
     public async Task<(bool success, string message)> ChangePasswordAsync(int userId, ChangePasswordViewModel model)
     {
-        
+        try
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                return (false, "Usuario no encontrado");
+            
+            if (!_passwordHasher.Verify(model.CurrentPassword, user.PasswordHash))
+                return (false, "La contraseña actual es incorrecta");
+            
+            var newPasswordHash = _passwordHasher.Hash(model.NewPassword);
+            var updated = await _userRepository.UpdatePasswordAsync(userId, newPasswordHash);
+
+            return updated ? (true, "Contraseña actualizada exitosamente") : (false, "Error al actualizar contraseña");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error al actualizar contraseña: {ex.Message}");
+        }
     }
 
     public async Task<(bool success, string message, string? newPath)> UpdateProfilePictureAsync(int userId, IFormFile newProfilePic)

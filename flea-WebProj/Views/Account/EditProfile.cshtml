@@ -1,0 +1,101 @@
+@model flea_WebProj.Models.ViewModels.Auth.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-gear"></i> Editar Perfil</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <!-- Foto de perfil -->
+                        <div class="text-center mb-4">
+                            <img id="profilePicPreview" 
+                                 src="@Model.CurrentProfilePic" 
+                                 alt="Foto de perfil" 
+                                 class="rounded-circle mb-3" 
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                            
+                            <div class="mb-3">
+                                <label asp-for="NewProfilePic" class="form-label">Cambiar foto de perfil</label>
+                                <input asp-for="NewProfilePic" 
+                                       class="form-control" 
+                                       type="file" 
+                                       accept="image/*"
+                                       onchange="previewImage(this)">
+                                <span asp-validation-for="NewProfilePic" class="text-danger"></span>
+                                <small class="form-text text-muted">Formatos: JPG, PNG, GIF. Máximo 5MB.</small>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Información personal -->
+                        <h5 class="mb-3">Información Personal</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Nombre Completo *</label>
+                            <input asp-for="Name" class="form-control" placeholder="Tu nombre completo" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Información de contacto -->
+                        <h5 class="mb-3 mt-4">Información de Contacto</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email *</label>
+                            <input asp-for="Email" class="form-control" placeholder="tu@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="+52 123 456 7890" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TelegramUser" class="form-label">Usuario de Telegram</label>
+                                <input asp-for="TelegramUser" class="form-control" placeholder="@@tuusuario" />
+                                <span asp-validation-for="TelegramUser" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                            <a asp-action="Profile" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePicPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

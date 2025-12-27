@@ -7,8 +7,8 @@ namespace flea_WebProj.Models.ViewModels.Product;
 
 public class EditPostViewModel
 {
-    public long PostId { get; set; }
-    public long ProductId { get; set; }
+    public int PostId { get; set; }
+    public int ProductId { get; set; }
 
     [Required(ErrorMessage = "El título es requerido")]
     [StringLength(255, MinimumLength = 5, ErrorMessage = "El título debe tener entre 5 y 255 caracteres")]

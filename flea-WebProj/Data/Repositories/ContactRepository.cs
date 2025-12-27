@@ -18,7 +18,7 @@ public class ContactRepository(DatabaseContext dbContext) : IContactRepository
         const string query = """
                              SELECT id, email, phone_number, telegram_user, user_id
                              FROM contacts
-                             WHERE user_id = @userId";"
+                             WHERE user_id = @userId
                              """;
         var parameters = new[] { new NpgsqlParameter("@userId", userId) };
         var contacts = await dbContext.ExecuteQueryAsync(query, MapContact, parameters);
@@ -52,8 +52,8 @@ public class ContactRepository(DatabaseContext dbContext) : IContactRepository
                              UPDATE contacts
                              SET email  = @email,
                                  phone_number = @phone_number,
-                                 telegram_user = @telegram_user,
-                             WHERE id = @id";"
+                                 telegram_user = @telegram_user
+                             WHERE id = @id
                              """;
         var parameters = new[]
         {

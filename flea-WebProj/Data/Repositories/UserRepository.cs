@@ -138,7 +138,6 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         {
             new NpgsqlParameter("@id", user.Id),
             new NpgsqlParameter("@name", user.Name),
-            new NpgsqlParameter("@updated_at", user.UpdatedAt),
         };
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);

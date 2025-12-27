@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>flea_WebProj</RootNamespace>
       <UserSecretsId>509afec7-0f63-42a0-ad45-a6bbc2709ff1</UserSecretsId>
+      <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
     <ItemGroup>

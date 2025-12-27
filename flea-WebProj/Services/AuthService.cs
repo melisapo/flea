@@ -49,10 +49,9 @@ namespace flea_WebProj.Services
                 {
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber,
-                    TelegramUser = model.TelegramUser,
+                    TelegramUser = model.TelegramUser?.Trim().TrimStart('@'),
                     UserId = userId
                 };
-
                 await contactRepository.CreateAsync(contact);
                 
                 if (!string.IsNullOrWhiteSpace(model.StateProvince) && !string.IsNullOrWhiteSpace(model.Country))

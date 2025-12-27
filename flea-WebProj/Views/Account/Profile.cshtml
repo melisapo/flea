@@ -1,0 +1,128 @@
+@model flea_WebProj.Models.Entities.User
+
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Tarjeta de perfil -->
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <img src="@Model.ProfilePicture" alt="@Model.Name" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <h4>@Model.Name</h4>
+                    <p class="text-muted">@@@Model.Username</p>
+                    <p class="small text-muted">Miembro desde @Model.CreatedAt.ToString("MMMM yyyy")</p>
+                    
+                    @if (Model.Roles != null && Model.Roles.Any())
+                    {
+                        <div class="mb-3">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <span class="badge bg-primary">@role.Name</span>
+                            }
+                        </div>
+                    }
+                    
+                    <div class="d-grid gap-2">
+                        <a asp-action="EditProfile" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> Editar Perfil
+                        </a>
+                        <a asp-action="ChangePassword" class="btn btn-outline-secondary">
+                            <i class="bi bi-key"></i> Cambiar Contraseña
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Información de contacto -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Información de Contacto</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Contact != null)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Email:</strong></div>
+                            <div class="col-sm-8">@Model.Contact.Email</div>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
+                        {
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Teléfono:</strong></div>
+                                <div class="col-sm-8">@Model.Contact.PhoneNumber</div>
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
+                        {
+                            <div class="row mb-3">
+                                <div class="col-sm-4"><strong>Telegram:</strong></div>
+                                <div class="col-sm-8">@@@Model.Contact.TelegramUser</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">No hay información de contacto disponible.</p>
+                    }
+                </div>
+            </div>
+            
+            <!-- Direcciones -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Direcciones</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Addresses != null && Model.Addresses.Any())
+                    {
+                        @foreach (var address in Model.Addresses)
+                        {
+                            <div class="mb-3">
+                                <i class="bi bi-house-door"></i>
+                                @if (!string.IsNullOrEmpty(address.City))
+                                {
+                                    <span>@address.City, </span>
+                                }
+                                <span>@address.StateProvince, @address.Country</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">No hay direcciones registradas.</p>
+                    }
+                </div>
+            </div>
+            
+            <!-- Mis publicaciones -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-card-list"></i> Mis Publicaciones</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Posts != null && Model.Posts.Any())
+                    {
+                        <p>Total de publicaciones: <strong>@Model.Posts.Count</strong></p>
+                        <a asp-controller="Post" asp-action="MyPosts" class="btn btn-outline-primary">
+                            Ver todas mis publicaciones
+                        </a>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Aún no tienes publicaciones.</p>
+                        <a asp-controller="Post" asp-action="Create" class="btn btn-primary">
+                            Crear mi primera publicación
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

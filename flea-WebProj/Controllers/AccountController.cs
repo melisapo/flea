@@ -119,13 +119,16 @@ namespace flea_WebProj.Controllers
             if (!userId.HasValue)
                 return RedirectToAction("Login");
 
-            var user = await authService.GetUserWithRolesAsync(userId.Value);
+            var user = await authService.GetFullUserProfileAsync(userId.Value);
+
             if (user != null) return View(user);
             
             HttpContext.Session.ClearUser();
             return RedirectToAction("Login");
+
         }
         
+        // GET: /Account/EditProfile 
         [HttpGet]
         [RequireAuth]
         public async Task<IActionResult> EditProfile()
@@ -183,6 +186,39 @@ namespace flea_WebProj.Controllers
             return View(model);
         }
 
+        // GET: /Account/ChangePassword
+        [HttpGet]
+        [RequireAuth]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        
+        // POST: /Account/ChangePassword
+        [HttpPost]
+        [RequireAuth]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var userId = HttpContext.Session.GetUserId();
+            if (!userId.HasValue)
+                return RedirectToAction("Login");
+            
+            var (success, message) = await userService.ChangePasswordAsync(userId.Value, model);
+
+            if (success)
+            {
+                TempData["SuccessMessage"] = message;
+                return RedirectToAction("Profile");
+            }
+
+            ModelState.AddModelError(string.Empty, message);
+            return View(model);
+        }
+        
         // GET: /Account/AccessDenied
         [HttpGet]
         public IActionResult AccessDenied()

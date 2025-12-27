@@ -12,5 +12,7 @@ public class User
 
     public List<Role>? Roles { get; set; } = [];
     public List<Address>? Addresses { get; set; } = [];
+    public List<Post>? Posts { get; set; } = [];
+    
     public Contact? Contact { get; set; }
 }

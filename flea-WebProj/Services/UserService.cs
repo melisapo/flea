@@ -22,9 +22,24 @@ public class UserService(
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IFileUploadService _fileUploadService = fileUploadService;
 
-    public Task<(bool success, string message)> ChangeUsernameAsync(int userId, ChangeUserViewModel model)
+    public async Task<(bool success, string message)> ChangeUsernameAsync(int userId, ChangeUserViewModel model)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) 
+                return (false, $"Usuario no encontrado");
+            
+            var validUser = await _userRepository.UsernameExistsAsync(model.Username);
+            if (!validUser) return (false, "El nombre de usuario ya está en uso");
+
+            await _userRepository.UpdateUsernameAsync(userId, model.Username);
+            return (true, "Usuario actualizado exitosamente");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error al actualizar usuario: {ex.Message}");
+        }
     }
 
     public async Task<(bool success, string message)> UpdateProfileAsync(int userId, EditProfileViewModel model)

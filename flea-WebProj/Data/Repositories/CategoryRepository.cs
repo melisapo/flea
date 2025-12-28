@@ -14,6 +14,7 @@ public interface ICategoryRepository
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
     Task<List<Category>> GetProductCategoryAsync(int productId);
+    Task<List<int>> GetProductCategoriesIdsAsync(int postId);
 }
 
 public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
@@ -172,6 +173,22 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         var parameters = new[] { new NpgsqlParameter("@productId", productId) };
         return await dbContext.ExecuteQueryAsync(query, MapCategory, parameters);
     }
+
+    public async Task<List<int>> GetProductCategoriesIdsAsync(int postId)
+    {
+        const string query =
+            """
+            SELECT c.id
+            FROM categories c
+            INNER JOIN product_categories pc ON c.id = pc.category_id
+            WHERE pc.product_id = @productId
+            """;
+        var parameters = new[] { new NpgsqlParameter("@productId", postId) };
+        return await dbContext.ExecuteQueryAsync(query, MapCategoryId, parameters);
+    }
+
+    private static int MapCategoryId(NpgsqlDataReader reader)
+        => reader.GetInt32(0);
     
     private static Category MapCategory(NpgsqlDataReader reader)
         => new()

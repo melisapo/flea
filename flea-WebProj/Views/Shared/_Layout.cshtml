@@ -38,12 +38,12 @@
                         @if (Context.Session.IsAuthenticated())
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Post" asp-action="Create">
+                                <a class="nav-link" asp-controller="Posts" asp-action="Create">
                                     <i class="bi bi-plus-circle"></i> Publicar
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Post" asp-action="MyPosts">
+                                <a class="nav-link" asp-controller="Posts" asp-action="MyPosts">
                                     <i class="bi bi-card-list"></i> Mis Publicaciones
                                 </a>
                             </li>
@@ -72,7 +72,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Post" asp-action="MyPosts">
+                                        <a class="dropdown-item" asp-controller="Posts" asp-action="MyPosts">
                                             <i class="bi bi-card-list"></i> Mis Publicaciones
                                         </a>
                                     </li>

@@ -1,0 +1,87 @@
+@model flea_WebProj.Models.ViewModels.Product.CreatePostViewModel
+
+@{
+    ViewData["Title"] = "Crear Publicación";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Publicación</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <!-- Título -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Título *</label>
+                            <input asp-for="Title" class="form-control" placeholder="Ej: iPhone 13 Pro Max 256GB" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Descripción *</label>
+                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Describe el producto, su estado, incluye detalles importantes..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Precio -->
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Precio *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="Price" class="form-control" placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Categorías -->
+                        <div class="mb-3">
+                            <label class="form-label">Categorías *</label>
+                            <div class="row">
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="CategoryIds" value="@category.Id" id="cat_@category.Id">
+                                            <label class="form-check-label" for="cat_@category.Id">
+                                                @category.Name
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="AvailableCategories" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Imágenes -->
+                        <div class="mb-3">
+                            <label asp-for="Images" class="form-label">Imágenes del producto *</label>
+                            <input asp-for="Images" class="form-control" type="file" accept="image/*" multiple>
+                            <span asp-validation-for="Images" class="text-danger"></span>
+                            <small class="form-text text-muted">Puedes subir múltiples imágenes. Formatos: JPG, PNG, GIF. Máximo 5MB cada una.</small>
+                        </div>
+                        
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success flex-fill">
+                                <i class="bi bi-check-circle"></i> Publicar
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

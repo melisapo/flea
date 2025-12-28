@@ -6,7 +6,7 @@ using flea_WebProj.Middleware;
 
 namespace flea_WebProj.Controllers;
 
-public class PostController(
+public class PostsController(
     IPostService postService)
     : Controller
 {

@@ -110,14 +110,14 @@
                     @if (Model.Posts != null && Model.Posts.Any())
                     {
                         <p>Total de publicaciones: <strong>@Model.Posts.Count</strong></p>
-                        <a asp-controller="Post" asp-action="MyPosts" class="btn btn-outline-primary">
+                        <a asp-controller="Posts" asp-action="MyPosts" class="btn btn-outline-primary">
                             Ver todas mis publicaciones
                         </a>
                     }
                     else
                     {
                         <p class="text-muted">Aún no tienes publicaciones.</p>
-                        <a asp-controller="Post" asp-action="Create" class="btn btn-primary">
+                        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
                             Crear mi primera publicación
                         </a>
                     }

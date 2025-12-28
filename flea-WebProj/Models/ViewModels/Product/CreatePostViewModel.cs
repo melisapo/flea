@@ -17,11 +17,8 @@ public class CreatePostViewModel
     [Range(0.01, 999999.99, ErrorMessage = "El precio debe estar entre 0.01 y 999,999.99")]
     public decimal Price { get; set; }
 
-    [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
-    public List<int> CategoryIds { get; set; } = [];
-
     [Required(ErrorMessage = "Debe subir al menos una imagen")]
     public List<IFormFile> Images { get; set; } = [];
-    
+    [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
     public List<Category> AvailableCategories { get; set; } = [];
 }

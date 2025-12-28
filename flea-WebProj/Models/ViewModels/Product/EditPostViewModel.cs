@@ -24,15 +24,15 @@ public class EditPostViewModel
 
     [Required(ErrorMessage = "El estado es requerido")]
     public ProductStatus Status { get; set; }
-
-    [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
-    public List<int> CategoryIds { get; set; } = [];
     
+    public List<Category> AvailableCategories { get; set; } = [];
+    
+    [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
+    public List<int> PostCategoriesIds { get; set; } = [];
     public List<ImageViewModel> ExistingImages { get; set; } = [];
     
     public List<IFormFile>? NewImages { get; set; }
     
     public List<int> ImagesToDelete { get; set; } = [];
     
-    public List<Category> AvailableCategories { get; set; } = [];
 }

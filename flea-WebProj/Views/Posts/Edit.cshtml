@@ -1,0 +1,124 @@
+@model flea_WebProj.Models.ViewModels.Product.EditPostViewModel
+
+@{
+    ViewData["Title"] = "Editar Publicación";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Publicación</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="PostId" />
+                        <input type="hidden" asp-for="ProductId" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <!-- Título -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Título *</label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Descripción *</label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Precio -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Price" class="form-label">Precio *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" class="form-control" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            
+                            <!-- Estado -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Status" class="form-label">Estado *</label>
+                                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<flea_WebProj.Models.Enums.ProductStatus>()"></select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Categorías -->
+                        <div class="mb-3">
+                            <label class="form-select">Categorías *</label>
+                            <div class="row">
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="ProductCategories" value="@category.Id" 
+                                                   id="cat_@category" @(Model.PostCategoriesIds.Contains(category.Id) ? "checked" : "")>
+                                            <label class="form-check-label" for="cat_@category">
+                                                @category.Name
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <span asp-validation-for="AvailableCategories" class="text-danger"></span>
+                        </div>
+                        
+                        <!-- Imágenes existentes -->
+                        @if (Model.ExistingImages.Any())
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Imágenes actuales</label>
+                                <div class="row">
+                                    @foreach (var image in Model.ExistingImages)
+                                    {
+                                        <div class="col-md-3 col-sm-4 mb-3">
+                                            <div class="card">
+                                                <img src="@image.Path" class="card-img-top" alt="Imagen" style="height: 150px; object-fit: cover;">
+                                                <div class="card-body p-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="ImagesToDelete" value="@image.Id" id="del_@image.Id">
+                                                        <label class="form-check-label text-danger" for="del_@image.Id">
+                                                            <small>Eliminar</small>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        
+                        <!-- Nuevas imágenes -->
+                        <div class="mb-3">
+                            <label asp-for="NewImages" class="form-label">Agregar más imágenes</label>
+                            <input asp-for="NewImages" class="form-control" type="file" accept="image/*" multiple>
+                            <small class="form-text text-muted">Formatos: JPG, PNG, GIF. Máximo 5MB cada una.</small>
+                        </div>
+                        
+                        <!-- Botones -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning flex-fill">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.PostId" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

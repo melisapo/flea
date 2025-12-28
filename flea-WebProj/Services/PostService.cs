@@ -130,10 +130,10 @@ public class PostService(
             }
 
             // 4. Asignar categorías
-            if (model.CategoryIds.Count == 0) return (false, "Error al crear publicación", 0);
+            if (model.AvailableCategories.Count == 0) return (false, "Error al crear publicación", 0);
             
-            foreach (var categoryId in model.CategoryIds)
-                await categoryRepository.AssignCategoryToProductAsync(productId, categoryId);
+            foreach (var category in model.AvailableCategories)
+                await categoryRepository.AssignCategoryToProductAsync(productId, category.Id);
 
             return (true, "Publicación creada exitosamente", postId);
         }
@@ -163,14 +163,14 @@ public class PostService(
             Description = post.Description,
             Price = post.Product.Price,
             Status = post.Product.GetStatus(),
-            CategoryIds = post.Product.Categories.Select(c => c.Id).ToList(),
+            PostCategoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(postId),
+            AvailableCategories = await categoryRepository.GetAllAsync(),
             ExistingImages = post.Product.Images.Select(i => new ImageViewModel
             {
                 Id = i.Id,
                 Path = i.Path,
                 FullUrl = i.Path
-            }).ToList(),
-            AvailableCategories = await categoryRepository.GetAllAsync()
+            }).ToList()
         };
     }
 
@@ -242,11 +242,12 @@ public class PostService(
                 await categoryRepository.RemoveCategoryFromProductAsync(model.ProductId, category.Id);
             }
 
-            if (model.CategoryIds.Count == 0) return (false, "Error al actualizar publicación");
-            
-            foreach (var categoryId in model.CategoryIds)
+            if (model.PostCategoriesIds.Count != 0)
             {
-                await categoryRepository.AssignCategoryToProductAsync(model.ProductId, categoryId);
+                foreach (var categoryId in model.PostCategoriesIds)
+                {
+                    await categoryRepository.AssignCategoryToProductAsync(model.ProductId, categoryId);
+                }
             }
 
             return (true, "Publicación actualizada exitosamente");

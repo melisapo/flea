@@ -110,9 +110,9 @@ public class PostsController(
             TempData["SuccessMessage"] = message;
             return RedirectToAction("Details", new { id = model.PostId });
         }
-
-        ModelState.AddModelError("", message);
+        
         model.AvailableCategories = await postService.GetAllCategories();
+        ModelState.AddModelError("", message);
         return View(model);
     }
 

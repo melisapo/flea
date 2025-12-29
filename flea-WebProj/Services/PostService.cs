@@ -280,15 +280,14 @@ public class PostService(
                 );
             }
 
-            if (model.PostCategoriesIds.Count != 0)
+            if (model.PostCategoriesIds.Count == 0) return (false, "PostCategoriesIds = 0");
+            
+            foreach (var categoryId in model.PostCategoriesIds)
             {
-                foreach (var categoryId in model.PostCategoriesIds)
-                {
-                    await categoryRepository.AssignCategoryToProductAsync(
-                        model.ProductId,
-                        categoryId
-                    );
-                }
+                await categoryRepository.AssignCategoryToProductAsync(
+                    model.ProductId,
+                    categoryId
+                );
             }
 
             return (true, "Publicación actualizada exitosamente");

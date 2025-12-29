@@ -16,7 +16,7 @@ public class SearchPostViewModel
     public int PageSize { get; set; } = 20;
     
     public List<PostCardViewModel> Results { get; set; } = [];
-    public int TotalResults { get; set; } = 0;
+    public int TotalResults { get; set; } 
     public int TotalPages { get; set; }
     
     public List<Category> AvailableCategories { get; set; } = [];

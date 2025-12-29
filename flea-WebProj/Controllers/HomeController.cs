@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using flea_WebProj.Helpers;
-using flea_WebProj.Models.Entities;
 using flea_WebProj.Models.ViewModels;
 using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Services;
@@ -10,7 +9,6 @@ namespace flea_WebProj.Controllers;
 
 public class HomeController(IPostService postService) : Controller
 {
-    [HttpGet]
     public async Task<IActionResult> Index(
         string? searchTerm = null,
         int? categoryId = null,
@@ -62,15 +60,21 @@ public class HomeController(IPostService postService) : Controller
             }
             else
             {
-                // Sin filtros, mostrar posts recientes
                 var allPosts = await postService.GetRecentPostsAsync(100);
-                searchModel.TotalResults = allPosts.Count;
-
-                // Paginar manualmente
-                searchModel.Results = allPosts
-                    .Skip((page - 1) * searchModel.PageSize)
-                    .Take(searchModel.PageSize)
-                    .ToList();
+                searchModel.TotalResults = allPosts?.Count ?? 0;
+            
+                // ✅ ASEGURARTE QUE NO SEA NULL
+                if (allPosts != null)
+                {
+                    searchModel.Results = allPosts
+                        .Skip((page - 1) * searchModel.PageSize)
+                        .Take(searchModel.PageSize)
+                        .ToList();
+                }
+                else
+                {
+                    searchModel.Results = []; // ← Por si acaso
+                }
             }
 
             // Calcular páginas
@@ -82,6 +86,8 @@ public class HomeController(IPostService postService) : Controller
         {
             // Si falla, al menos retornar modelo vacío
             Console.WriteLine($"Error en Index: {ex.Message}");
+            searchModel.Results = [];
+            searchModel.AvailableCategories = [];
         }
         
         
@@ -89,7 +95,7 @@ public class HomeController(IPostService postService) : Controller
         ViewBag.IsAuthenticated = HttpContext.Session.IsAuthenticated();
 
         if (!HttpContext.Session.IsAuthenticated())
-            return View();
+            return View(searchModel);
 
         ViewBag.Username = HttpContext.Session.GetUsername();
         ViewBag.UserName = HttpContext.Session.GetUserName();

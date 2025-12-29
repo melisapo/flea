@@ -52,23 +52,33 @@
                         
                         <!-- Categorías -->
                         <div class="mb-3">
-                            <label class="form-select">Categorías *</label>
-                            <div class="row">
+                            <label class="form-label">Categorías *</label>
+
+                            <div class="form-check">
+                                <p>Seleccionadas: @string.Join(", ", Model.PostCategoriesIds)</p>
                                 @foreach (var category in Model.AvailableCategories)
                                 {
-                                    <div class="col-md-4 col-sm-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="ProductCategories" value="@category.Id" 
-                                                   id="cat_@category" @(Model.PostCategoriesIds.Contains(category.Id) ? "checked" : "")>
-                                            <label class="form-check-label" for="cat_@category">
-                                                @category.Name
-                                            </label>
-                                        </div>
+                                    var isChecked = Model.PostCategoriesIds != null
+                                                    && Model.PostCategoriesIds.Contains(category.Id);
+
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               name="PostCategoriesIds"
+                                               value="@category.Id"
+                                               id="cat_@category.Id"
+                                               @(isChecked ? "checked" : "")/>
+
+                                        <label class="form-check-label" for="cat_@category.Id">
+                                            @category.Name
+                                        </label>
                                     </div>
                                 }
                             </div>
-                            <span asp-validation-for="AvailableCategories" class="text-danger"></span>
+
+                            <span asp-validation-for="PostCategoriesIds" class="text-danger"></span>
                         </div>
+
                         
                         <!-- Imágenes existentes -->
                         @if (Model.ExistingImages.Any())

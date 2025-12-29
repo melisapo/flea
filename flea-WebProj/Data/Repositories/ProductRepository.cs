@@ -12,8 +12,8 @@ public interface IProductRepository
     Task<bool> DeleteAsync(int id);
     Task<bool> UpdateStatusAsync(int productId, string status);
     Task<List<Product>> GetByStatusAsync(string status, int limit = 20);
-    Task<List<Category>> GetProductCategories(int productId);
-    Task<List<Image>> GetProductImages(int productId);
+    Task<List<Category>> GetProductCategoriesAsync(int productId);
+    Task<List<Image>> GetProductImagesAsync(int productId);
     
     Task<List<Product>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice, int limit = 20);
 }
@@ -47,8 +47,8 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         if (product == null)
             return null;
 
-        product.Categories = await GetProductCategories(id);
-        product.Images = await GetProductImages(id);
+        product.Categories = await GetProductCategoriesAsync(id);
+        product.Images = await GetProductImagesAsync(id);
 
         return product;
     }
@@ -132,7 +132,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         return products;
     }
 
-    public async Task<List<Category>> GetProductCategories(int productId)
+    public async Task<List<Category>> GetProductCategoriesAsync(int productId)
     {
         const string categoriesQuery = """
                                        SELECT c.id, c.name, c.slug
@@ -146,7 +146,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         return categories;
     }
 
-    public async Task<List<Image>> GetProductImages(int productId)
+    public async Task<List<Image>> GetProductImagesAsync(int productId)
     {
         const string imagesQuery = """
                                    SELECT id, path, product_id

@@ -62,10 +62,10 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         if (post.Product == null) return null;
         
         // 3. Obtener categorias del producto
-        post.Product.Categories = await productRepository.GetProductCategories( post.ProductId);
+        post.Product.Categories = await productRepository.GetProductCategoriesAsync( post.ProductId);
 
         // 4. Obtener imágenes del producto
-        post.Product.Images = await productRepository.GetProductImages(post.ProductId);
+        post.Product.Images = await productRepository.GetProductImagesAsync(post.ProductId);
 
         // 5. Obtener autor
         post.Author = await userRepository.GetByIdAsync(post.AuthorId);

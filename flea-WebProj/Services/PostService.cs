@@ -45,7 +45,7 @@ public class PostService(
     {
         var post = await postRepository.GetWithFullDetailsAsync(postId);
 
-        if (post == null || post.Product == null || post.Author == null)
+        if (post?.Product == null || post.Author == null)
             return null;
 
         var isOwner = currentUserId.HasValue && currentUserId.Value == post.AuthorId;
@@ -171,6 +171,10 @@ public class PostService(
         // Verificar que el usuario sea el dueño
         if (post.AuthorId != userId)
             return null;
+        
+        Console.WriteLine($"PostId: {postId}");
+        var categoryIds = await categoryRepository.GetProductCategoriesIdsAsync(postId);
+        Console.WriteLine($"Categorias: {string.Join(",", categoryIds)}");
 
         return new EditPostViewModel
         {
@@ -180,7 +184,7 @@ public class PostService(
             Description = post.Description,
             Price = post.Product.Price,
             Status = post.Product.GetStatus(),
-            PostCategoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(postId),
+            PostCategoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(post.ProductId),
             AvailableCategories = await categoryRepository.GetAllAsync() ?? [],
             ExistingImages = post
                 .Product.Images.Select(i => new ImageViewModel
@@ -265,7 +269,7 @@ public class PostService(
             }
 
             // 6. Actualizar categorías
-            var currentCategories = await categoryRepository.GetProductCategoryAsync(
+            var currentCategories = await productRepository.GetProductCategoriesAsync(
                 model.ProductId
             );
             foreach (var category in currentCategories)
@@ -321,7 +325,7 @@ public class PostService(
             // 2. Eliminar relaciones de categorías
             if (post.Product != null)
             {
-                var categories = await categoryRepository.GetProductCategoryAsync(post.Product.Id);
+                var categories = await productRepository.GetProductCategoriesAsync(post.Product.Id);
                 foreach (var category in categories)
                 {
                     await categoryRepository.RemoveCategoryFromProductAsync(

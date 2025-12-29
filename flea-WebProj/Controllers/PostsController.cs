@@ -151,7 +151,7 @@ public class PostsController(
         if (!userId.HasValue)
             return RedirectToAction("Login", "Account");
 
-        var model = await postService.GetUserPostsAsync(userId.Value, 50);
+        var model = await postService.GetUserPostsAsync(userId.Value);
         
         return View(model);
     }

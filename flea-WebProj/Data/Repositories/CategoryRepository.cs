@@ -13,7 +13,7 @@ public interface ICategoryRepository
     Task<bool> DeleteAsync(int id);
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
-    Task<List<Category>> GetProductCategoryAsync(int productId);
+    
     Task<List<int>> GetProductCategoriesIdsAsync(int postId);
 }
 
@@ -160,30 +160,16 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         return rowsAffected > 0;
     }
 
-    public async Task<List<Category>> GetProductCategoryAsync(int productId)
+    public async Task<List<int>> GetProductCategoriesIdsAsync(int productId)
     {
         const string query =
             """
-            SELECT c.id, c.name, c.slug
-            FROM categories c
-            INNER JOIN product_categories pc ON c.id = pc.category_id
-            WHERE pc.product_id = @productId
+            SELECT pc.category_id
+            FROM product_categories pc
+            INNER JOIN products p ON pc.product_id = p.id
+            WHERE pc.product_id = @productId    
             """;
-
         var parameters = new[] { new NpgsqlParameter("@productId", productId) };
-        return await dbContext.ExecuteQueryAsync(query, MapCategory, parameters);
-    }
-
-    public async Task<List<int>> GetProductCategoriesIdsAsync(int postId)
-    {
-        const string query =
-            """
-            SELECT c.id
-            FROM categories c
-            INNER JOIN product_categories pc ON c.id = pc.category_id
-            WHERE pc.product_id = @productId
-            """;
-        var parameters = new[] { new NpgsqlParameter("@productId", postId) };
         return await dbContext.ExecuteQueryAsync(query, MapCategoryId, parameters);
     }
 

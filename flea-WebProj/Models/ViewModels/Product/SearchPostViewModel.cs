@@ -6,7 +6,7 @@ namespace flea_WebProj.Models.ViewModels.Product;
 public class SearchPostViewModel
 {
     public string? SearchTerm { get; set; }
-    public long? CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
     public ProductStatus? Status { get; set; }
@@ -17,7 +17,7 @@ public class SearchPostViewModel
     
     public List<PostCardViewModel> Results { get; set; } = [];
     public int TotalResults { get; set; } = 0;
-    public int TotalPages { get; set; } = 0;
+    public int TotalPages { get; set; }
     
     public List<Category> AvailableCategories { get; set; } = [];
 }

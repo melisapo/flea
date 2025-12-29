@@ -1,8 +1,8 @@
 using flea_WebProj.Data.Repositories;
-using flea_WebProj.Models.Entities;
-using flea_WebProj.Models.ViewModels.Product;
-using flea_WebProj.Models.Enums;
 using flea_WebProj.Helpers;
+using flea_WebProj.Models.Entities;
+using flea_WebProj.Models.Enums;
+using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Models.ViewModels.Shared;
 
 namespace flea_WebProj.Services;
@@ -10,13 +10,23 @@ namespace flea_WebProj.Services;
 public interface IPostService
 {
     Task<ProductDetailViewModel?> GetPostDetailAsync(int postId, int? currentUserId);
-    Task<(bool success, string message, int postId)> CreatePostAsync(CreatePostViewModel model, int authorId);
+    Task<(bool success, string message, int postId)> CreatePostAsync(
+        CreatePostViewModel model,
+        int authorId
+    );
     Task<(bool success, string message)> UpdatePostAsync(EditPostViewModel model, int userId);
     Task<(bool success, string message)> DeletePostAsync(int postId, int userId);
     Task<List<PostCardViewModel>> GetUserPostsAsync(int userId, int limit = 50);
     Task<EditPostViewModel?> GetEditPostDataAsync(int postId, int userId);
+    Task<int> GetTotalCountAsync(
+        string? searchTerm = null,
+        int? categoryId = null,
+        decimal? minPrice = null,
+        decimal? maxPrice = null,
+        string? status = null
+    );
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 12);
-    Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostsViewModel searchModel);
+    Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
     Task<List<Category>> GetAllCategories();
 }
 
@@ -27,14 +37,14 @@ public class PostService(
     IImageRepository imageRepository,
     IFileUploadService fileUploadService,
     IUserRepository userRepository,
-    IContactRepository contactRepository)
-    : IPostService
+    IContactRepository contactRepository
+) : IPostService
 {
     // Obtener detalle completo de un post
     public async Task<ProductDetailViewModel?> GetPostDetailAsync(int postId, int? currentUserId)
     {
         var post = await postRepository.GetWithFullDetailsAsync(postId);
-        
+
         if (post == null || post.Product == null || post.Author == null)
             return null;
 
@@ -47,38 +57,43 @@ public class PostService(
             Description = post.Description,
             CreatedAt = post.CreatedAt,
             UpdatedAt = post.UpdatedAt,
-            
+
             ProductId = post.Product.Id,
             Price = post.Product.Price,
             Status = post.Product.GetStatus(),
             StatusText = post.Product.GetStatusText(),
-            
-            Images = post.Product.Images.Select<Image, ImageViewModel>(i => new ImageViewModel
-            {
-                Id = i.Id,
-                Path = i.Path,
-                FullUrl = i.Path
-            }).ToList(),
-            
-            Categories = post.Product.Categories.Select(c => new CategoryViewModel
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Slug = c.Slug
-            }).ToList(),
-            
+
+            Images = post
+                .Product.Images.Select<Image, ImageViewModel>(i => new ImageViewModel
+                {
+                    Id = i.Id,
+                    Path = i.Path,
+                    FullUrl = i.Path,
+                })
+                .ToList(),
+
+            Categories = post
+                .Product.Categories.Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Slug = c.Slug,
+                })
+                .ToList(),
+
             AuthorId = post.Author.Id,
             AuthorUsername = post.Author.Username,
             AuthorName = post.Author.Name,
             AuthorProfilePic = post.Author.ProfilePicture,
-            
-            IsOwner = isOwner
+
+            IsOwner = isOwner,
         };
 
         // Obtener contacto del autor
         var contact = await contactRepository.GetByUserIdAsync(post.AuthorId);
-        if (contact == null) return model;
-        
+        if (contact == null)
+            return model;
+
         model.AuthorEmail = contact.Email;
         model.AuthorPhoneNumber = contact.PhoneNumber;
         model.AuthorTelegramUser = contact.TelegramUser;
@@ -87,7 +102,10 @@ public class PostService(
     }
 
     // Crear post
-    public async Task<(bool success, string message, int postId)> CreatePostAsync(CreatePostViewModel model, int authorId)
+    public async Task<(bool success, string message, int postId)> CreatePostAsync(
+        CreatePostViewModel model,
+        int authorId
+    )
     {
         try
         {
@@ -95,7 +113,7 @@ public class PostService(
             var product = new Product
             {
                 Price = model.Price,
-                Status = ProductStatus.Available.ToStatusString()
+                Status = ProductStatus.Available.ToStatusString(),
             };
             var productId = await productRepository.CreateAsync(product);
 
@@ -105,7 +123,7 @@ public class PostService(
                 Title = model.Title,
                 Description = model.Description,
                 ProductId = productId,
-                AuthorId = authorId
+                AuthorId = authorId,
             };
             var postId = await postRepository.CreateAsync(post);
 
@@ -120,18 +138,17 @@ public class PostService(
                 {
                     if (success && filePath != null)
                     {
-                        await imageRepository.CreateAsync(new Image
-                        {
-                            Path = filePath,
-                            ProductId = productId
-                        });
+                        await imageRepository.CreateAsync(
+                            new Image { Path = filePath, ProductId = productId }
+                        );
                     }
                 }
             }
 
             // 4. Asignar categorías
-            if (model.AvailableCategories.Count == 0) return (false, "Error al crear publicación", 0);
-            
+            if (model.AvailableCategories.Count == 0)
+                return (false, "Error al crear publicación", 0);
+
             foreach (var category in model.AvailableCategories)
                 await categoryRepository.AssignCategoryToProductAsync(productId, category.Id);
 
@@ -147,7 +164,7 @@ public class PostService(
     public async Task<EditPostViewModel?> GetEditPostDataAsync(int postId, int userId)
     {
         var post = await postRepository.GetWithFullDetailsAsync(postId);
-        
+
         if (post?.Product == null)
             return null;
 
@@ -164,18 +181,32 @@ public class PostService(
             Price = post.Product.Price,
             Status = post.Product.GetStatus(),
             PostCategoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(postId),
-            AvailableCategories = await categoryRepository.GetAllAsync(),
-            ExistingImages = post.Product.Images.Select(i => new ImageViewModel
-            {
-                Id = i.Id,
-                Path = i.Path,
-                FullUrl = i.Path
-            }).ToList()
+            AvailableCategories = await categoryRepository.GetAllAsync() ?? [],
+            ExistingImages = post
+                .Product.Images.Select(i => new ImageViewModel
+                {
+                    Id = i.Id,
+                    Path = i.Path,
+                    FullUrl = i.Path,
+                })
+                .ToList(),
         };
     }
 
+    public async Task<int> GetTotalCountAsync(
+        string? searchTerm = null,
+        int? categoryId = null,
+        decimal? minPrice = null,
+        decimal? maxPrice = null,
+        string? status = null
+    ) =>
+        await postRepository.GetTotalCountAsync(searchTerm, categoryId, minPrice, maxPrice, status);
+
     // Actualizar post
-    public async Task<(bool success, string message)> UpdatePostAsync(EditPostViewModel model, int userId)
+    public async Task<(bool success, string message)> UpdatePostAsync(
+        EditPostViewModel model,
+        int userId
+    )
     {
         try
         {
@@ -226,27 +257,33 @@ public class PostService(
                 {
                     if (success && filePath != null)
                     {
-                        await imageRepository.CreateAsync(new Image
-                        {
-                            Path = filePath,
-                            ProductId = model.ProductId
-                        });
+                        await imageRepository.CreateAsync(
+                            new Image { Path = filePath, ProductId = model.ProductId }
+                        );
                     }
                 }
             }
 
             // 6. Actualizar categorías
-            var currentCategories = await categoryRepository.GetProductCategoryAsync(model.ProductId);
+            var currentCategories = await categoryRepository.GetProductCategoryAsync(
+                model.ProductId
+            );
             foreach (var category in currentCategories)
             {
-                await categoryRepository.RemoveCategoryFromProductAsync(model.ProductId, category.Id);
+                await categoryRepository.RemoveCategoryFromProductAsync(
+                    model.ProductId,
+                    category.Id
+                );
             }
 
             if (model.PostCategoriesIds.Count != 0)
             {
                 foreach (var categoryId in model.PostCategoriesIds)
                 {
-                    await categoryRepository.AssignCategoryToProductAsync(model.ProductId, categoryId);
+                    await categoryRepository.AssignCategoryToProductAsync(
+                        model.ProductId,
+                        categoryId
+                    );
                 }
             }
 
@@ -264,7 +301,7 @@ public class PostService(
         try
         {
             var post = await postRepository.GetWithFullDetailsAsync(postId);
-            
+
             if (post == null)
                 return (false, "Publicación no encontrada");
 
@@ -287,7 +324,10 @@ public class PostService(
                 var categories = await categoryRepository.GetProductCategoryAsync(post.Product.Id);
                 foreach (var category in categories)
                 {
-                    await categoryRepository.RemoveCategoryFromProductAsync(post.Product.Id, category.Id);
+                    await categoryRepository.RemoveCategoryFromProductAsync(
+                        post.Product.Id,
+                        category.Id
+                    );
                 }
             }
 
@@ -318,26 +358,28 @@ public class PostService(
         {
             var product = await productRepository.GetWithDetailsAsync(post.ProductId);
             var author = await userRepository.GetByIdAsync(post.AuthorId);
-            
-            if (product != null && author != null)
-            {
-                model.Add(new PostCardViewModel
-                {
-                    PostId = post.Id,
-                    ProductId = product.Id,
-                    Title = post.Title,
-                    Description = post.Description.Length > 100 
-                        ? string.Concat(post.Description.AsSpan(0, 100), "...")
-                        : post.Description,
-                    Price = product.Price,
-                    Status = product.GetStatus(),
-                    StatusText = product.GetStatusText(),
-                    MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
-                    CreatedAt = post.CreatedAt,
-                    AuthorUsername = author.Username,
-                    AuthorProfilePic = author.ProfilePicture
-                });
-            }
+
+            if (product == null || author == null) continue;
+                
+            model.Add(
+                    new PostCardViewModel
+                    {
+                        PostId = post.Id,
+                        ProductId = product.Id,
+                        Title = post.Title,
+                        Description =
+                            post.Description.Length > 100
+                                ? string.Concat(post.Description.AsSpan(0, 100), "...")
+                                : post.Description,
+                        Price = product.Price,
+                        Status = product.GetStatus(),
+                        StatusText = product.GetStatusText(),
+                        MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
+                        CreatedAt = post.CreatedAt,
+                        AuthorUsername = author.Username,
+                        AuthorProfilePic = author.ProfilePicture,
+                    }
+                );
         }
 
         return model;
@@ -353,33 +395,37 @@ public class PostService(
         {
             var product = await productRepository.GetWithDetailsAsync(post.ProductId);
             var author = await userRepository.GetByIdAsync(post.AuthorId);
+
+            if (product == null || author == null) 
+                continue;
             
-            if (product != null && author != null)
-            {
-                model.Add(new PostCardViewModel
+            model.Add(
+                new PostCardViewModel
                 {
                     PostId = post.Id,
                     ProductId = product.Id,
                     Title = post.Title,
-                    Description = post.Description.Length > 100 
-                        ? string.Concat(post.Description.AsSpan(0, 100), "...")
-                        : post.Description,
+                    Description =
+                        post.Description.Length > 100
+                            ? string.Concat(post.Description.AsSpan(0, 100), "...")
+                            : post.Description,
                     Price = product.Price,
                     Status = product.GetStatus(),
                     StatusText = product.GetStatusText(),
                     MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
                     CreatedAt = post.CreatedAt,
                     AuthorUsername = author.Username,
-                    AuthorProfilePic = author.ProfilePicture
-                });
-            }
+                    AuthorProfilePic = author.ProfilePicture,
+                }
+            );
+            
         }
 
         return model;
     }
 
     // Buscar posts con filtros
-    public async Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostsViewModel searchModel)
+    public async Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel)
     {
         var posts = await postRepository.GetWithFiltersAsync(
             searchModel.SearchTerm,
@@ -397,26 +443,28 @@ public class PostService(
         {
             var product = await productRepository.GetWithDetailsAsync(post.ProductId);
             var author = await userRepository.GetByIdAsync(post.AuthorId);
-            
-            if (product != null && author != null)
-            {
-                model.Add(new PostCardViewModel
+
+            if (product == null || author == null)
+                continue;
+            model.Add(
+                new PostCardViewModel
                 {
                     PostId = post.Id,
                     ProductId = product.Id,
                     Title = post.Title,
-                    Description = post.Description.Length > 100 
-                        ? string.Concat(post.Description.AsSpan(0, 100), "...")
-                        : post.Description,
+                    Description =
+                        post.Description.Length > 100
+                            ? string.Concat(post.Description.AsSpan(0, 100), "...")
+                            : post.Description,
                     Price = product.Price,
                     Status = product.GetStatus(),
                     StatusText = product.GetStatusText(),
                     MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
                     CreatedAt = post.CreatedAt,
                     AuthorUsername = author.Username,
-                    AuthorProfilePic = author.ProfilePicture
-                });
-            }
+                    AuthorProfilePic = author.ProfilePicture,
+                }
+            );
         }
 
         return model;
@@ -424,7 +472,7 @@ public class PostService(
 
     public async Task<List<Category>> GetAllCategories()
     {
-        var categories = await categoryRepository.GetAllAsync();
+        var categories = await categoryRepository.GetAllAsync() ?? [];
         return categories;
     }
 }

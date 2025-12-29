@@ -75,7 +75,10 @@
                     <div class="d-flex align-items-center mb-3">
                         <img src="@Model.AuthorProfilePic" alt="@Model.AuthorName" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
                         <div>
-                            <strong>@Model.AuthorName</strong><br>
+                            <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.AuthorId" class="text-decoration-none">
+                                <strong>@Model.AuthorName</strong>
+                            </a>
+                            <br>
                             <small class="text-muted">@@@Model.AuthorUsername</small>
                         </div>
                     </div>

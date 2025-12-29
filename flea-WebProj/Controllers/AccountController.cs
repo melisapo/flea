@@ -1,4 +1,3 @@
-using flea_WebProj.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using flea_WebProj.Services;
 using flea_WebProj.Helpers;
@@ -9,8 +8,7 @@ namespace flea_WebProj.Controllers
 {
     public class AccountController(
         IAuthService authService,
-        IUserService userService,
-        IFileUploadService fileUploadService) : Controller
+        IUserService userService) : Controller
     {
         // GET: /Account/Register
         [HttpGet]

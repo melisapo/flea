@@ -1,0 +1,131 @@
+@model flea_WebProj.Models.ViewModels.Auth.UserProfileViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Sidebar del usuario -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <img src="@Model.ProfilePic" alt="@Model.Name" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <h4>@Model.Name</h4>
+                    <p class="text-muted">@@@Model.Username</p>
+                    <p class="small text-muted">
+                        <i class="bi bi-calendar"></i> Miembro desde @Model.MemberSince.ToString("MMMM yyyy")
+                    </p>
+                    
+                    <hr>
+                    
+                    <!-- Estadísticas -->
+                    <div class="mb-3">
+                        <h5>@Model.TotalPosts</h5>
+                        <small class="text-muted">Publicaciones</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información de contacto -->
+            <div class="card shadow mt-3">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-chat-dots"></i> Contacto</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <i class="bi bi-envelope"></i> 
+                        <a href="mailto:@Model.Email">@Model.Email</a>
+                    </p>
+                    
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <p class="mb-2">
+                            <i class="bi bi-telephone"></i> @Model.PhoneNumber
+                        </p>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.TelegramUser))
+                    {
+                        <p class="mb-0">
+                            <i class="bi bi-telegram"></i> @@@Model.TelegramUser
+                        </p>
+                    }
+                </div>
+            </div>
+            
+            <!-- Ubicación -->
+            @if (!string.IsNullOrEmpty(Model.StateProvince))
+            {
+                <div class="card shadow mt-3">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0"><i class="bi bi-geo-alt"></i> Ubicación</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">
+                            @if (!string.IsNullOrEmpty(Model.City))
+                            {
+                                <span>@Model.City, </span>
+                            }
+                            <span>@Model.StateProvince</span>
+                            @if (!string.IsNullOrEmpty(Model.Country))
+                            {
+                                <span>, @Model.Country</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Publicaciones del usuario -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-card-list"></i> Publicaciones de @Model.Username</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.RecentPosts.Any())
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3">Este usuario no tiene publicaciones aún</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            @foreach (var post in Model.RecentPosts)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId" class="text-decoration-none text-dark">
+                                            <img src="@post.MainImage" class="card-img-top" alt="@post.Title" style="height: 150px; object-fit: cover;">
+                                            <div class="card-body">
+                                                <h6 class="card-title">@post.Title</h6>
+                                                <p class="card-text text-muted small">
+                                                    @(post.Description.Length > 60 ? post.Description.Substring(0, 60) + "..." : post.Description)
+                                                </p>
+                                                <h5 class="text-primary">$@post.Price.ToString("N2")</h5>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-clock"></i> @post.CreatedAt.ToString("dd/MM/yyyy")
+                                                </small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        
+                        @if (Model.TotalPosts > 12)
+                        {
+                            <div class="text-center mt-3">
+                                <p class="text-muted">Mostrando @Model.RecentPosts.Count de @Model.TotalPosts publicaciones</p>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

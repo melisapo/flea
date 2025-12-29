@@ -10,6 +10,7 @@ namespace flea_WebProj.Services
         Task<(bool success, string message, User? user)> RegisterAsync(RegisterViewModel model);
         Task<(bool success, string message, User? user)> LoginAsync(LoginViewModel model);
         Task<User?> GetUserByIdAsync(int userId);
+        Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetUserWithRolesAsync(int userId);
         Task<User?> GetFullUserProfileAsync(int userId);
     }
@@ -104,6 +105,14 @@ namespace flea_WebProj.Services
         public async Task<User?> GetUserByIdAsync(int userId)
             => await userRepository.GetByIdAsync(userId);
 
+        public async Task<User?> GetByUsernameAsync(string username)
+        {
+            var user = await userRepository.GetByUsernameAsync(username);
+            if (user == null) return null;
+    
+            return await userRepository.GetFullUserAsync(user.Id);
+        }
+        
         // Obtener usuario con roles
         public async Task<User?> GetUserWithRolesAsync(int userId)
             => await userRepository.GetWithRolesAsync(userId);

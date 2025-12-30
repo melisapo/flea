@@ -25,7 +25,7 @@ public interface IPostService
         decimal? maxPrice = null,
         string? status = null
     );
-    Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 12);
+    Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 20);
     Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
     Task<List<Category>> GetAllCategories();
 }
@@ -146,11 +146,11 @@ public class PostService(
             }
 
             // 4. Asignar categorías
-            if (model.AvailableCategories.Count == 0)
-                return (false, "Error al crear publicación", 0);
+            if (model.PostCategoriesIds.Count == 0)
+                return (false, "Error al asignar categorias", 0);
 
-            foreach (var category in model.AvailableCategories)
-                await categoryRepository.AssignCategoryToProductAsync(productId, category.Id);
+            foreach (var categoryId in model.PostCategoriesIds)
+                await categoryRepository.AssignCategoryToProductAsync(productId, categoryId);
 
             return (true, "Publicación creada exitosamente", postId);
         }

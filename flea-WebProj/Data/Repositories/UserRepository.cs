@@ -229,7 +229,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         var user = await GetWithRolesAsync(id);
         if (user == null)
             return null;
-        user.Addresses = await addressRepository.GetByUserIdAsync(id);
+        user.Address = await addressRepository.GetByUserIdAsync(id);
         user.Contact = await contactRepository.GetByUserIdAsync(id);
 
         return user;

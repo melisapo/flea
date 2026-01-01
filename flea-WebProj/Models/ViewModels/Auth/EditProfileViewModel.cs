@@ -22,4 +22,12 @@ public class EditProfileViewModel
     
     public string? CurrentProfilePic { get; set; }
     public IFormFile? NewProfilePic { get; set; }
+    
+    public string? City { get; set; }
+
+    [Required(ErrorMessage = "El estado/provincia es requerido")]
+    public string StateProvince { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "El país es requerido")]
+    public string Country { get; set; } = string.Empty;
 }

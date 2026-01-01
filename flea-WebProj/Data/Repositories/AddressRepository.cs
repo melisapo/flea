@@ -5,15 +5,14 @@ namespace flea_WebProj.Data.Repositories;
 
 public interface IAddressRepository
 {
-    Task<List<Address>> GetByUserIdAsync(int userId);
-    Task<Address?> GetByIdAsync(int addressId);
+    Task<Address?> GetByUserIdAsync(int userId);
     Task<int> CreateAsync(Address address);
     Task<bool> UpdateAsync(Address address);
     Task<bool> DeleteAsync(int addressId);
 }
 public class AddressRepository(DatabaseContext dbContext) : IAddressRepository
 {
-    public async Task<List<Address>> GetByUserIdAsync(int userId)
+    public async Task<Address?> GetByUserIdAsync(int userId)
     {
         const string query = """
                               SELECT id, city, state_province, country, user_id
@@ -21,20 +20,10 @@ public class AddressRepository(DatabaseContext dbContext) : IAddressRepository
                               WHERE user_id = @userId
                               """;
         var parameters = new [] { new NpgsqlParameter("@userId", userId) };
-        return await dbContext.ExecuteQueryAsync(query, MapAddress, parameters);
+        var address = await dbContext.ExecuteQueryAsync(query, MapAddress, parameters);
+        return address.FirstOrDefault();
     }
-
-    public async Task<Address?> GetByIdAsync(int addressId)
-    {
-        const string query = """
-                             SELECT id, city, state_province, country, user_id
-                             FROM addresses
-                             WHERE id = @id
-                             """;
-        var parameters = new [] { new NpgsqlParameter("@id", addressId) };
-        var addresses = await dbContext.ExecuteQueryAsync(query, MapAddress, parameters);
-        return addresses.FirstOrDefault();
-    }
+    
 
     public async Task<int> CreateAsync(Address address)
     {

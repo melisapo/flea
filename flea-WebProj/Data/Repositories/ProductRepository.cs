@@ -10,12 +10,8 @@ public interface IProductRepository
     Task<int> CreateAsync(Product product);
     Task<bool> UpdateAsync(Product product);
     Task<bool> DeleteAsync(int id);
-    Task<bool> UpdateStatusAsync(int productId, string status);
-    Task<List<Product>> GetByStatusAsync(string status, int limit = 20);
     Task<List<Category>> GetProductCategoriesAsync(int productId);
     Task<List<Image>> GetProductImagesAsync(int productId);
-    
-    Task<List<Product>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice, int limit = 20);
 }
 
 public class ProductRepository(DatabaseContext dbContext) : IProductRepository
@@ -98,40 +94,6 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         return rowsAffected > 0;
     }
 
-    public async Task<bool> UpdateStatusAsync(int productId, string status)
-    {
-        const string query = """
-            UPDATE products
-            SET status = @status
-            WHERE id = @id
-            """;
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@id", productId),
-            new NpgsqlParameter("@status", status),
-        };
-        var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
-        return rowsAffected > 0;
-    }
-
-    public async Task<List<Product>> GetByStatusAsync(string status, int limit = 20)
-    {
-        const string query = """
-            SELECT id, price, status 
-            FROM products 
-            WHERE status = @status
-            ORDER BY id DESC
-            LIMIT @limit
-            """;
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@status", status),
-            new NpgsqlParameter("@limit", limit),
-        };
-        var products = await dbContext.ExecuteQueryAsync(query, MapProduct, parameters);
-        return products;
-    }
-
     public async Task<List<Category>> GetProductCategoriesAsync(int productId)
     {
         const string categoriesQuery = """
@@ -158,30 +120,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         var images = await dbContext.ExecuteQueryAsync(imagesQuery, MapImage, imageParams);
         return images;
     }
-
-    public async Task<List<Product>> GetByPriceRangeAsync(
-        decimal minPrice,
-        decimal maxPrice,
-        int limit = 20
-    )
-    {
-        const string query = """
-            SELECT id, price, status
-            FROM products
-            WHERE price BETWEEN @minPrice AND @maxPrice
-            ORDER BY price
-            LIMIT @limit
-            """;
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@minPrice", minPrice),
-            new NpgsqlParameter("@maxPrice", maxPrice),
-            new NpgsqlParameter("@limit", limit),
-        };
-        var products = await dbContext.ExecuteQueryAsync(query, MapProduct, parameters);
-        return products;
-    }
-
+    
     private static Product MapProduct(NpgsqlDataReader reader) =>
         new()
         {

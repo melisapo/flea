@@ -12,6 +12,7 @@ public interface IUserService
 }
 
 public class UserService(
+    IAddressRepository addressRepository,
     IUserRepository userRepository,
     IContactRepository contactRepository,
     IPasswordHasher passwordHasher,
@@ -29,8 +30,8 @@ public class UserService(
             user.Name = model.Name;
             await userRepository.UpdateAsync(user);
             
-            var validUser = await userRepository.UsernameExistsAsync(model.Username);
-            if (!validUser) return (false, "El nombre de usuario ya está en uso");
+            var existUser = await userRepository.UsernameExistsAsync(model.Username);
+            if (existUser) return (false, "El nombre de usuario ya está en uso");
 
             await userRepository.UpdateUsernameAsync(userId, model.Username);
         
@@ -42,7 +43,16 @@ public class UserService(
             contact.TelegramUser = model.TelegramUser?.Trim().TrimStart('@');
             
             await contactRepository.UpdateAsync(contact);
+            
+            var address = await addressRepository.GetByUserIdAsync(userId);
+            if (address == null) return (false, "Direccion no encontrada");
 
+            address.City = model.City;
+            address.StateProvince = model.StateProvince;
+            address.Country = model.Country;
+            
+            await addressRepository.UpdateAsync(address);
+            
             return (true, "Perfil actualizado exitosamente");
         }
         catch (Exception ex)
@@ -106,6 +116,7 @@ public class UserService(
             return null;
 
         var contact = await contactRepository.GetByUserIdAsync(userId);
+        var address = await addressRepository.GetByUserIdAsync(userId);
 
         return new EditProfileViewModel
         {
@@ -114,7 +125,10 @@ public class UserService(
             Email = contact?.Email ?? "",
             PhoneNumber = contact?.PhoneNumber,
             TelegramUser = contact?.TelegramUser,
-            CurrentProfilePic = user.ProfilePicture
+            CurrentProfilePic = user.ProfilePicture,
+            City = address?.City,
+            StateProvince = address?.StateProvince ?? "",
+            Country = address?.Country ?? ""
         };
     }
 }

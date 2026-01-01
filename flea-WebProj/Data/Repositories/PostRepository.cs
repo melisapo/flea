@@ -209,8 +209,7 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         
         return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
     }
-
-    // Obtener posts con filtros
+    
     public async Task<List<Post>> GetWithFiltersAsync(
         string? searchTerm = null,
         int? categoryId = null,

@@ -80,19 +80,16 @@
                     <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Direcciones</h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.Addresses != null && Model.Addresses.Any())
+                    @if (Model.Address != null)
                     {
-                        @foreach (var address in Model.Addresses)
-                        {
-                            <div class="mb-3">
-                                <i class="bi bi-house-door"></i>
-                                @if (!string.IsNullOrEmpty(address.City))
-                                {
-                                    <span>@address.City, </span>
-                                }
-                                <span>@address.StateProvince, @address.Country</span>
-                            </div>
-                        }
+                        <div class="mb-3">
+                            <i class="bi bi-house-door"></i>
+                            @if (!string.IsNullOrEmpty(Model.Address.City))
+                            {
+                                <span>@Model.Address.City, </span>
+                            }
+                            <span>@Model.Address.StateProvince, @Model.Address.Country</span>
+                        </div>
                     }
                     else
                     {

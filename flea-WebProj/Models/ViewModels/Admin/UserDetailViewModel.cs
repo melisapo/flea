@@ -26,6 +26,5 @@ public class UserDetailViewModel
     public int TotalPosts { get; set; }
     
     //Roles del usuario
-    
     public List<Role> Roles { get; set; } = [];
 }

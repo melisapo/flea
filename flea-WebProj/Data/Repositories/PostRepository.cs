@@ -130,7 +130,9 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
     {
         const string query = """
                              SELECT p.id, p.title, p.description, p.created_at, p.updated_at, p.product_id, p.author_id
-                             FROM posts p
+                             FROM posts p 
+                             INNER JOIN products pr ON pr.id = p.product_id
+                             WHERE pr.status != 'Sold'
                              ORDER BY p.created_at DESC
                              LIMIT @limit
                              """;

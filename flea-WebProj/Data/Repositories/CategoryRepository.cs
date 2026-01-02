@@ -13,7 +13,7 @@ public interface ICategoryRepository
     Task<bool> DeleteAsync(int id);
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
-    
+    Task<List<Category>?> GetTrendingCategoriesAsync(int limit);
     Task<List<int>> GetProductCategoriesIdsAsync(int postId);
 }
 
@@ -158,6 +158,24 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
 
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(query, parameters);
         return rowsAffected > 0;
+    }
+
+    public async Task<List<Category>?> GetTrendingCategoriesAsync(int limit = 4)
+    {
+        const string query = """
+                             SELECT 
+                                 c.id,
+                                 c.name,
+                                 COUNT(pc.product_id) AS product_count
+                             FROM categories c
+                             JOIN product_categories pc ON pc.category_id = c.id
+                             JOIN products p ON p.id = pc.product_id
+                             GROUP BY c.id, c.name
+                             ORDER BY product_count DESC
+                             LIMIT @limit;
+                             """;
+        var parameters = new [] {new NpgsqlParameter("@limit", limit)};
+        return await dbContext.ExecuteQueryAsync(query, MapCategory, parameters);
     }
 
     public async Task<List<int>> GetProductCategoriesIdsAsync(int productId)

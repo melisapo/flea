@@ -8,6 +8,7 @@ public interface ICategoryService
 {
     public Task<List<Category>?> GetAllCategoriesAsync();
     public Task<Category?> GetCategoryByIdAsync(int categoryId);
+    Task<List<Category>?> GetTrendingCategoriesAsync(int limit);
     public Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model);
     public Task<(bool success, string message)> UpdateCategoryAsync(ManageCategoriesViewModel model);
     public Task<(bool success, string message)> DeleteCategoryAsync(int categoryId);
@@ -27,6 +28,12 @@ public class CategoryService(
     {
         var category = categoryRepository.GetByIdAsync(categoryId);
         return category;
+    }
+
+    public async Task<List<Category>?> GetTrendingCategoriesAsync(int limit = 4)
+    {
+        var categories = await categoryRepository.GetTrendingCategoriesAsync(limit);
+        return categories ?? [];
     }
 
     public async Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model)

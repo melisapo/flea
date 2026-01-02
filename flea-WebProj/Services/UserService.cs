@@ -8,14 +8,17 @@ public interface IUserService
     Task<(bool success, string message)> UpdateProfileAsync(int userId, EditProfileViewModel model);
     Task<(bool success, string message)> ChangePasswordAsync(int userId, ChangePasswordViewModel model);
     Task<(bool success, string message, string? newPath)> UpdateProfilePictureAsync(int userId, IFormFile newProfilePic);
+    Task<(bool success, string messaeg)> DeleteUserAsync(int userId);
     Task<EditProfileViewModel?> GetEditProfileDataAsync(int userId);
 }
 
 public class UserService(
     IAddressRepository addressRepository,
+    IRoleRepository roleRepository,
     IUserRepository userRepository,
     IContactRepository contactRepository,
     IPasswordHasher passwordHasher,
+    IPostRepository postRepository,
     IFileUploadService fileUploadService) : IUserService
 {
 
@@ -106,6 +109,40 @@ public class UserService(
         catch (Exception ex)
         {
             return (false, $"Error al actualizar foto: {ex.Message}", null);
+        }
+    }
+
+    public async Task<(bool success, string messaeg)> DeleteUserAsync(int userId)
+    {
+        try
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            if (user == null) return (true, "Usuario eliminado");
+        
+            var userRoles = await roleRepository.GetUserRolesAsync(userId);
+            foreach (var role in userRoles)
+            {
+                await roleRepository.RemoveRoleFromUserAsync(userId, role.Id);
+            }
+        
+            var address = await addressRepository.GetByUserIdAsync(userId);
+            if (address != null) await addressRepository.DeleteAsync(address.Id);
+
+            var contact = await contactRepository.GetByUserIdAsync(userId);
+            if (contact != null) await contactRepository.DeleteAsync(contact.Id);
+
+            var posts = await postRepository.GetByAuthorAsync(userId);
+            if (posts != null)
+                foreach (var post in posts)
+                {
+                    await postRepository.DeleteAsync(post.Id);
+                }
+
+            return (true, "Usuario eliminado");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error al eliminar usuario: {ex.Message}");
         }
     }
 

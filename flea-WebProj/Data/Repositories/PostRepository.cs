@@ -11,10 +11,10 @@ public interface IPostRepository
     Task<bool> UpdateAsync(Post post);
     Task<bool> DeleteAsync(int id);
     Task<List<Post>> GetRecentPostsAsync(int limit = 20);
-    Task<List<Post>> GetByAuthorAsync(int authorId, int limit = 20);
+    Task<List<Post>?> GetByAuthorAsync(int authorId, int limit = 20);
     Task<Post?> GetByProductIdAsync(int productId);
     Task<List<Post>> SearchPostsAsync(string searchTerm, int limit = 20);
-    Task<List<Post>> GetByCategoryAsync(int categoryId, int limit = 20);
+    Task<List<Post>?> GetByCategoryAsync(int categoryId, int limit = 20);
     Task<List<Post>> GetWithFiltersAsync(
         string? searchTerm = null,
         int? categoryId = null,
@@ -139,7 +139,7 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
     }
     
-    public async Task<List<Post>> GetByAuthorAsync(int authorId, int limit = 20)
+    public async Task<List<Post>?> GetByAuthorAsync(int authorId, int limit = 20)
     {
         const string query = """
                              SELECT id, title, description, created_at, updated_at, product_id, author_id
@@ -190,7 +190,7 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
     }
     
-    public async Task<List<Post>> GetByCategoryAsync(int categoryId, int limit = 20)
+    public async Task<List<Post>?> GetByCategoryAsync(int categoryId, int limit = 20)
     {
         const string query = """
                              SELECT p.id, p.title, p.description, p.created_at, p.updated_at, p.product_id, p.author_id

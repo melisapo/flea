@@ -4,6 +4,7 @@ using flea_WebProj.Models.Entities;
 using flea_WebProj.Models.Enums;
 using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Models.ViewModels.Shared;
+using CategoryViewModel = flea_WebProj.Models.ViewModels.Shared.CategoryViewModel;
 
 namespace flea_WebProj.Services;
 

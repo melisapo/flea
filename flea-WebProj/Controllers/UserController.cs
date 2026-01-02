@@ -38,9 +38,9 @@ public class UserController(
             PhoneNumber = user.Contact?.PhoneNumber,
             TelegramUser = user.Contact?.TelegramUser,
             
-            City = user.Addresses?.FirstOrDefault()?.City,
-            StateProvince = user.Addresses?.FirstOrDefault()?.StateProvince ?? "",
-            Country = user.Addresses?.FirstOrDefault()?.Country ?? "",
+            City = user.Address?.City,
+            StateProvince = user.Address?.StateProvince ?? "",
+            Country = user.Address?.Country ?? "",
             
             RecentPosts = userPosts.Select<PostCardViewModel, UserPostSummary>(p => new UserPostSummary
             {

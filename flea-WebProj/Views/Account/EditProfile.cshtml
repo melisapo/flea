@@ -75,6 +75,28 @@
                             </div>
                         </div>
                         
+                        <!-- Información de dirrecion -->
+                        <h5 class="mb-3 mt-4">Dirección</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="City" class="form-label">Ciudad (opcional)</label>
+                                <input asp-for="City" class="form-control" placeholder="Ej: Cardenas" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="StateProvince" class="form-label">Estado/Provincia *</label>
+                                <input asp-for="StateProvince" class="form-control" placeholder="Ej: Matanzas" />
+                                <span asp-validation-for="StateProvince" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Country" class="form-label">País *</label>
+                                <input asp-for="Country" class="form-control" placeholder="Ej: Cuba" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
                         <!-- Botones -->
                         <div class="d-flex gap-2 mt-4">
                             <button type="submit" class="btn btn-primary flex-fill">
@@ -96,7 +118,7 @@
     <script>
         function previewImage(input) {
             if (input.files && input.files[0]) {
-                var reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('profilePicPreview').src = e.target.result;
                 };

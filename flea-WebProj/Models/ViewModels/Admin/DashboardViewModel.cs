@@ -9,4 +9,5 @@ public class DashboardViewModel
     public List<Post>? PostsToday { get; set; }
     public int TotalCategories { get; set; }
     public List<Category>? TrendingCategories { get; set; }
+    public List<Address>? FreccuentAddresses { get; set; }
 }

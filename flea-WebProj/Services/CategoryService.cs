@@ -1,6 +1,6 @@
 using flea_WebProj.Data.Repositories;
 using flea_WebProj.Models.Entities;
-using flea_WebProj.Models.ViewModels.Product;
+using flea_WebProj.Models.ViewModels.Admin;
 
 namespace flea_WebProj.Services;
 
@@ -8,8 +8,8 @@ public interface ICategoryService
 {
     public Task<List<Category>?> GetAllCategoriesAsync();
     public Task<Category?> GetCategoryByIdAsync(int categoryId);
-    public Task<(bool success, string message)> CreateCategoryAsync(CategoryViewModel model);
-    public Task<(bool success, string message)> UpdateCategoryAsync(CategoryViewModel model);
+    public Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model);
+    public Task<(bool success, string message)> UpdateCategoryAsync(ManageCategoriesViewModel model);
     public Task<(bool success, string message)> DeleteCategoryAsync(int categoryId);
 }
 
@@ -29,7 +29,7 @@ public class CategoryService(
         return category;
     }
 
-    public async Task<(bool success, string message)> CreateCategoryAsync(CategoryViewModel model)
+    public async Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model)
     {
         var category = new Category
         {
@@ -41,7 +41,7 @@ public class CategoryService(
         return (true, "Categoria creado correctamente, id: " + categoryId);
     }
 
-    public async Task<(bool success, string message)> UpdateCategoryAsync(CategoryViewModel model)
+    public async Task<(bool success, string message)> UpdateCategoryAsync(ManageCategoriesViewModel model)
     {
         var category = new Category
         {

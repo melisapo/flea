@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace flea_WebProj.Models.ViewModels.Product;
+namespace flea_WebProj.Models.ViewModels.Admin;
 
-public class CategoryViewModel
+public class ManageCategoriesViewModel
 {
     [StringLength(255, MinimumLength = 5, ErrorMessage = "El título debe tener entre 4 y 25 caracteres")]
     [Required(ErrorMessage = "El nombre es requerido")]

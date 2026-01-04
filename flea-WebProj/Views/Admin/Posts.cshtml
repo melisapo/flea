@@ -1,0 +1,117 @@
+@model flea_WebProj.Models.ViewModels.Admin.ManagePostsViewModel
+@{
+    ViewData["Title"] = "Gestión de Posts";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-file-post"></i> Gestión de Posts</h1>
+        <a asp-action="Dashboard" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Autor</th>
+                            <th>Categorías</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Posts.Any())
+                        {
+                            @foreach (var post in Model.Posts)
+                            {
+                                <tr>
+                                    <td>@post.PostId</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(post.MainImage))
+                                        {
+                                            <img src="@post.MainImage" alt="@post.Title" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                        }
+                                        <strong>@post.Title</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            @(post.Description.Length > 50 ? post.Description.Substring(0, 50) + "..." : post.Description)
+                                        </small>
+                                    </td>
+                                    <td><strong class="text-success">$@post.Price.ToString("N2")</strong></td>
+                                    <td>
+                                        @if (post.Status.ToString() == "Available")
+                                        {
+                                            <span class="badge bg-success">Disponible</span>
+                                        }
+                                        else if (post.Status.ToString() == "Sold")
+                                        {
+                                            <span class="badge bg-secondary">Vendido</span>
+                                        }
+                                        else if (post.Status.ToString() == "Reserved")
+                                        {
+                                            <span class="badge bg-warning">Reservado</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info">@post.StatusText</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @post.AuthorUsername
+                                            <br/>
+                                            <span class="text-muted">(@post.AuthorName)</span>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @foreach (var category in post.Categories)
+                                        {
+                                            <span class="badge bg-info me-1">@category</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@post.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId" class="btn btn-sm btn-info" title="Ver detalles" target="_blank">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a asp-action="DeletePostConfirm" asp-route-id="@post.PostId" class="btn btn-sm btn-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">No hay posts registrados</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Posts.Any())
+    {
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Total:</strong> @Model.Posts.Count post(s) encontrado(s)
+        </div>
+    }
+</div>

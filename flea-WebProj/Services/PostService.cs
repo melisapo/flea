@@ -28,7 +28,6 @@ public interface IPostService
     );
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 20);
     Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
-    Task<List<Category>> GetAllCategories();
 }
 
 public class PostService(
@@ -473,11 +472,5 @@ public class PostService(
         }
 
         return model;
-    }
-
-    public async Task<List<Category>> GetAllCategories()
-    {
-        var categories = await categoryRepository.GetAllAsync() ?? [];
-        return categories;
     }
 }

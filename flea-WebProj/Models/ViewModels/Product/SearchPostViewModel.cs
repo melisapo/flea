@@ -19,5 +19,5 @@ public class SearchPostViewModel
     public int TotalResults { get; set; } 
     public int TotalPages { get; set; }
     
-    public List<Category> AvailableCategories { get; set; } = [];
+    public List<Category>? AvailableCategories { get; set; } = [];
 }

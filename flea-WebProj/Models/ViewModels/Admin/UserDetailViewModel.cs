@@ -1,4 +1,5 @@
 using flea_WebProj.Models.Enums;
+using flea_WebProj.Models.ViewModels.Product;
 
 namespace flea_WebProj.Models.ViewModels.Admin;
 
@@ -15,12 +16,12 @@ public class UserDetailViewModel
     public DateTime CreatedAt { get; set; }
     
     // Roles
-    public List<string> Roles { get; set; } = new List<string>();
+    public List<string> Roles { get; set; } = [];
     
     // Ubicación
     public string? City { get; set; }
-    public string? StateProvince { get; set; }
-    public string? Country { get; set; }
+    public string StateProvince { get; set; } = string.Empty;
+    public string Country { get; set; } = string.Empty;
     
     // Estadísticas
     public int TotalPosts { get; set; }
@@ -28,14 +29,5 @@ public class UserDetailViewModel
     public int SoldPosts { get; set; }
     
     // Posts del usuario
-    public List<UserPostItem> RecentPosts { get; set; } = [];
-}
-public class UserPostItem
-{
-    public int PostId { get; set; }
-    public string Title { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public ProductStatus Status { get; set; }
-    public string MainImage { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
+    public List<PostCardViewModel> RecentPosts { get; set; } = [];
 }

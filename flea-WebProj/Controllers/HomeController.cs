@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace flea_WebProj.Controllers;
 
-public class HomeController(IPostService postService) : Controller
+public class HomeController(
+    IPostService postService,
+    ICategoryService categoryService) : Controller
 {
     public async Task<IActionResult> Index(
         string? searchTerm = null,
@@ -35,7 +37,7 @@ public class HomeController(IPostService postService) : Controller
         
         try
         {
-            searchModel.AvailableCategories = await postService.GetAllCategories();
+            searchModel.AvailableCategories = await categoryService.GetAllCategoriesAsync();
             
             // Obtener posts (con filtros o todos)
             if (
@@ -61,20 +63,13 @@ public class HomeController(IPostService postService) : Controller
             else
             {
                 var allPosts = await postService.GetRecentPostsAsync(100);
-                searchModel.TotalResults = allPosts?.Count ?? 0;
+                searchModel.TotalResults = allPosts.Count;
             
                 // ✅ ASEGURARTE QUE NO SEA NULL
-                if (allPosts != null)
-                {
-                    searchModel.Results = allPosts
-                        .Skip((page - 1) * searchModel.PageSize)
-                        .Take(searchModel.PageSize)
-                        .ToList();
-                }
-                else
-                {
-                    searchModel.Results = []; // ← Por si acaso
-                }
+                searchModel.Results = allPosts
+                    .Skip((page - 1) * searchModel.PageSize)
+                    .Take(searchModel.PageSize)
+                    .ToList();
             }
 
             // Calcular páginas

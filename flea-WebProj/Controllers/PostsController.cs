@@ -7,7 +7,8 @@ using flea_WebProj.Middleware;
 namespace flea_WebProj.Controllers;
 
 public class PostsController(
-    IPostService postService)
+    IPostService postService,
+    ICategoryService categoryService)
     : Controller
 {
     // ==================== VER DETALLE DE POST ====================
@@ -33,7 +34,7 @@ public class PostsController(
     {
         var model = new CreatePostViewModel
         {
-            AvailableCategories = await postService.GetAllCategories()
+            AvailableCategories = await categoryService.GetAllCategoriesAsync() ?? []
         };
         
         return View(model);
@@ -47,7 +48,7 @@ public class PostsController(
     {
         if (!ModelState.IsValid)
         {
-            model.AvailableCategories = await postService.GetAllCategories();
+            model.AvailableCategories = await categoryService.GetAllCategoriesAsync() ?? [];
             return View(model);
         }
 
@@ -64,7 +65,7 @@ public class PostsController(
         }
 
         ModelState.AddModelError("", message);
-        model.AvailableCategories = await postService.GetAllCategories();
+        model.AvailableCategories = await categoryService.GetAllCategoriesAsync() ?? [];
         return View(model);
     }
 
@@ -95,7 +96,7 @@ public class PostsController(
     {
         if (!ModelState.IsValid)
         {
-            model.AvailableCategories = await postService.GetAllCategories();
+            model.AvailableCategories = await categoryService.GetAllCategoriesAsync() ?? [];
             return View(model);
         }
 
@@ -111,7 +112,7 @@ public class PostsController(
             return RedirectToAction("Details", new { id = model.PostId });
         }
         
-        model.AvailableCategories = await postService.GetAllCategories();
+        model.AvailableCategories = await categoryService.GetAllCategoriesAsync() ?? [];
         ModelState.AddModelError("", message);
         return View(model);
     }

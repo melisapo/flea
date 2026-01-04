@@ -23,5 +23,5 @@ public class UserListItem
     public string ProfilePic { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public int PostCount { get; set; }
-    public List<string> Roles { get; set; } = new List<string>();
+    public List<string> Roles { get; set; } = [];
 }

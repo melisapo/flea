@@ -1,0 +1,65 @@
+@model flea_WebProj.Models.ViewModels.Admin.ManageUserRolesViewModel
+@{
+    ViewData["Title"] = "Gestionar Roles";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-shield"></i> Gestionar Roles de Usuario</h1>
+        <a asp-action="Users" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Usuario: <strong>@Model.Username</strong></h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var role in Model.AvailableRoles)
+                {
+                    <div class="col-md-6 mb-3">
+                        <div class="card @(role.IsAssigned ? "border-success" : "")">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">
+                                        <i class="bi @(role.IsAssigned ? "bi-check-circle-fill text-success" : "bi-circle")"></i>
+                                        @role.RoleName
+                                    </h6>
+                                    <small class="text-muted">
+                                        @(role.IsAssigned ? "Rol asignado" : "Rol no asignado")
+                                    </small>
+                                </div>
+                                <div>
+                                    @if (role.IsAssigned)
+                                    {
+                                        <form asp-action="RemoveRole" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@Model.UserId" />
+                                            <input type="hidden" name="roleId" value="@role.RoleId" />
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de remover este rol?')">
+                                                <i class="bi bi-dash-circle"></i> Remover
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="AssignRole" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="userId" value="@Model.UserId" />
+                                            <input type="hidden" name="roleId" value="@role.RoleId" />
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-plus-circle"></i> Asignar
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

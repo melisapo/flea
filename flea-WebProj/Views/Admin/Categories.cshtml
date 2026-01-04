@@ -1,0 +1,80 @@
+@model flea_WebProj.Models.ViewModels.Admin.ManageCategoriesViewModel
+@{
+    ViewData["Title"] = "Gestión de Categorías";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-tags"></i> Gestión de Categorías</h1>
+        <div>
+            <a asp-action="CreateCategory" class="btn btn-success me-2">
+                <i class="bi bi-plus-circle"></i> Nueva Categoría
+            </a>
+            <a asp-action="Dashboard" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Categories.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Slug</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <tr>
+                                    <td>@category.CategoryId</td>
+                                    <td>
+                                        <strong>@category.Name</strong>
+                                    </td>
+                                    <td>
+                                        <code>@category.Slug</code>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="EditCategory" asp-route-id="@category.CategoryId" class="btn btn-sm btn-warning" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-action="DeleteCategoryConfirm" asp-route-id="@category.CategoryId" class="btn btn-sm btn-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">No hay categorías creadas</p>
+                    <a asp-action="CreateCategory" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Crear Primera Categoría
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.Categories.Any())
+    {
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Total:</strong> @Model.Categories.Count categoría(s) registrada(s)
+        </div>
+    }
+</div>

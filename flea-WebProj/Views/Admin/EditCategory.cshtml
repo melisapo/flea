@@ -1,0 +1,110 @@
+@model flea_WebProj.Models.ViewModels.Admin.EditCategoryViewModel
+@{
+    ViewData["Title"] = "Editar Categoría";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Categoría</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditCategory" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CategoryId" />
+                        
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">
+                                <i class="bi bi-tag"></i> Nombre de la Categoría
+                            </label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                El nombre que se mostrará públicamente
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Slug" class="form-label">
+                                <i class="bi bi-link-45deg"></i> Slug (URL amigable)
+                            </label>
+                            <input asp-for="Slug" class="form-control" />
+                            <span asp-validation-for="Slug" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Solo letras minúsculas, números y guiones. Ej: ropa-deportiva
+                            </small>
+                        </div>
+
+                        @if (Model.PostCount > 0)
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <strong>Atención:</strong> Esta categoría tiene @Model.PostCount producto(s) asociado(s).
+                                Los cambios afectarán a todos ellos.
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Categories" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preview del slug -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="bi bi-eye"></i> Vista Previa de URL</h6>
+                    <p class="mb-0">
+                        <code>https://tudominio.com/categoria/<span id="slugPreview">@Model.Slug</span></code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="bi bi-info-circle"></i> Información</h6>
+                    <ul class="mb-0">
+                        <li>ID de la categoría: <strong>@Model.CategoryId</strong></li>
+                        <li>Productos asociados: <strong>@Model.PostCount</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Actualizar preview al escribir
+        document.querySelector('input[name="Slug"]').addEventListener('input', function(e) {
+            document.getElementById('slugPreview').textContent = e.target.value || 'categoria';
+        });
+
+        // Auto-limpiar el slug si se intenta poner caracteres inválidos
+        document.querySelector('input[name="Slug"]').addEventListener('input', function(e) {
+            let cleaned = e.target.value
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9-]/g, '')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            
+            if (e.target.value !== cleaned) {
+                e.target.value = cleaned;
+            }
+        });
+    </script>
+}

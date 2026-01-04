@@ -1,5 +1,3 @@
-using flea_WebProj.Models.Entities;
-
 namespace flea_WebProj.Models.ViewModels.Admin;
 
 public class UserListViewModel

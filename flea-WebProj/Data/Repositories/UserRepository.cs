@@ -5,6 +5,7 @@ namespace flea_WebProj.Data.Repositories;
 
 public interface IUserRepository
 {
+    Task<List<User>> GetAllAsync();
     Task<User?> GetByIdAsync(int id);
     Task<User?> GetByUsernameAsync(string username);
     Task<bool> UsernameExistsAsync(string username);
@@ -22,6 +23,15 @@ public interface IUserRepository
 
 public class UserRepository(DatabaseContext dbContext) : IUserRepository
 {
+    public async Task<List<User>> GetAllAsync()
+    {
+        const string query = """
+                             SELECT id, username, name, password_hash, profile_pic, created_at, updated_at 
+                             FROM users 
+                             """;
+        return await dbContext.ExecuteQueryAsync(query, MapUser);
+    }
+
     public async Task<User?> GetByIdAsync(int id)
     {
         const string query = """

@@ -358,32 +358,33 @@ public class PostService(
         var posts = await postRepository.GetByAuthorAsync(userId, limit);
         var model = new List<PostCardViewModel>();
 
+        if (posts == null) return [];
         foreach (var post in posts)
         {
             var product = await productRepository.GetWithDetailsAsync(post.ProductId);
             var author = await userRepository.GetByIdAsync(post.AuthorId);
 
             if (product == null || author == null) continue;
-                
+
             model.Add(
-                    new PostCardViewModel
-                    {
-                        PostId = post.Id,
-                        ProductId = product.Id,
-                        Title = post.Title,
-                        Description =
-                            post.Description.Length > 100
-                                ? string.Concat(post.Description.AsSpan(0, 100), "...")
-                                : post.Description,
-                        Price = product.Price,
-                        Status = product.GetStatus(),
-                        StatusText = product.GetStatusText(),
-                        MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
-                        CreatedAt = post.CreatedAt,
-                        AuthorUsername = author.Username,
-                        AuthorProfilePic = author.ProfilePicture,
-                    }
-                );
+                new PostCardViewModel
+                {
+                    PostId = post.Id,
+                    ProductId = product.Id,
+                    Title = post.Title,
+                    Description =
+                        post.Description.Length > 100
+                            ? string.Concat(post.Description.AsSpan(0, 100), "...")
+                            : post.Description,
+                    Price = product.Price,
+                    Status = product.GetStatus(),
+                    StatusText = product.GetStatusText(),
+                    MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
+                    CreatedAt = post.CreatedAt,
+                    AuthorUsername = author.Username,
+                    AuthorProfilePic = author.ProfilePicture,
+                }
+            );
         }
 
         return model;

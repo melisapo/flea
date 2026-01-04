@@ -5,6 +5,7 @@ namespace flea_WebProj.Data.Repositories;
 
 public interface IPostRepository
 {
+    Task<List<Post>> GetAllAsync();
     Task<Post?> GetByIdAsync(int id);
     Task<Post?> GetWithFullDetailsAsync(int id);
     Task<int> CreateAsync(Post post);
@@ -35,6 +36,16 @@ public interface IPostRepository
 
 public class PostRepository(DatabaseContext dbContext) : IPostRepository
 {
+    public async Task<List<Post>> GetAllAsync()
+    {
+        const string query = """
+                             SELECT id, title, description, created_at, updated_at, product_id, author_id
+                             FROM posts
+                             """;
+        return await dbContext.ExecuteQueryAsync(query, MapPost);
+
+    }
+
     public async Task<Post?> GetByIdAsync(int id)
     {
         const string query = """

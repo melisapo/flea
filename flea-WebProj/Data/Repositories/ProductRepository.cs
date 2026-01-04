@@ -6,6 +6,8 @@ namespace flea_WebProj.Data.Repositories;
 public interface IProductRepository
 {
     Task<Product?> GetByIdAsync(int id);
+    Task<List<Product>> GetByStatusAsync(string status);
+    Task<List<Product>> GetByCategoryIdAsync(int categoryId);
     Task<Product?> GetWithDetailsAsync(int id);
     Task<int> CreateAsync(Product product);
     Task<bool> UpdateAsync(Product product);
@@ -26,6 +28,30 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         var parameters = new[] { new NpgsqlParameter("@id", id) };
         var products = await dbContext.ExecuteQueryAsync(query, MapProduct, parameters);
         return products.FirstOrDefault();
+    }
+
+    public async Task<List<Product>> GetByStatusAsync(string status)
+    {
+        const string productQuery = """
+                                            SELECT id, price, status 
+                                            FROM products 
+                                            WHERE status = @status
+                                    """;
+
+        var productParams = new[] { new NpgsqlParameter("@status", status) };
+        return await dbContext.ExecuteQueryAsync(productQuery, MapProduct, productParams);
+    }
+
+    public async Task<List<Product>> GetByCategoryIdAsync(int categoryId)
+    {
+        const string query = """
+                             SELECT p.id, p.price, p.status
+                             FROM products p 
+                             INNER JOIN product_categories pc on pc.product_id = p.id
+                             WHERE pc.category_id = @categoryId
+                             """;
+        var productParams = new[] { new NpgsqlParameter("@categoryId", categoryId) };
+        return await dbContext.ExecuteQueryAsync(query, MapProduct, productParams);
     }
 
     public async Task<Product?> GetWithDetailsAsync(int id)

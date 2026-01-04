@@ -7,7 +7,7 @@ public interface ICategoryRepository
 {
     Task<Category?> GetByIdAsync(int id);
     Task<Category?> GetBySlugAsync(string slug);
-    Task<List<Category>?> GetAllAsync();
+    Task<List<Category>> GetAllAsync();
     Task<int> CreateAsync(Category category);
     Task<bool> UpdateAsync(Category category);
     Task<bool> DeleteAsync(int id);
@@ -35,7 +35,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         return categories.FirstOrDefault();
     }
 
-    public async Task<List<Category>?> GetAllAsync()
+    public async Task<List<Category>> GetAllAsync()
     {
         const string query = """
                              SELECT id, name, slug 

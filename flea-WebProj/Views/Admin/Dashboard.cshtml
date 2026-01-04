@@ -1,0 +1,133 @@
+@model flea_WebProj.Models.ViewModels.Admin.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard Admin";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-speedometer2"></i> Dashboard Administrativo</h1>
+    </div>
+
+    <!-- Estadísticas generales -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> Usuarios</h5>
+                    <h2>@Model.TotalUsers</h2>
+                    <small>+@Model.NewUsersThisWeek esta semana</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-file-post"></i> Posts</h5>
+                    <h2>@Model.TotalPosts</h2>
+                    <small>+@Model.NewPostsThisWeek esta semana</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check-circle"></i> Activos</h5>
+                    <h2>@Model.ActivePosts</h2>
+                    <small>Posts disponibles</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-tags"></i> Categorías</h5>
+                    <h2>@Model.TotalCategories</h2>
+                    <small>@Model.SoldPosts vendidos</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Actividad reciente -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Actividad Reciente</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentActivity.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var activity in Model.RecentActivity)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <p class="mb-1">
+                                            <i class="bi @activity.Icon @activity.Color"></i>
+                                            @activity.Description
+                                        </p>
+                                        <small class="text-muted">@activity.Timestamp.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">No hay actividad reciente</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Categorías -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Top Categorías</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopCategories.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var category in Model.TopCategories)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @category.CategoryName
+                                    <span class="badge bg-primary rounded-pill">@category.PostCount</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">No hay categorías</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enlaces rápidos -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Accesos Rápidos</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-action="Users" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-people"></i> Gestionar Usuarios
+                    </a>
+                    <a asp-action="Posts" class="btn btn-outline-success me-2">
+                        <i class="bi bi-file-post"></i> Gestionar Posts
+                    </a>
+                    <a asp-action="Categories" class="btn btn-outline-warning">
+                        <i class="bi bi-tags"></i> Gestionar Categorías
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

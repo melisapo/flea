@@ -1,0 +1,69 @@
+@model flea_WebProj.Models.ViewModels.Admin.DeleteConfirmationViewModel
+@{
+    ViewData["Title"] = "Confirmar Eliminación";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>¡Advertencia!</strong> Esta acción no se puede deshacer.
+                    </div>
+
+                    <p>¿Está seguro que desea eliminar el siguiente @Model.ItemType?</p>
+                    
+                    <div class="bg-light p-3 rounded mb-3">
+                        <h6><strong>@Model.ItemName</strong></h6>
+                        @if (!string.IsNullOrEmpty(Model.WarningMessage))
+                        {
+                            <p class="text-danger mb-0"><small>@Model.WarningMessage</small></p>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="@Model.ReturnUrl" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+
+                        @switch (Model.ItemType)
+                        {
+                            case "usuario":
+                                <form asp-action="DeleteUser" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.ItemId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Eliminar Usuario
+                                    </button>
+                                </form>
+                                break;
+                            case "post":
+                                <form asp-action="DeletePost" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.ItemId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Eliminar Post
+                                    </button>
+                                </form>
+                                break;
+                            case "categoría":
+                                <form asp-action="DeleteCategory" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@Model.ItemId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Eliminar Categoría
+                                    </button>
+                                </form>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

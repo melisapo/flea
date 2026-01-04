@@ -1,0 +1,127 @@
+@model flea_WebProj.Models.ViewModels.Admin.UserDetailViewModel
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-person-circle"></i> Detalles del Usuario</h1>
+        <div>
+            <a asp-action="ManageUserRoles" asp-route-userId="@Model.UserId" class="btn btn-warning me-2">
+                <i class="bi bi-shield"></i> Gestionar Roles
+            </a>
+            <a asp-action="Users" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información del usuario -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="@Model.ProfilePic" alt="@Model.Username" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <h4>@Model.Name</h4>
+                    <p class="text-muted">@@@Model.Username</p>
+                    
+                    <div class="mb-3">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <span class="badge bg-primary me-1">@role</span>
+                        }
+                    </div>
+
+                    <div class="text-start">
+                        <p><i class="bi bi-envelope"></i> <strong>Email:</strong><br/>@Model.Email</p>
+                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <p><i class="bi bi-telephone"></i> <strong>Teléfono:</strong><br/>@Model.PhoneNumber</p>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.TelegramUser))
+                        {
+                            <p><i class="bi bi-telegram"></i> <strong>Telegram:</strong><br/>@@@Model.TelegramUser</p>
+                        }
+                        <p><i class="bi bi-geo-alt"></i> <strong>Ubicación:</strong><br/>
+                            @if (!string.IsNullOrEmpty(Model.City))
+                            {
+                                @Model.City<text>, </text>
+                            }
+                            @Model.StateProvince, @Model.Country
+                        </p>
+                        <p><i class="bi bi-calendar"></i> <strong>Registro:</strong><br/>@Model.CreatedAt.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Zona Peligrosa</h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">Eliminar este usuario es permanente y no se puede deshacer.</p>
+                    <a asp-action="DeleteUserConfirm" asp-route-id="@Model.UserId" class="btn btn-danger btn-sm w-100">
+                        <i class="bi bi-trash"></i> Eliminar Usuario
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas y posts -->
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Estadísticas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h3 class="text-primary">@Model.TotalPosts</h3>
+                            <p class="text-muted">Total Posts</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-success">@Model.ActivePosts</h3>
+                            <p class="text-muted">Posts Activos</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-warning">@Model.SoldPosts</h3>
+                            <p class="text-muted">Posts Vendidos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-post"></i> Posts Recientes</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentPosts.Any())
+                    {
+                        <div class="row">
+                            @foreach (var post in Model.RecentPosts)
+                            {
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6>@post.Title</h6>
+                                            <p class="text-muted small mb-2">@post.Description</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-success">$@post.Price</span>
+                                                <small class="text-muted">@post.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">Este usuario no tiene posts</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

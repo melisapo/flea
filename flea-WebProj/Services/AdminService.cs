@@ -39,17 +39,37 @@ public class AdminService(
     IRoleRepository roleRepository,
     IPostRepository postRepository,
     IProductRepository productRepository,
-    ICategoryRepository categoryRepository)
+    ICategoryRepository categoryRepository,
+    IContactRepository contactRepository,
+    IAddressRepository addressRepository)
     : IAdminService
 {
     public async Task<List<User>> GetAllUsersAsync()
     {
-        return await userRepository.GetAllAsync();
+        var users =  await userRepository.GetAllAsync();
+        
+        foreach (var user in users)
+        {
+            user.Contact = await contactRepository.GetByUserIdAsync(user.Id);
+            user.Address = await addressRepository.GetByUserIdAsync(user.Id);
+            user.Posts = await postRepository.GetByAuthorAsync(user.Id);
+            user.Roles = await roleRepository.GetUserRolesAsync(user.Id);
+        }
+
+        return users;
     }
 
     public async Task<User> GetUserByIdAsync(int userId)
     {
-        return await userRepository.GetByIdAsync(userId) ?? new User();
+        var user =  await userRepository.GetByIdAsync(userId);
+        if (user == null) return new User();
+        
+        user.Contact = await contactRepository.GetByUserIdAsync(user.Id);
+        user.Address = await addressRepository.GetByUserIdAsync(user.Id);
+        user.Posts = await postRepository.GetByAuthorAsync(user.Id);
+        user.Roles = await roleRepository.GetUserRolesAsync(user.Id);
+
+        return user;
     }
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)

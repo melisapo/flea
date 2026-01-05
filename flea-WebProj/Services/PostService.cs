@@ -28,6 +28,7 @@ public interface IPostService
         string? status = null
     );
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 20);
+    Task<List<PostCardViewModel>> GetRecentPostsAsync(int authorId, int limit);
     Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
 }
 
@@ -406,6 +407,44 @@ public class PostService(
         {
             var product = await productRepository.GetWithDetailsAsync(post.ProductId);
             var author = await userRepository.GetByIdAsync(post.AuthorId);
+
+            if (product == null || author == null) 
+                continue;
+            
+            model.Add(
+                new PostCardViewModel
+                {
+                    PostId = post.Id,
+                    ProductId = product.Id,
+                    Title = post.Title,
+                    Description =
+                        post.Description.Length > 100
+                            ? string.Concat(post.Description.AsSpan(0, 100), "...")
+                            : post.Description,
+                    Price = product.Price,
+                    Status = product.GetStatus(),
+                    StatusText = product.GetStatusText(),
+                    MainImage = product.Images.FirstOrDefault()?.Path ?? "/images/no-image.png",
+                    CreatedAt = post.CreatedAt,
+                    AuthorUsername = author.Username,
+                    AuthorProfilePic = author.ProfilePicture,
+                }
+            );
+            
+        }
+
+        return model;
+    }
+    
+    public async Task<List<PostCardViewModel>> GetRecentPostsAsync(int authorId, int limit)
+    {
+        var posts = await postRepository.GetRecentPostsAsync(authorId, limit);
+        var model = new List<PostCardViewModel>();
+
+        foreach (var post in posts)
+        {
+            var product = await productRepository.GetWithDetailsAsync(post.ProductId);
+            var author = await userRepository.GetByIdAsync(authorId);
 
             if (product == null || author == null) 
                 continue;

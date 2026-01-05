@@ -230,6 +230,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         var parameters = new[] { new NpgsqlParameter("@roleId", roleId) };
         return await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
     }
+    
 
     public async Task<User?> GetFullUserAsync(int id)
     {

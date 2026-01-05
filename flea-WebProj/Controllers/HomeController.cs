@@ -64,8 +64,7 @@ public class HomeController(
             {
                 var allPosts = await postService.GetRecentPostsAsync(100);
                 searchModel.TotalResults = allPosts.Count;
-            
-                // ✅ ASEGURARTE QUE NO SEA NULL
+                
                 searchModel.Results = allPosts
                     .Skip((page - 1) * searchModel.PageSize)
                     .Take(searchModel.PageSize)

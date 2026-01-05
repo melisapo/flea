@@ -74,10 +74,15 @@ namespace flea_WebProj.Controllers
             try
             {
                 var user = await adminService.GetUserByIdAsync(id);
-
                 var roles = await adminService.GetUserRolesAsync(id);
-                if (user is not { Contact: not null, Address: not null, Posts: not null })
+
+                if (user is not { Contact: not null, Posts: not null, Address: not null })
+                {
+                    TempData["ErrorMessage"] = $"Error al cargar detalles:\n user: {user.Name}\nuserContact: {user.Contact?.Email}\nuserAddress: {user.Address?.StateProvince} ";
                     return RedirectToAction("Users");
+                }
+                   
+                
                 var viewModel = new UserDetailViewModel
                 {
                     UserId = user.Id,
@@ -93,10 +98,11 @@ namespace flea_WebProj.Controllers
                     StateProvince = user.Address.StateProvince,
                     Country = user.Address.Country,
                     TotalPosts = user.Posts.Count,
-                    RecentPosts = await postService.GetUserPostsAsync(id)
+                    RecentPosts = await postService.GetRecentPostsAsync(user.Id, 20)
                 };
 
                 return View(viewModel);
+
             }
             catch (Exception ex)
             {

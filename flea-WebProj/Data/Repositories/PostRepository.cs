@@ -12,6 +12,7 @@ public interface IPostRepository
     Task<bool> UpdateAsync(Post post);
     Task<bool> DeleteAsync(int id);
     Task<List<Post>> GetRecentPostsAsync(int limit = 20);
+    Task<List<Post>> GetRecentPostsAsync(int authorId, int limit);
     Task<List<Post>?> GetByAuthorAsync(int authorId, int limit = 20);
     Task<Post?> GetByProductIdAsync(int productId);
     Task<List<Post>> SearchPostsAsync(string searchTerm, int limit = 20);
@@ -149,6 +150,24 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
                              """;
         
         var parameters = new[] { new NpgsqlParameter("@limit", limit) };
+        return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
+    }
+    public async Task<List<Post>> GetRecentPostsAsync(int authorId, int limit)
+    {
+        const string query = """
+                             SELECT p.id, p.title, p.description, p.created_at, p.updated_at, p.product_id, p.author_id
+                             FROM posts p 
+                             INNER JOIN products pr ON pr.id = p.product_id
+                             WHERE p.author_id = @authorId
+                             ORDER BY p.created_at DESC
+                             LIMIT @limit
+                             """;
+        
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@limit", limit),
+            new NpgsqlParameter("@authorId", authorId)
+        };
         return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
     }
     

@@ -26,13 +26,12 @@ public class ManagePostsViewModel
 public class PostManageItem
 {
     public int PostId { get; set; }
-    public int ProductId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public ProductStatus Status { get; set; }
     public string StatusText { get; set; } = string.Empty;
-    public string MainImage { get; set; } = string.Empty;
+    public string? MainImage { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     
     // Info del autor
@@ -41,5 +40,5 @@ public class PostManageItem
     public string AuthorName { get; set; } = string.Empty;
     
     // Categorías
-    public List<string> Categories { get; set; } = new List<string>();
+    public List<string> Categories { get; set; } = [];
 }

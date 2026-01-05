@@ -1,12 +1,12 @@
+using flea_WebProj.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using flea_WebProj.Services;
 using flea_WebProj.Models.ViewModels.Admin;
 using flea_WebProj.Middleware;
 
 namespace flea_WebProj.Controllers
 {
-    [Authorize]
+    [RequireAuth]
     [RequireAdmin]
     public class AdminController(
         IAdminService adminService,
@@ -69,17 +69,12 @@ namespace flea_WebProj.Controllers
         }
 
         [HttpGet]
-        public async Task<RedirectToActionResult> UserDetails(int id)
+        public async Task<IActionResult> UserDetails(int id)
         {
             try
             {
                 var user = await adminService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    TempData["ErrorMessage"] = "Usuario no encontrado";
-                    return RedirectToAction("Users");
-                }
-                
+
                 var roles = await adminService.GetUserRolesAsync(id);
                 if (user is not { Contact: not null, Address: not null, Posts: not null })
                     return RedirectToAction("Users");
@@ -117,11 +112,6 @@ namespace flea_WebProj.Controllers
             try
             {
                 var user = await adminService.GetUserByIdAsync(userId);
-                if (user == null)
-                {
-                    TempData["ErrorMessage"] = "Usuario no encontrado";
-                    return RedirectToAction("Users");
-                }
 
                 var allRoles = await adminService.GetAllRolesAsync();
                 var userRoles = await adminService.GetUserRolesAsync(userId);
@@ -201,11 +191,6 @@ namespace flea_WebProj.Controllers
             try
             {
                 var user = await adminService.GetUserByIdAsync(id);
-                if (user == null)
-                {
-                    TempData["ErrorMessage"] = "Usuario no encontrado";
-                    return RedirectToAction("Users");
-                }
 
                 var viewModel = new DeleteConfirmationViewModel
                 {
@@ -265,13 +250,22 @@ namespace flea_WebProj.Controllers
                 foreach (var post in posts)
                 {
                     var author = await adminService.GetUserByIdAsync(post.AuthorId);
-                    viewModel.Posts.Add(new PostManageItem
-                    {
-                        PostId = post.Id,
-                        Title = post.Title,
-                        AuthorName = author?.Username ?? "Usuario desconocido",
-                        CreatedAt = post.CreatedAt
-                    });
+                    var product = await postService.GetProductByPostIdAsync(post.Id);
+                        viewModel.Posts.Add(new PostManageItem
+                        {
+                            PostId = post.Id,
+                            Title = post.Title,
+                            Description = post.Description,
+                            Price = product.Price,
+                            Status = product.GetStatus(),
+                            StatusText = product.GetStatusText(),
+                            MainImage = product.Images.FirstOrDefault()?.Path,
+                            CreatedAt = post.CreatedAt,
+                            AuthorId = author.Id,
+                            AuthorUsername = author.Username,
+                            AuthorName = author.Name,
+                            Categories = await adminService.GetProductCategoriesAsync(product.Id)
+                        });
                 }
 
                 return View(viewModel);

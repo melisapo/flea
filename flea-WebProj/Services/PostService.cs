@@ -11,6 +11,7 @@ namespace flea_WebProj.Services;
 public interface IPostService
 {
     Task<ProductDetailViewModel?> GetPostDetailAsync(int postId, int? currentUserId);
+    Task<Product> GetProductByPostIdAsync(int postId);
     Task<(bool success, string message, int postId)> CreatePostAsync(
         CreatePostViewModel model,
         int authorId
@@ -99,6 +100,12 @@ public class PostService(
         model.AuthorTelegramUser = contact.TelegramUser;
 
         return model;
+    }
+
+    public async Task<Product> GetProductByPostIdAsync(int postId)
+    {
+        var product = await productRepository.GetByPostIdAsync(postId);
+        return product ?? new Product();
     }
 
     // Crear post

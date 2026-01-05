@@ -14,7 +14,7 @@ public interface ICategoryRepository
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
     Task<List<Category>?> GetTrendingCategoriesAsync(int limit);
-    Task<List<int>> GetProductCategoriesIdsAsync(int postId);
+    Task<List<int>> GetProductCategoriesIdsAsync(int productId);
 }
 
 public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository

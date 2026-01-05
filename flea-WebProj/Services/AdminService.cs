@@ -8,7 +8,7 @@ public interface IAdminService
 {
     // User Management
     Task<List<User>> GetAllUsersAsync();
-    Task<User?> GetUserByIdAsync(int userId);
+    Task<User> GetUserByIdAsync(int userId);
     Task<List<Role>> GetUserRolesAsync(int userId);
     Task<DashboardViewModel> GetDashboardStatsAsync();
     Task<bool> AssignRoleToUserAsync(int userId, int roleId);
@@ -22,6 +22,7 @@ public interface IAdminService
         
     // Category Management
     Task<List<Category>> GetAllCategoriesAsync();
+    Task<List<string>> GetProductCategoriesAsync(int productId);
     Task<Category?> GetCategoryByIdAsync(int id);
     Task<Category> CreateCategoryAsync(CreateCategoryViewModel model);
     Task<Category> UpdateCategoryAsync(EditCategoryViewModel model);
@@ -46,9 +47,9 @@ public class AdminService(
         return await userRepository.GetAllAsync();
     }
 
-    public Task<User?> GetUserByIdAsync(int userId)
+    public async Task<User> GetUserByIdAsync(int userId)
     {
-        return userRepository.GetByIdAsync(userId);
+        return await userRepository.GetByIdAsync(userId) ?? new User();
     }
 
     public async Task<List<Role>> GetUserRolesAsync(int userId)
@@ -188,6 +189,19 @@ public class AdminService(
     public async Task<List<Category>> GetAllCategoriesAsync()
     {
         return await categoryRepository.GetAllAsync();
+    }
+
+    public async Task<List<string>> GetProductCategoriesAsync(int productId)
+    {
+        var categoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(productId);
+        var categories = new List<string>();
+            
+        foreach(var id in categoriesIds){
+                var category = await categoryRepository.GetByIdAsync(id) ?? new Category();
+                categories.Add(category.Name);
+        }
+
+        return categories;
     }
 
     public async Task<Category?> GetCategoryByIdAsync(int id)

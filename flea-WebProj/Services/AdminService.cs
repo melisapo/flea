@@ -143,22 +143,7 @@ public class AdminService(
                 .ToList();
 
             // Top categorías (las 4 con más posts)
-            var topCategoriesList = await categoryService.GetTrendingCategoriesAsync(4);
-            var topCategories = new List<CategoryStatsItem>();
-
-            if (topCategoriesList != null && topCategoriesList.Count != 0)
-            {
-                foreach (var category in topCategoriesList)
-                {
-                    var products = await productRepository.GetByCategoryIdAsync(category.Id);
-                    topCategories.Add(new CategoryStatsItem
-                    {
-                        CategoryId = category.Id,
-                        CategoryName = category.Name,
-                        PostCount = products.Count
-                    });
-                }
-            }
+            var topCategories = await categoryService.GetTrendingCategoriesAsync(4) ?? [];
             
             return new DashboardViewModel
             {

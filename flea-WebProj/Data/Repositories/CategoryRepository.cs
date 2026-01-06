@@ -1,4 +1,5 @@
 using flea_WebProj.Models.Entities;
+using flea_WebProj.Models.ViewModels.Admin;
 using Npgsql;
 
 namespace flea_WebProj.Data.Repositories;
@@ -13,7 +14,7 @@ public interface ICategoryRepository
     Task<bool> DeleteAsync(int id);
     Task<bool> AssignCategoryToProductAsync(int productId, int categoryId);
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
-    Task<List<Category>?> GetTrendingCategoriesAsync(int limit);
+    Task<List<CategoryStatsItem>?> GetTrendingCategoriesAsync(int limit);
     Task<List<int>> GetProductCategoriesIdsAsync(int productId);
 }
 
@@ -160,7 +161,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         return rowsAffected > 0;
     }
 
-    public async Task<List<Category>?> GetTrendingCategoriesAsync(int limit = 4)
+    public async Task<List<CategoryStatsItem>?> GetTrendingCategoriesAsync(int limit = 4)
     {
         const string query = """
                              SELECT 
@@ -175,7 +176,7 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
                              LIMIT @limit;
                              """;
         var parameters = new [] {new NpgsqlParameter("@limit", limit)};
-        return await dbContext.ExecuteQueryAsync(query, MapCategory, parameters);
+        return await dbContext.ExecuteQueryAsync(query, MapTrendCategory, parameters);
     }
 
     public async Task<List<int>> GetProductCategoriesIdsAsync(int productId)
@@ -200,5 +201,13 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
             Id = reader.GetInt32(0), 
             Name = reader.GetString(1), 
             Slug = reader.GetString(2)
+        };
+    
+    private static CategoryStatsItem MapTrendCategory(NpgsqlDataReader reader)
+        => new()
+        {
+            CategoryId = reader.GetInt32(0), 
+            CategoryName = reader.GetString(1), 
+            PostCount = reader.GetInt32(2)
         };
 }

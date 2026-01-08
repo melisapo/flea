@@ -8,7 +8,7 @@ public interface IUserRepository
     Task<List<User>> GetAllAsync();
     Task<User?> GetByIdAsync(int id);
     Task<User?> GetByUsernameAsync(string username);
-    Task<bool> UsernameExistsAsync(string username);
+    Task<bool> UsernameExistsAsync(string username, int userId);
     Task<bool> EmailExistsAsync(string email);
     Task<int> CreateAsync(User user);
     Task<bool> UpdateAsync(User user);
@@ -58,10 +58,14 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         return users.FirstOrDefault();
     }
 
-    public async Task<bool> UsernameExistsAsync(string username)
+    public async Task<bool> UsernameExistsAsync(string username, int userId)
     {
-        const string query = "SELECT COUNT(*) FROM users WHERE username = @username";
-        var parameters = new[] { new NpgsqlParameter("@username", username) };
+        const string query = "SELECT COUNT(*) FROM users WHERE username = @username AND id != @userId";
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@username", username),
+            new NpgsqlParameter("userId", userId)
+        };
         var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt64(result) > 0;
     }

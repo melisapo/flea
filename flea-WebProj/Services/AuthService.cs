@@ -28,7 +28,7 @@ namespace flea_WebProj.Services
         {
             try
             {
-                if (await userRepository.UsernameExistsAsync(model.Username))
+                if (await userRepository.UsernameExistsAsync(model.Username, 0))
                     return (false, "El nombre de usuario ya está en uso", null);
                 
                 if (await userRepository.EmailExistsAsync(model.Email))

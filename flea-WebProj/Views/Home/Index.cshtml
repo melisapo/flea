@@ -10,8 +10,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h1 class="display-4"><i class="bi bi-shop"></i> Flea Marketplace</h1>
-                <p class="lead">Compra y vende productos de segunda mano en tu comunidad</p>
+                <h1 class="display-4 satisfy-regular">flea</h1>
+                <p class="lead lato-regular">Compra y vende productos de segunda mano en tu comunidad</p>
             </div>
             <div class="col-md-4 text-end">
                 @if (isAuth)
@@ -46,9 +46,12 @@
                     <div class="col-md-3">
                         <select name="categoryId" class="form-select">
                             <option value="">Todas las categorías</option>
-                            @foreach (var category in Model.AvailableCategories)
+                            @if (Model.AvailableCategories != null)
                             {
-                                <option value="@category.Id" selected="@(Model.CategoryId == category.Id)">@category.Name</option>
+                                foreach (var category in Model.AvailableCategories)
+                                {
+                                    <option value="@category.Id" selected="@(Model.CategoryId == category.Id)">@category.Name</option>
+                                }
                             }
                         </select>
                     </div>

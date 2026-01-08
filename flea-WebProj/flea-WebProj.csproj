@@ -19,4 +19,10 @@
       <Folder Include="wwwroot\uploads\profiles\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Views\Shared\_Layout.cshtml.css">
+        <DependentUpon>_Layout.cshtml</DependentUpon>
+      </Content>
+    </ItemGroup>
+
 </Project>

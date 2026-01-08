@@ -153,7 +153,7 @@ public class PostService(
                 }
             }
 
-            // 4. Asignar categorías
+            // // 4. Asignar categorías
             if (model.PostCategoriesIds.Count == 0)
                 return (false, "Error al asignar categorias", 0);
 

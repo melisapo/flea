@@ -4,55 +4,76 @@
     ViewData["Title"] = "Iniciar Sesión";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
-                    
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            @TempData["SuccessMessage"]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    }
-                    
-                    <form asp-action="Login" asp-controller="Account" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Username" class="form-label">Usuario</label>
-                            <input asp-for="Username" class="form-control" placeholder="Ingresa tu usuario" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Password" class="form-label">Contraseña</label>
-                            <input asp-for="Password" class="form-control" placeholder="Ingresa tu contraseña" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            <input asp-for="RememberMe" class="form-check-input" />
-                            <label asp-for="RememberMe" class="form-check-label">Recordarme</label>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">Iniciar Sesión</button>
-                        </div>
-                    </form>
-                    
-                    <hr class="my-4">
-                    
-                    <p class="text-center mb-0">
-                        ¿No tienes cuenta? 
-                        <a asp-action="Register" asp-controller="Account" class="text-decoration-none">
-                            Regístrate aquí
-                        </a>
-                    </p>
+<div class="login-page-container">
+    <div class="login-container">
+        <!-- Columna Izquierda - Formulario -->
+        <div class="login-form-section">
+            <div class="login-form-wrapper">
+                <!-- Logo/Brand -->
+                <div class="brand-section">
+                    <a asp-controller="Home" asp-action="Index" class="brand-link">
+                        <i class="bi bi-shop"></i>
+                        <span>flea</span>
+                    </a>
                 </div>
+
+                <!-- Título -->
+                <div class="login-header">
+                    <h1>Welcome back</h1>
+                    <p class="subtitle">Please enter your details to sign in.</p>
+                </div>
+
+                <!-- Formulario -->
+                <form asp-action="Login" asp-controller="Account" method="post" class="login-form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label asp-for="Username" class="form-label">Username</label>
+                        <div class="input-icon-wrapper">
+                            <i class="bi bi-person input-icon"></i>
+                            <input asp-for="Username" class="form-control form-control-icon" placeholder="Enter your username" />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <div class="input-icon-wrapper">
+                            <i class="bi bi-lock input-icon"></i>
+                            <input asp-for="Password" class="form-control form-control-icon" placeholder="Enter your password" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="form-options">
+                        <div class="form-check custom-checkbox">
+                            <input asp-for="RememberMe" class="form-check-input" id="rememberMe" />
+                            <label asp-for="RememberMe" class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-signin">
+                        Sign In
+                    </button>
+                </form>
+                
+                <!-- Sign Up Link -->
+                <div class="signup-link">
+                    Don't have an account? 
+                    <a asp-action="Register" asp-controller="Account">Sign up now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha - Imagen/Testimonial -->
+        <div class="login-visual-section">
+            <div class="visual-content">
+                <!-- Decorative elements -->
+                <div class="visual-decoration"></div>
             </div>
         </div>
     </div>

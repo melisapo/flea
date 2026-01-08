@@ -47,7 +47,12 @@
                                 {
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="CategoryIds" value="@category.Id" id="cat_@category.Id">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="PostCategoriesIds"
+                                                   value="@category.Id"
+                                                   id="cat_@category.Id"/>
+
                                             <label class="form-check-label" for="cat_@category.Id">
                                                 @category.Name
                                             </label>
@@ -55,7 +60,7 @@
                                     </div>
                                 }
                             </div>
-                            <span asp-validation-for="AvailableCategories" class="text-danger"></span>
+                            <span asp-validation-for="PostCategoriesIds" class="text-danger"></span>
                         </div>
                         
                         <!-- Imágenes -->

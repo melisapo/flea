@@ -53,26 +53,27 @@
                         <!-- Categorías -->
                         <div class="mb-3">
                             <label class="form-label">Categorías *</label>
-
-                            <div class="form-check">
-                                <p>Seleccionadas: @string.Join(", ", Model.PostCategoriesIds)</p>
+                            <div class="row">
                                 @foreach (var category in Model.AvailableCategories)
                                 {
                                     var isChecked = Model.PostCategoriesIds != null
                                                     && Model.PostCategoriesIds.Contains(category.Id);
 
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               name="PostCategoriesIds"
-                                               value="@category.Id"
-                                               id="cat_@category.Id"
-                                               @(isChecked ? "checked" : "")/>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="PostCategoriesIds"
+                                                   value="@category.Id"
+                                                   id="cat_@category.Id"
+                                                   @(isChecked ? "checked" : "")/>
 
-                                        <label class="form-check-label" for="cat_@category.Id">
-                                            @category.Name
-                                        </label>
+                                            <label class="form-check-label" for="cat_@category.Id">
+                                                @category.Name
+                                            </label>
+                                        </div>
                                     </div>
+                                    
                                 }
                             </div>
 

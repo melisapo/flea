@@ -1,163 +1,228 @@
-﻿@using flea_WebProj.Helpers
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Flea Marketplace</title>
+    <title>@ViewData["Title"] - Flea</title>
+    
+    <link rel="stylesheet" href="~/flea-WebProj.styles.css" asp-append-version="true" />
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <!-- Logo/Brand -->
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-shop"></i> Flea
+    <!-- Navbar Moderno -->
+    <header class="modern-navbar">
+        <nav class="container">
+            <div class="nav-wrapper">
+                <!-- Logo -->
+                <a asp-controller="Home" asp-action="Index" class="nav-logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <span class="logo-text">Flea</span>
                 </a>
-                
-                <!-- Botón hamburguesa para móvil -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <!-- Menú de navegación -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-door"></i> Inicio
-                            </a>
-                        </li>
-                        
-                        @if (Context.Session.IsAuthenticated())
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Posts" asp-action="Create">
-                                    <i class="bi bi-plus-circle"></i> Publicar
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Posts" asp-action="MyPosts">
-                                    <i class="bi bi-card-list"></i> Mis Publicaciones
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                    
-                    <!-- Menú de usuario (derecha) -->
-                    <ul class="navbar-nav">
-                        @if (Context.Session.IsAuthenticated())
-                        {
-                            <!-- Usuario logueado -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-person-circle"></i> @Context.Session.GetUsername()
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
-                                            <i class="bi bi-person"></i> Mi Perfil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Posts" asp-action="MyPosts">
-                                            <i class="bi bi-card-list"></i> Mis Publicaciones
-                                        </a>
-                                    </li>
-                                    
-                                    @if (Context.Session.IsAdmin())
-                                    {
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">
-                                                <i class="bi bi-shield-lock"></i> Panel Admin
-                                            </a>
-                                        </li>
-                                    }
-                                    
+
+                <!-- Navigation Links (Desktop) -->
+                @if (Context.Session.IsAuthenticated())
+                {
+                    <div class="nav-links">
+                        <a asp-controller="Posts" asp-action="Create" class="nav-link-item">
+                            <i class="bi bi-plus-circle"></i> Publicar
+                        </a>
+                        <a asp-controller="Posts" asp-action="MyPosts" class="nav-link-item">
+                            <i class="bi bi-card-list"></i> Mis Posts
+                        </a>
+                    </div>
+                }
+
+                <!-- Auth Buttons -->
+                <div class="nav-actions">
+                    @if (Context.Session.IsAuthenticated())
+                    {
+                        <!-- User Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn-user-dropdown" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                                <span>@Context.Session.GetUsername()</span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                        <i class="bi bi-person"></i> Mi Perfil
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Posts" asp-action="MyPosts">
+                                        <i class="bi bi-card-list"></i> Mis Publicaciones
+                                    </a>
+                                </li>
+                                
+                                @if (Context.Session.IsAdmin())
+                                {
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                            <button type="submit" class="dropdown-item text-danger">
-                                                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                                            </button>
-                                        </form>
+                                        <a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">
+                                            <i class="bi bi-shield-lock"></i> Panel Admin
+                                        </a>
                                     </li>
-                                </ul>
-                            </li>
-                        }
-                        else
-                        {
-                            <!-- Usuario NO logueado -->
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login">
-                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-light ms-2" asp-controller="Account" asp-action="Register">
-                                    Registrarse
-                                </a>
-                            </li>
-                        }
-                    </ul>
+                                }
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Login and Register Buttons -->
+                        <a asp-controller="Account" asp-action="Login" class="btn-login">
+                            Login
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="btn-register">
+                            Register
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    }
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </div>
         </nav>
     </header>
-    
-<main role="main" class="pb-3">
-    
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="container mt-3">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+
+    <!-- Mobile Menu Offcanvas -->
+    <div class="offcanvas offcanvas-end mobile-offcanvas" tabindex="-1" id="mobileMenu">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Menú</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
-    }
-
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="container mt-3">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        </div>
-    }
-
-    @RenderBody()
-
-</main>
-    
-    <footer class="border-top footer text-muted mt-5">
-        <div class="container py-3">
-            <div class="row">
-                <div class="col-md-6">
-                    <p>&copy; 2024 - Flea Marketplace - <a asp-controller="Home" asp-action="About">Acerca de</a></p>
+        <div class="offcanvas-body">
+            @if (Context.Session.IsAuthenticated())
+            {
+                <div class="mobile-menu-section">
+                    <div class="mobile-user-info">
+                        <i class="bi bi-person-circle"></i>
+                        <span>@Context.Session.GetUsername()</span>
+                    </div>
                 </div>
-                <div class="col-md-6 text-end">
-                    <p>
-                        <a href="https://github.com" target="_blank" class="text-decoration-none me-3">
-                            <i class="bi bi-github"></i> GitHub
-                        </a>
-                        <a href="#" class="text-decoration-none">
-                            <i class="bi bi-envelope"></i> Contacto
-                        </a>
-                    </p>
+                <hr>
+                <a asp-controller="Posts" asp-action="Create" class="mobile-menu-item">
+                    <i class="bi bi-plus-circle"></i> Publicar
+                </a>
+                <a asp-controller="Posts" asp-action="MyPosts" class="mobile-menu-item">
+                    <i class="bi bi-card-list"></i> Mis Publicaciones
+                </a>
+                <a asp-controller="Account" asp-action="Profile" class="mobile-menu-item">
+                    <i class="bi bi-person"></i> Mi Perfil
+                </a>
+                
+                @if (Context.Session.IsAdmin())
+                {
+                    <hr>
+                    <a asp-controller="Admin" asp-action="Dashboard" class="mobile-menu-item">
+                        <i class="bi bi-shield-lock"></i> Panel Admin
+                    </a>
+                }
+                
+                <hr>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="mobile-menu-item text-danger border-0 bg-transparent w-100 text-start">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="mobile-menu-item">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                </a>
+                <a asp-controller="Account" asp-action="Register" class="mobile-menu-item">
+                    <i class="bi bi-person-plus"></i> Registrarse
+                </a>
+            }
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main role="main">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+    
+    <!-- Footer Moderno -->
+    <footer class="modern-footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Logo Section -->
+                <div class="footer-logo">
+                    <div class="logo-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <span class="logo-text">Flea</span>
+                </div>
+
+                <!-- Copyright -->
+                <div class="footer-copyright">
+                    © 2024 Flea Marketplace. All rights reserved.
+                </div>
+
+                <!-- Social Links -->
+                <div class="footer-social">
+                    <a href="https://twitter.com" target="_blank" class="social-link" title="Twitter">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="social-link" title="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="https://github.com/melisapo/flea" target="_blank" class="social-link" title="GitHub">
+                        <i class="bi bi-github"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </footer>
-    
     
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

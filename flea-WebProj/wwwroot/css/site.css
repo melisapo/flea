@@ -1,5 +1,17 @@
+/* ========== VARIABLES GLOBALES ========== */
+:root {
+  --primary-green: #8bc34a;
+  --primary-green-hover: #7cb342;
+  --bg-cream: #f5f5dc;
+  --bg-sage: #d4d8c8;
+  --text-dark: #2d3436;
+  --text-muted: #636e72;
+  --border-color: #e0e0e0;
+}
+
 html {
   font-size: 14px;
+  font-family: 'Lato', sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -44,4 +56,71 @@ main {
 .navbar-nav .nav-link:hover {
   background-color: rgba(255,255,255,0.1);
   border-radius: 5px;
+}
+
+/*Lato Font*/
+.lato-thin {
+  font-family: "Lato", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.lato-light {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.lato-regular {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.lato-bold {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.lato-black {
+  font-family: "Lato", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.lato-thin-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.lato-light-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.lato-regular-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.lato-bold-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.lato-black-italic {
+  font-family: "Lato", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+/*Satisfy Font*/
+.satisfy-regular {
+  font-family: "Satisfy", cursive;
+  font-weight: 400;
+  font-style: normal;
 }

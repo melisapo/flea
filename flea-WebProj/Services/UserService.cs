@@ -33,7 +33,7 @@ public class UserService(
             user.Name = model.Name;
             await userRepository.UpdateAsync(user);
             
-            var existUser = await userRepository.UsernameExistsAsync(model.Username);
+            var existUser = await userRepository.UsernameExistsAsync(model.Username, userId);
             if (existUser) return (false, "El nombre de usuario ya está en uso");
 
             await userRepository.UpdateUsernameAsync(userId, model.Username);

@@ -21,7 +21,7 @@ public class UserController(
                 : null;
 
         if (user == null)
-            return NotFound();
+            return RedirectToAction("Index", "Home");
 
         // Obtener posts del usuario
         var userPosts = await postService.GetUserPostsAsync(user.Id, 12);

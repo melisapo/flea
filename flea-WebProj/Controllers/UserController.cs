@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using flea_WebProj.Services;
 using flea_WebProj.Models.ViewModels.Auth;
 using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Models.ViewModels.Shared;
+using flea_WebProj.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace flea_WebProj.Controllers;
 

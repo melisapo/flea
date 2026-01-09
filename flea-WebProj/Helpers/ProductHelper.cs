@@ -1,6 +1,6 @@
-using flea_WebProj.Models.Enums;
 using flea_WebProj.Models;
 using flea_WebProj.Models.Entities;
+using flea_WebProj.Models.Enums;
 
 namespace flea_WebProj.Helpers
 {

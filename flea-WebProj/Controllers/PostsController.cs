@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using flea_WebProj.Services;
-using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Helpers;
 using flea_WebProj.Middleware;
+using flea_WebProj.Models.ViewModels.Product;
+using flea_WebProj.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace flea_WebProj.Controllers;
 

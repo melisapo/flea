@@ -52,30 +52,22 @@
                         
                         <!-- Categorías -->
                         <div class="mb-3">
-                            <label class="form-label">Categorías *</label>
-                            <div class="row">
+                            <label asp-for="PostCategoriesIds" class="form-label">Categorías *</label>
+
+                            <select asp-for="PostCategoriesIds"
+                                    id="PostCategoriesIds"
+                                    class="form-select"
+                                    multiple
+                                    size="6">
+
                                 @foreach (var category in Model.AvailableCategories)
                                 {
-                                    var isChecked = Model.PostCategoriesIds != null
-                                                    && Model.PostCategoriesIds.Contains(category.Id);
-
-                                    <div class="col-md-4 col-sm-6">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   name="PostCategoriesIds"
-                                                   value="@category.Id"
-                                                   id="cat_@category.Id"
-                                                   @(isChecked ? "checked" : "")/>
-
-                                            <label class="form-check-label" for="cat_@category.Id">
-                                                @category.Name
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
+                                    <option value="@category.Id"
+                                            selected="@Model.PostCategoriesIds.Contains(category.Id)">
+                                        @category.Name
+                                    </option>
                                 }
-                            </div>
+                            </select>
 
                             <span asp-validation-for="PostCategoriesIds" class="text-danger"></span>
                         </div>
@@ -132,4 +124,15 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new TomSelect("#PostCategoriesIds", {
+            plugins: ['remove_button'],
+            persist: false,
+            create: false
+        });
+    });
+</script>
+
 }

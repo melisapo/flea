@@ -1,3 +1,4 @@
+using flea_WebProj.Helpers;
 using flea_WebProj.Models.ViewModels.Auth;
 using flea_WebProj.Models.ViewModels.Product;
 using flea_WebProj.Models.ViewModels.Shared;
@@ -22,6 +23,13 @@ public class UserController(
 
         if (user == null)
             return RedirectToAction("Index", "Home");
+
+        var sessionUserId = HttpContext.Session.GetUserId();
+
+        if (sessionUserId != null && user.Id == sessionUserId)
+        {
+            return RedirectToAction("Profile", "Account");
+        }
 
         // Obtener posts del usuario
         var userPosts = await postService.GetUserPostsAsync(user.Id, 12);

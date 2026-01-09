@@ -240,12 +240,14 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
     {
         var addressRepository = new AddressRepository(dbContext);
         var contactRepository = new ContactRepository(dbContext);
+        var postRepository = new PostRepository(dbContext);
         
         var user = await GetWithRolesAsync(id);
         if (user == null)
             return null;
         user.Address = await addressRepository.GetByUserIdAsync(id);
         user.Contact = await contactRepository.GetByUserIdAsync(id);
+        user.Posts = await postRepository.GetByAuthorAsync(id);
 
         return user;
     }

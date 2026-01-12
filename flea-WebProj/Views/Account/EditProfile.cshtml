@@ -4,114 +4,158 @@
     ViewData["Title"] = "Editar Perfil";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="bi bi-person-gear"></i> Editar Perfil</h4>
+<main class="max-w-[800px] mx-auto px-6 py-12">
+
+    <div class="bg-white rounded-3xl card-shadow border border-border-soft overflow-hidden">
+        <div class="h-1.5 bg-primary"></div>
+
+        <!-- Header -->
+        <div class="px-4 pt-6 flex justify-center">
+            <h1 class="text-2xl font-bold tracking-tight text-text-main">
+                Editar Perfil
+            </h1>
+        </div>
+
+        <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="p-8 space-y-10">
+            <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm"></div>
+
+            <!-- Foto de perfil -->
+            <div class="flex flex-col items-center sm:flex-row gap-8 pb-10 border-b border-[#f0f4e4]">
+                <div class="relative">
+                    <img id="profilePicPreview"
+                         src="@Model.CurrentProfilePic"
+                         class="w-24 h-24 rounded-full object-cover ring-background-light"
+                         alt="Foto de perfil" />
+
+                    <label asp-for="NewProfilePic" for="photo-upload"
+                           class="absolute bottom-0 right-0 bg-primary text-text-main p-2 rounded-full border-2 border-white cursor-pointer hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-[20px] block font-bold">
+                            photo_camera
+                        </span>
+                    </label>
+
+                    <input asp-for="NewProfilePic"
+                           id="photo-upload"
+                           type="file"
+                           accept="image/*"
+                           class="hidden"
+                           onchange="previewImage(this)" />
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <!-- Foto de perfil -->
-                        <div class="text-center mb-4">
-                            <img id="profilePicPreview" 
-                                 src="@Model.CurrentProfilePic" 
-                                 alt="Foto de perfil" 
-                                 class="rounded-circle mb-3" 
-                                 style="width: 150px; height: 150px; object-fit: cover;">
-                            
-                            <div class="mb-3">
-                                <label asp-for="NewProfilePic" class="form-label">Cambiar foto de perfil</label>
-                                <input asp-for="NewProfilePic" 
-                                       class="form-control" 
-                                       type="file" 
-                                       accept="image/*"
-                                       onchange="previewImage(this)">
-                                <span asp-validation-for="NewProfilePic" class="text-danger"></span>
-                                <small class="form-text text-muted">Formatos: JPG, PNG, GIF. Máximo 5MB.</small>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        
-                        <!-- Información personal -->
-                        <h5 class="mb-3">Información Personal</h5>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">Nombre Completo *</label>
-                            <input asp-for="Name" class="form-control" placeholder="Tu nombre completo" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Username" class="form-label">Nombre de Usuario*</label>
-                            <input asp-for="Username" class="form-control" placeholder="Tu nombre de usuario" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-                        
-                        <!-- Información de contacto -->
-                        <h5 class="mb-3 mt-4">Información de Contacto</h5>
-                        
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">Email *</label>
-                            <input asp-for="Email" class="form-control" placeholder="tu@email.com" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="PhoneNumber" class="form-label">Teléfono</label>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="+52 123 456 7890" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="TelegramUser" class="form-label">Usuario de Telegram</label>
-                                <input asp-for="TelegramUser" class="form-control" placeholder="@@tuusuario" />
-                                <span asp-validation-for="TelegramUser" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                        <!-- Información de dirrecion -->
-                        <h5 class="mb-3 mt-4">Dirección</h5>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="City" class="form-label">Ciudad (opcional)</label>
-                                <input asp-for="City" class="form-control" placeholder="Ej: Cardenas" />
-                                <span asp-validation-for="City" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="StateProvince" class="form-label">Estado/Provincia *</label>
-                                <input asp-for="StateProvince" class="form-control" placeholder="Ej: Matanzas" />
-                                <span asp-validation-for="StateProvince" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Country" class="form-label">País *</label>
-                                <input asp-for="Country" class="form-control" placeholder="Ej: Cuba" />
-                                <span asp-validation-for="Country" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                        <!-- Botones -->
-                        <div class="d-flex gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary flex-fill">
-                                <i class="bi bi-check-circle"></i> Guardar Cambios
-                            </button>
-                            <a asp-action="Profile" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+
+                <div class="text-center sm:text-left">
+                    <h3 class="font-bold text-text-main mb-1">
+                        Foto de Perfil
+                    </h3>
+                    <p class="text-text-sub text-sm mb-4">
+                        Recomendado: JPG o PNG de al menos 400x400px.
+                    </p>
+                    <span asp-validation-for="NewProfilePic" class="text-red-500 text-xs"></span>
+                    
+                    <button class="text-sm font-bold text-primary hover:bg-primary/10 px-4 py-2 rounded-lg transition-colors" type="button">Cambiar foto</button>
+                    <button class="text-sm font-bold text-destructive hover:bg-destructive/10 px-4 py-2 rounded-lg transition-colors" type="button">Eliminar</button>
                 </div>
             </div>
-        </div>
+
+            <!-- Información personal -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">person</span>
+                    <h3 class="font-bold text-lg text-text-main">Información Personal</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Name" class="label-style">Nombre Completo *</label>
+                        <input asp-for="Name" class="input-field" placeholder="Ej: Mateo Rossi" />
+                        <span asp-validation-for="Name" class="input-error"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="Username" class="label-style">Nombre de Usuario *</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub/50 font-medium">@@</span>
+                            <input asp-for="Username" class="input-field pl-8" placeholder="nombreusuario" />
+                        </div>
+                        <span asp-validation-for="Username" class="input-error"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Información de contacto -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">contact_mail</span>
+                    <h3 class="font-bold text-lg text-text-main">Información de Contacto</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="Email" class="label-style">Correo Electrónico *</label>
+                        <input asp-for="Email" class="input-field" placeholder="correo@ejemplo.com" />
+                        <span asp-validation-for="Email" class="input-error"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="PhoneNumber" class="label-style">Teléfono</label>
+                        <input asp-for="PhoneNumber" class="input-field" placeholder="+52 123 456 7890" />
+                        <span asp-validation-for="PhoneNumber" class="input-error"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="TelegramUser" class="label-style">Telegram (opcional)</label>
+                        <input asp-for="TelegramUser" class="input-field" placeholder="@@usuario" />
+                        <span asp-validation-for="TelegramUser" class="input-error"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dirección -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">location_on</span>
+                    <h3 class="font-bold text-lg text-text-main">Dirección</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label asp-for="City" class="label-style">Ciudad</label>
+                        <input asp-for="City" class="input-field" placeholder="Ciudad" />
+                        <span asp-validation-for="City" class="input-error"></span>
+                    </div>
+
+                    <div>
+                        <label asp-for="StateProvince" class="label-style">Estado / Provincia *</label>
+                        <input asp-for="StateProvince" class="input-field" placeholder="Estado o provincia" />
+                        <span asp-validation-for="StateProvince" class="input-error"></span>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label asp-for="Country" class="label-style">País *</label>
+                        <input asp-for="Country" class="input-field" placeholder="País" />
+                        <span asp-validation-for="Country" class="input-error"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acciones -->
+            <div class="pt-10 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-[#f0f4e4]">
+                <a asp-action="Profile"
+                   class="w-full sm:w-auto px-8 py-3.5 text-text-main font-bold
+                          hover:bg-[#f0f4e4] rounded-xl transition-all text-center">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="w-full sm:w-auto bg-primary hover:bg-primary/90
+                               text-text-main font-bold px-10 py-3.5 rounded-xl
+                               shadow-sm transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-xl">save</span>
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
     </div>
-</div>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -119,7 +163,7 @@
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     document.getElementById('profilePicPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(input.files[0]);

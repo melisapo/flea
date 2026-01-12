@@ -4,128 +4,179 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="container mt-5">
-    <div class="row">
-        <!-- Sidebar del usuario -->
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <img src="@Model.ProfilePic" alt="@Model.Name" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    <h4>@Model.Name</h4>
-                    <p class="text-muted">@@@Model.Username</p>
-                    <p class="small text-muted">
-                        <i class="bi bi-calendar"></i> Miembro desde @Model.MemberSince.ToString("MMMM yyyy")
+<div class="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div class="grid grid-cols-12 gap-6 lg:gap-10">
+
+        <!-- SIDEBAR -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden lg:sticky lg:top-28">
+                <div class="h-2 bg-primary"></div>
+
+                <div class="p-6 sm:p-8 flex flex-col items-center sm:items-start text-center sm:text-left">
+
+                    <!-- Avatar -->
+                    <img src="@Model.ProfilePic"
+                         alt="@Model.Name"
+                         class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-background-light mb-4 sm:mb-6 mx-auto sm:mx-0" />
+
+                    <h4 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main">
+                        @Model.Name
+                    </h4>
+
+                    <p class="text-text-sub text-sm mt-1">
+                        @@@Model.Username
                     </p>
-                    
-                    <hr>
-                    
-                    <!-- Estadísticas -->
-                    <div class="mb-3">
-                        <h5>@Model.TotalPosts</h5>
-                        <small class="text-muted">Publicaciones</small>
+
+                    <p class="mt-2 sm:mt-3 flex items-center justify-center sm:justify-start gap-1.5 text-xs font-medium text-text-sub/70">
+                        <span class="material-symbols-outlined text-base">calendar_today</span>
+                        Miembro desde @Model.MemberSince.ToString("MMMM yyyy")
+                    </p>
+
+                    <!-- Stats -->
+                    <div class="mt-6 pt-6 border-t border-[#f0f4e4] w-full flex justify-center sm:justify-start">
+                        <div>
+                            <div class="text-3xl sm:text-4xl font-bold text-text-main">
+                                @Model.TotalPosts
+                            </div>
+                            <p class="text-text-sub text-sm font-medium">
+                                Publicaciones
+                            </p>
+                        </div>
                     </div>
+
+                    <!-- Contacto -->
+                    <div class="w-full mt-6 pt-6 border-t border-[#f0f4e4]
+                                grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1
+                                gap-3 text-sm text-text-main">
+
+                        <div class="flex items-center gap-2 justify-center sm:justify-start break-all">
+                            <span class="material-symbols-outlined text-base text-primary">mail</span>
+                            <a href="mailto:@Model.Email" class="hover:underline">
+                                @Model.Email
+                            </a>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                <span class="material-symbols-outlined text-base text-primary">call</span>
+                                @Model.PhoneNumber
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.TelegramUser))
+                        {
+                            <div class="flex items-center gap-2 justify-center sm:justify-start">
+                                <span class="material-symbols-outlined text-base text-primary">send</span>
+                                @@@Model.TelegramUser
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Dirección -->
+                    @if (!string.IsNullOrEmpty(Model.StateProvince))
+                    {
+                        <div class="w-full mt-6 pt-6 border-t border-[#f0f4e4]">
+                            <div class="flex items-start gap-3 p-4 rounded-xl bg-background-light border border-[#e5e9d8]">
+                                <span class="material-symbols-outlined text-primary mt-0.5 shrink-0">
+                                    location_on
+                                </span>
+                                <p class="text-sm text-text-main font-bold leading-snug">
+                                    @if (!string.IsNullOrEmpty(Model.City))
+                                    {
+                                        <span>@Model.City, </span>
+                                    }
+                                    @Model.StateProvince
+                                    @if (!string.IsNullOrEmpty(Model.Country))
+                                    {
+                                        <span>, @Model.Country</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
-            
-            <!-- Información de contacto -->
-            <div class="card shadow mt-3">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0"><i class="bi bi-chat-dots"></i> Contacto</h6>
-                </div>
-                <div class="card-body">
-                    <p class="mb-2">
-                        <i class="bi bi-envelope"></i> 
-                        <a href="mailto:@Model.Email">@Model.Email</a>
-                    </p>
-                    
-                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
-                    {
-                        <p class="mb-2">
-                            <i class="bi bi-telephone"></i> @Model.PhoneNumber
-                        </p>
-                    }
-                    
-                    @if (!string.IsNullOrEmpty(Model.TelegramUser))
-                    {
-                        <p class="mb-0">
-                            <i class="bi bi-telegram"></i> @@@Model.TelegramUser
-                        </p>
-                    }
-                </div>
-            </div>
-            
-            <!-- Ubicación -->
-            @if (!string.IsNullOrEmpty(Model.StateProvince))
-            {
-                <div class="card shadow mt-3">
-                    <div class="card-header bg-primary text-white">
-                        <h6 class="mb-0"><i class="bi bi-geo-alt"></i> Ubicación</h6>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0">
-                            @if (!string.IsNullOrEmpty(Model.City))
-                            {
-                                <span>@Model.City, </span>
-                            }
-                            <span>@Model.StateProvince</span>
-                            @if (!string.IsNullOrEmpty(Model.Country))
-                            {
-                                <span>, @Model.Country</span>
-                            }
-                        </p>
-                    </div>
-                </div>
-            }
         </div>
-        
-        <!-- Publicaciones del usuario -->
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-card-list"></i> Publicaciones de @Model.Username</h5>
+
+        <!-- PUBLICACIONES -->
+        <div class="col-span-12 lg:col-span-8">
+            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden">
+
+                <div class="px-6 sm:px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">grid_view</span>
+                    <h5 class="text-text-main font-bold text-base sm:text-lg">
+                        Publicaciones de @Model.Username
+                    </h5>
                 </div>
-                <div class="card-body">
+
+                <div class="p-6 sm:p-8">
+
                     @if (!Model.RecentPosts.Any())
                     {
-                        <div class="text-center py-4">
-                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                            <p class="text-muted mt-3">Este usuario no tiene publicaciones aún</p>
+                        <div class="flex flex-col items-center text-center py-12">
+                            <span class="material-symbols-outlined text-5xl text-text-sub mb-4">
+                                inbox
+                            </span>
+                            <p class="text-text-sub text-sm sm:text-base">
+                                Este usuario no tiene publicaciones aún
+                            </p>
                         </div>
                     }
                     else
                     {
-                        <div class="row">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             @foreach (var post in Model.RecentPosts)
                             {
-                                <div class="col-md-6 mb-3">
-                                    <div class="card h-100">
-                                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId" class="text-decoration-none text-dark">
-                                            <img src="@post.MainImage" class="card-img-top" alt="@post.Title" style="height: 150px; object-fit: cover;">
-                                            <div class="card-body">
-                                                <h6 class="card-title">@post.Title</h6>
-                                                <p class="card-text text-muted small">
-                                                    @(post.Description.Length > 60 ? post.Description.Substring(0, 60) + "..." : post.Description)
-                                                </p>
-                                                <h5 class="text-primary">$@post.Price.ToString("N2")</h5>
-                                                <small class="text-muted">
-                                                    <i class="bi bi-clock"></i> @post.CreatedAt.ToString("dd/MM/yyyy")
-                                                </small>
+                                <div class="bg-white rounded-xl border border-[#e5e9d8] overflow-hidden hover:shadow-md transition-all">
+                                    <a asp-controller="Posts"
+                                       asp-action="Details"
+                                       asp-route-id="@post.PostId"
+                                       class="block text-text-main no-underline">
+
+                                        <img src="@post.MainImage"
+                                             alt="@post.Title"
+                                             class="w-full h-40 sm:h-44 object-cover" />
+
+                                        <div class="p-4 sm:p-5 space-y-2">
+                                            <h6 class="font-bold text-base">
+                                                @post.Title
+                                            </h6>
+
+                                            <p class="text-text-sub text-sm">
+                                                @(post.Description.Length > 60
+                                                    ? post.Description[..60] + "..."
+                                                    : post.Description)
+                                            </p>
+
+                                            <div class="flex items-center justify-between pt-2">
+                                                <span class="font-bold text-primary text-lg">
+                                                    $@post.Price.ToString("N2")
+                                                </span>
+
+                                                <span class="text-xs text-text-sub flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-sm">
+                                                        schedule
+                                                    </span>
+                                                    @post.CreatedAt.ToString("dd/MM/yyyy")
+                                                </span>
                                             </div>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </div>
                             }
                         </div>
-                        
+
                         @if (Model.TotalPosts > 12)
                         {
-                            <div class="text-center mt-3">
-                                <p class="text-muted">Mostrando @Model.RecentPosts.Count de @Model.TotalPosts publicaciones</p>
+                            <div class="text-center mt-6 text-text-sub text-sm">
+                                Mostrando @Model.RecentPosts.Count de @Model.TotalPosts publicaciones
                             </div>
                         }
                     }
                 </div>
             </div>
         </div>
+
     </div>
 </div>

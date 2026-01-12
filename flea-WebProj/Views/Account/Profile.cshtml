@@ -4,121 +4,187 @@
     ViewData["Title"] = "Mi Perfil";
 }
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-4">
-            <!-- Tarjeta de perfil -->
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <img src="@Model.ProfilePicture" alt="@Model.Name" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    <h4>@Model.Name</h4>
-                    <p class="text-muted">@@@Model.Username</p>
-                    <p class="small text-muted">Miembro desde @Model.CreatedAt.ToString("MMMM yyyy")</p>
-                    
+<div class="max-w-[1140px] mx-auto px-6 py-12">
+    <div class="grid grid-cols-12 gap-10">
+
+        <!-- PERFIL -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="bg-white rounded-2xl card-shadow border border-border overflow-hidden sticky top-28">
+                <div class="h-2 bg-primary"></div>
+
+                <div class="p-8 flex flex-col items-center text-center">
+                    <div class="relative mb-6">
+                        <img src="@Model.ProfilePicture"
+                             alt="@Model.Name"
+                             class="w-28 h-28 rounded-full object-cover ring-background-light" />
+                    </div>
+
+                    <h4 class="text-2xl font-bold tracking-tight text-text-main">
+                        @Model.Name
+                    </h4>
+
+                    <p class="text-text-sub text-sm mt-1">
+                        @@@Model.Username
+                    </p>
+
+                    <p class="mt-3 flex items-center gap-1.5 text-xs font-medium text-text-sub/70">
+                        <span class="material-symbols-outlined text-base">calendar_today</span>
+                        Miembro desde @Model.CreatedAt.ToString("MMMM yyyy")
+                    </p>
+
                     @if (Model.Roles != null && Model.Roles.Any())
                     {
-                        <div class="mb-3">
+                        <div class="flex gap-2 mt-6 flex-wrap justify-center">
                             @foreach (var role in Model.Roles)
                             {
-                                <span class="badge bg-primary">@role.Name</span>
+                                <span class="px-3 py-1 bg-[#f0f4e4] text-text-main text-[10px] font-bold uppercase tracking-widest rounded-md border border-[#e5e9d8]">
+                                    @role.Name
+                                </span>
                             }
                         </div>
                     }
-                    
-                    <div class="d-grid gap-2">
-                        <a asp-action="EditProfile" class="btn btn-primary">
-                            <i class="bi bi-pencil"></i> Editar Perfil
+
+                    <div class="w-full mt-10 space-y-3">
+                        <a asp-action="EditProfile"
+                           class="w-full bg-primary hover:bg-primary/90 text-text-main font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                            <i class="bi bi-pencil"></i>
+                            Editar Perfil
                         </a>
-                        <a asp-action="ChangePassword" class="btn btn-outline-secondary">
-                            <i class="bi bi-key"></i> Cambiar Contraseña
+
+                        <a asp-action="ChangePassword"
+                           class="w-full bg-white border border-[#e5e9d8] hover:border-primary/40 text-text-main font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all">
+                            <i class="bi bi-key"></i>
+                            Cambiar Contraseña
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-8">
-            <!-- Información de contacto -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Información de Contacto</h5>
+
+        <!-- CONTENIDO -->
+        <div class="col-span-12 lg:col-span-8 space-y-8">
+
+            <!-- INFORMACIÓN DE CONTACTO -->
+            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden">
+                <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">contact_mail</span>
+                    <h5 class="text-text-main font-bold text-lg">Información de Contacto</h5>
                 </div>
-                <div class="card-body">
+
+                <div class="p-8">
                     @if (Model.Contact != null)
                     {
-                        <div class="row mb-3">
-                            <div class="col-sm-4"><strong>Email:</strong></div>
-                            <div class="col-sm-8">@Model.Contact.Email</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                    Email
+                                </label>
+                                <p class="text-text-main font-medium text-base">
+                                    @Model.Contact.Email
+                                </p>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
+                            {
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                        Teléfono
+                                    </label>
+                                    <p class="text-text-main font-medium text-base">
+                                        @Model.Contact.PhoneNumber
+                                    </p>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
+                            {
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                        Telegram
+                                    </label>
+                                    <p class="text-text-main font-medium text-base">
+                                        @@@Model.Contact.TelegramUser
+                                    </p>
+                                </div>
+                            }
                         </div>
-                        
-                        @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
-                        {
-                            <div class="row mb-3">
-                                <div class="col-sm-4"><strong>Teléfono:</strong></div>
-                                <div class="col-sm-8">@Model.Contact.PhoneNumber</div>
-                            </div>
-                        }
-                        
-                        @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
-                        {
-                            <div class="row mb-3">
-                                <div class="col-sm-4"><strong>Telegram:</strong></div>
-                                <div class="col-sm-8">@@@Model.Contact.TelegramUser</div>
-                            </div>
-                        }
                     }
                     else
                     {
-                        <p class="text-muted">No hay información de contacto disponible.</p>
+                        <p class="text-text-sub">No hay información de contacto disponible.</p>
                     }
                 </div>
             </div>
-            
-            <!-- Direcciones -->
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Direcciones</h5>
+            <div class="flex justify-between gap-5 flex-col sm:flex-row">
+                <!-- DIRECCIONES -->
+                <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
+                <div class="p-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">location_on</span>
+                    <h5 class="text-text-main font-bold text-lg">Direccion</h5>
                 </div>
-                <div class="card-body">
+
+                <div class="p-8">
                     @if (Model.Address != null)
                     {
-                        <div class="mb-3">
-                            <i class="bi bi-house-door"></i>
-                            @if (!string.IsNullOrEmpty(Model.Address.City))
-                            {
-                                <span>@Model.Address.City, </span>
-                            }
-                            <span>@Model.Address.StateProvince, @Model.Address.Country</span>
+                        <div class="flex items-center gap-6 p-6 rounded-xl bg-background-light border border-[#e5e9d8]">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary shadow-sm">
+                                <span class="material-symbols-outlined">home</span>
+                            </div>
+                            <div>
+                                <p class="text-text-main font-bold text-lg">
+                                    @Model.Address.City
+                                </p>
+                                <p class="text-text-sub text-sm">
+                                    @Model.Address.StateProvince, @Model.Address.Country
+                                </p>
+                            </div>
                         </div>
                     }
                     else
                     {
-                        <p class="text-muted">No hay direcciones registradas.</p>
+                        <p class="text-text-sub">No hay direcciones registradas.</p>
                     }
                 </div>
             </div>
-            
-            <!-- Mis publicaciones -->
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-card-list"></i> Mis Publicaciones</h5>
+
+            <!-- PUBLICACIONES -->
+            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
+                <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">grid_view</span>
+                    <h5 class="text-text-main font-bold text-lg">Mis Publicaciones</h5>
                 </div>
-                <div class="card-body">
+
+                <div class="p-10 text-center">
                     @if (Model.Posts != null && Model.Posts.Any())
                     {
-                        <p>Total de publicaciones: <strong>@Model.Posts.Count</strong></p>
-                        <a asp-controller="Posts" asp-action="MyPosts" class="btn btn-outline-primary">
-                            Ver todas mis publicaciones
+                        <div class="text-5xl font-bold text-text-main mb-2">
+                            @Model.Posts.Count
+                        </div>
+                        <p class="text-text-sub font-medium mb-8">
+                            Publicaciones compartidas
+                        </p>
+
+                        <a asp-controller="Posts"
+                           asp-action="MyPosts"
+                           class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
+                            Ver publicaciones
                         </a>
                     }
                     else
                     {
-                        <p class="text-muted">Aún no tienes publicaciones.</p>
-                        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
+                        <p class="text-text-sub mb-6">
+                            Aún no tienes publicaciones.
+                        </p>
+
+                        <a asp-controller="Posts"
+                           asp-action="Create"
+                           class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
                             Crear mi primera publicación
                         </a>
                     }
                 </div>
+            </div>
+                
             </div>
         </div>
     </div>

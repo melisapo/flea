@@ -4,102 +4,117 @@
     ViewData["Title"] = "Registrarse";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Crear Cuenta</h2>
-                    
-                    <form asp-action="Register" asp-controller="Account" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <h5 class="mb-3">Información de Usuario</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Username" class="form-label">Usuario *</label>
-                                <input asp-for="Username" class="form-control" placeholder="Ej: melissa123" />
-                                <span asp-validation-for="Username" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Name" class="form-label">Nombre Completo *</label>
-                                <input asp-for="Name" class="form-control" placeholder="Ej: Melissa García" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
+<div class="bg-background min-h-screen flex flex-col relative overflow-hidden selection:bg-primary/30">
+    <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 z-10">
+        <!-- Formulario Card -->
+        <div class="w-full max-w-2xl bg-card rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden border border-border/50 p-8 sm:p-12 lg:p-16">
+
+            <!-- Título -->
+            <div class="mb-8">
+                <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2 tracking-tight">Create account</h1>
+                <p class="text-mutedForeground text-base sm:text-lg">Join us today and get started in minutes.</p>
+            </div>
+
+            <!-- Formulario -->
+            <form asp-action="Register" asp-controller="Account" method="post" class="space-y-6">
+                <div asp-validation-summary="ModelOnly" class="text-destructive text-sm bg-destructive/10 px-4 py-3 rounded-xl border border-destructive/20"></div>
+                
+                <!-- Información de Usuario -->
+                <div>
+                    <h3 class="text-lg font-semibold text-foreground mb-4">User Information</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Username" class="text-sm font-semibold text-foreground">Username <span class="text-destructive">*</span></label>
+                            <input asp-for="Username" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="melissa123" />
+                            <span asp-validation-for="Username" class="text-destructive text-sm font-medium"></span>
                         </div>
                         
-                        <h5 class="mb-3 mt-4">Información de Contacto</h5>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Email" class="form-label">Email *</label>
-                                <input asp-for="Email" class="form-control" placeholder="tu@email.com" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="PhoneNumber" class="form-label">Teléfono (opcional)</label>
-                                <input asp-for="PhoneNumber" class="form-control" placeholder="+52 123 456 7890" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="TelegramUser" class="form-label">Usuario de Telegram (opcional)</label>
-                                <input asp-for="TelegramUser" class="form-control" placeholder="@@tuusuario" />
-                                <span asp-validation-for="TelegramUser" class="text-danger"></span>
-                            </div>
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Name" class="text-sm font-semibold text-foreground">Full Name <span class="text-destructive">*</span></label>
+                            <input asp-for="Name" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="Melissa García" />
+                            <span asp-validation-for="Name" class="text-destructive text-sm font-medium"></span>
                         </div>
-                        
-                        <h5 class="mb-3 mt-4">Dirección</h5>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="City" class="form-label">Ciudad (opcional)</label>
-                                <input asp-for="City" class="form-control" placeholder="Ej: Provo" />
-                                <span asp-validation-for="City" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="StateProvince" class="form-label">Estado/Provincia *</label>
-                                <input asp-for="StateProvince" class="form-control" placeholder="Ej: Utah" />
-                                <span asp-validation-for="StateProvince" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Country" class="form-label">País *</label>
-                                <input asp-for="Country" class="form-control" placeholder="Ej: USA" />
-                                <span asp-validation-for="Country" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                        <h5 class="mb-3 mt-4">Contraseña</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Password" class="form-label">Contraseña *</label>
-                                <input asp-for="Password" class="form-control" placeholder="Mínimo 6 caracteres" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña *</label>
-                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Repite la contraseña" />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">Crear Cuenta</button>
-                        </div>
-                    </form>
-                    
-                    <hr class="my-4">
-                    
-                    <p class="text-center mb-0">
-                        ¿Ya tienes cuenta? 
-                        <a asp-action="Login" asp-controller="Account" class="text-decoration-none">
-                            Inicia sesión aquí
-                        </a>
-                    </p>
+                    </div>
                 </div>
+
+                <!-- Información de Contacto -->
+                <div>
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Contact Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Email" class="text-sm font-semibold text-foreground">Email <span class="text-destructive">*</span></label>
+                            <input asp-for="Email" type="email" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="tu@email.com" />
+                            <span asp-validation-for="Email" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-2">
+                                <label asp-for="PhoneNumber" class="text-sm font-semibold text-foreground">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="+52 123 456 7890" />
+                                <span asp-validation-for="PhoneNumber" class="text-destructive text-sm font-medium"></span>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2">
+                                <label asp-for="TelegramUser" class="text-sm font-semibold text-foreground">Telegram User</label>
+                                <input asp-for="TelegramUser" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="@@tuusuario" />
+                                <span asp-validation-for="TelegramUser" class="text-destructive text-sm font-medium"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dirección -->
+                <div>
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Address</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="City" class="text-sm font-semibold text-foreground">City</label>
+                            <input asp-for="City" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="Provo" />
+                            <span asp-validation-for="City" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="StateProvince" class="text-sm font-semibold text-foreground">State/Province <span class="text-destructive">*</span></label>
+                            <input asp-for="StateProvince" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="Utah" />
+                            <span asp-validation-for="StateProvince" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Country" class="text-sm font-semibold text-foreground">Country <span class="text-destructive">*</span></label>
+                            <input asp-for="Country" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="USA" />
+                            <span asp-validation-for="Country" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Password</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Password" class="text-sm font-semibold text-foreground">Password <span class="text-destructive">*</span></label>
+                            <input asp-for="Password" type="password" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="Minimum 6 characters" />
+                            <span asp-validation-for="Password" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="ConfirmPassword" class="text-sm font-semibold text-foreground">Confirm Password <span class="text-destructive">*</span></label>
+                            <input asp-for="ConfirmPassword" type="password" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200" placeholder="Repeat your password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-destructive text-sm font-medium"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="w-full h-12 bg-primary hover:bg-primary/90 text-primaryForeground font-semibold rounded-xl transition-all duration-200 shadow-[0_1px_3px_rgba(152,207,84,0.3)] hover:shadow-[0_4px_12px_rgba(152,207,84,0.4)] hover:translate-y-[-1px] active:translate-y-[0px] mt-8">
+                    Create Account
+                </button>
+            </form>
+            
+            <!-- Sign In Link -->
+            <div class="text-center mt-8 text-sm text-mutedForeground border-t border-border/30 pt-6">
+                Already have an account? 
+                <a asp-action="Login" asp-controller="Account" class="text-primary font-semibold hover:text-primary/80 transition-colors underline-offset-4 hover:underline">Sign in</a>
             </div>
         </div>
     </div>

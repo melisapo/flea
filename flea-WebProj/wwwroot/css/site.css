@@ -1,126 +1,118 @@
-/* ========== VARIABLES GLOBALES ========== */
-:root {
-  --primary-green: #8bc34a;
-  --primary-green-hover: #7cb342;
-  --bg-cream: #f5f5dc;
-  --bg-sage: #d4d8c8;
-  --text-dark: #2d3436;
-  --text-muted: #636e72;
-  --border-color: #e0e0e0;
-}
-
 html {
-  font-size: 14px;
-  font-family: 'Lato', sans-serif;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin-bottom: 60px;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Plus Jakarta Sans", "Lato", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
+/* =========================
+   Botones reutilizables
+   ========================= */
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
-
-/* Espaciado del main */
-main {
-  min-height: calc(100vh - 200px);
-}
-
-/* Footer pegado al fondo */
-.footer {
-  background-color: #f8f9fa;
-}
-
-/* Hover en navbar */
-.navbar-nav .nav-link:hover {
-  background-color: rgba(255,255,255,0.1);
-  border-radius: 5px;
-}
-
-/*Lato Font*/
-.lato-thin {
-  font-family: "Lato", sans-serif;
-  font-weight: 100;
-  font-style: normal;
-}
-
-.lato-light {
-  font-family: "Lato", sans-serif;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.lato-regular {
-  font-family: "Lato", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.lato-bold {
-  font-family: "Lato", sans-serif;
+.btn-primary {
   font-weight: 700;
-  font-style: normal;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  transition: box-shadow 0.2s ease;
 }
 
-.lato-black {
-  font-family: "Lato", sans-serif;
-  font-weight: 900;
-  font-style: normal;
+.btn-primary:hover {
+  box-shadow: 0 10px 25px -3px rgba(37, 35, 30, 0.15); /* hover:shadow-lg */
 }
 
-.lato-thin-italic {
-  font-family: "Lato", sans-serif;
-  font-weight: 100;
-  font-style: italic;
+/* =========================
+   Links animados
+   ========================= */
+
+.link-underline {
+  font-weight: 600;
+  position: relative;
 }
 
-.lato-light-italic {
-  font-family: "Lato", sans-serif;
-  font-weight: 300;
-  font-style: italic;
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.25rem;
+  height: 2px;
+  width: 0;
+  background-color: var(--primary);
+  transition: width 0.2s ease;
 }
 
-.lato-regular-italic {
-  font-family: "Lato", sans-serif;
-  font-weight: 400;
-  font-style: italic;
+.link-underline:hover::after {
+  width: 100%;
 }
 
-.lato-bold-italic {
-  font-family: "Lato", sans-serif;
-  font-weight: 700;
-  font-style: italic;
+/* =========================
+   Navegación
+   ========================= */
+
+.nav-link {
+  font-size: 1rem; /* text-base */
+  position: relative; /* necesario para efectos tipo group */
+}
+.nav-link:hover{
+  color: var(--primary);
 }
 
-.lato-black-italic {
-  font-family: "Lato", sans-serif;
-  font-weight: 900;
-  font-style: italic;
+/* =========================
+   Mobile / Dropdown links
+   ========================= */
+
+.mobile-link,
+.dropdown-item {
+  display: block;
+  padding: 0.75rem 1rem; /* py-3 px-4 */
+  border-radius: 1.5rem; /* rounded-xl */
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
-/*Satisfy Font*/
-.satisfy-regular {
-  font-family: "Satisfy", cursive;
-  font-weight: 400;
-  font-style: normal;
+
+.mobile-link:hover,
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* hover:bg-black/5 */
+}
+
+:root {
+  /* Base */
+  --background: 251 253 241;
+  --foreground: 37 35 30;
+
+  /* Surfaces */
+  --card: 255 255 255;
+  --card-foreground: 37 35 30;
+
+  --popover: 255 255 255;
+  --popover-foreground: 37 35 30;
+
+  /* Brand */
+  --primary: 152 207 84;
+  --primary-foreground: 31 42 22;
+
+  /* Secondary */
+  --secondary: 238 246 221;
+  --secondary-foreground: 37 35 30;
+
+  /* Muted */
+  --muted: 242 244 234;
+  --muted-foreground: 107 106 100;
+
+  /* Accent */
+  --accent: 228 240 204;
+  --accent-foreground: 37 35 30;
+
+  /* Destructive */
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+
+  /* Borders / Inputs */
+  --border: 227 230 217;
+  --input: 227 230 217;
+  --ring: 152 207 84;
 }

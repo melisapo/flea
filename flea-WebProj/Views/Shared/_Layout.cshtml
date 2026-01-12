@@ -1,236 +1,317 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="bg-background text-text-dark">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - Flea</title>
-    
-    <link rel="stylesheet" href="~/flea-WebProj.styles.css" asp-append-version="true" />
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-    
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-</head>
-<body>
-    <!-- Navbar Moderno -->
-    <header class="modern-navbar">
-        <nav class="container">
-            <div class="nav-wrapper">
-                <!-- Logo -->
-                <a asp-controller="Home" asp-action="Index" class="nav-logo">
-                    <div class="logo-icon">
-                        <i class="bi bi-shop"></i>
-                    </div>
-                    <span class="logo-text">Flea</span>
-                </a>
 
-                <!-- Navigation Links (Desktop) -->
-                @if (Context.Session.IsAuthenticated())
-                {
-                    <div class="nav-links">
-                        <a asp-controller="Posts" asp-action="Create" class="nav-link-item">
-                            <i class="bi bi-plus-circle"></i> Publicar
-                        </a>
-                        <a asp-controller="Posts" asp-action="MyPosts" class="nav-link-item">
-                            <i class="bi bi-card-list"></i> Mis Posts
-                        </a>
-                    </div>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        /* Base */
+                        background: "#fbfdf1",
+                        foreground: "#25231e",
+
+                        /* Superficies */
+                        card: "#ffffff",
+                        cardForeground: "#25231e",
+                        popover: "#ffffff",
+                        popoverForeground: "#25231e",
+
+                        /* Marca */
+                        primary: "#98cf54",
+                        primaryForeground: "#1f2a16",
+
+                        /* Secundario suave */
+                        secondary: "#eef6dd",
+                        secondaryForeground: "#25231e",
+
+                        /* Estados */
+                        muted: "#f2f4ea",
+                        mutedForeground: "#6b6a64",
+
+                        accent: "#e4f0cc",
+                        accentForeground: "#25231e",
+
+                        destructive: "#ef4444",
+                        destructiveForeground: "#ffffff",
+
+                        /* Bordes / inputs */
+                        border: "#e3e6d9",
+                        input: "#e3e6d9",
+                        ring: "#98cf54",
+                    },
+
+                    fontFamily: {
+                        display: ["Lato", "sans-serif"]
+                    },
+                    boxShadow: {
+                        soft: "0 4px 20px -2px rgba(37, 35, 30, 0.05)",
+                        glow: "0 0 15px rgba(152, 207, 84, 0.3)"
+                    },
+                    borderRadius: {
+                        xl: "1.5rem",
+                        "2xl": "2rem"
+                    }
                 }
+            }
+        }
+    </script>
 
-                <!-- Auth Buttons -->
-                <div class="nav-actions">
-                    @if (Context.Session.IsAuthenticated())
-                    {
-                        <!-- User Dropdown -->
-                        <div class="dropdown">
-                            <button class="btn-user-dropdown" type="button" id="userDropdown" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
-                                <span>@Context.Session.GetUsername()</span>
-                                <i class="bi bi-chevron-down"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
-                                        <i class="bi bi-person"></i> Mi Perfil
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-controller="Posts" asp-action="MyPosts">
-                                        <i class="bi bi-card-list"></i> Mis Publicaciones
-                                    </a>
-                                </li>
-                                
-                                @if (Context.Session.IsAdmin())
-                                {
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">
-                                            <i class="bi bi-shield-lock"></i> Panel Admin
-                                        </a>
-                                    </li>
-                                }
-                                
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                    else
-                    {
-                        <!-- Login and Register Buttons -->
-                        <a asp-controller="Account" asp-action="Login" class="btn-login">
-                            Login
-                        </a>
-                        <a asp-controller="Account" asp-action="Register" class="btn-register">
-                            Register
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    }
+    <!-- Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
 
-                    <!-- Mobile Menu Toggle -->
-                    <button class="mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+
+<body class="min-h-screen flex flex-col bg-background text-text-dark font-display antialiased">
+
+<!-- ================= NAVBAR ================= -->
+<header class="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-black/5">
+    <nav class="mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
+
+        <!-- Logo -->
+        <a asp-controller="Home" asp-action="Index"
+           class="flex items-center gap-3 group select-none">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-glow transition-transform group-hover:rotate-12">
+                <span class="material-symbols-outlined text-text-dark text-[26px]">spa</span>
             </div>
-        </nav>
-    </header>
+            <span class="text-2xl font-extrabold tracking-tight">Flea</span>
+        </a>
 
-    <!-- Mobile Menu Offcanvas -->
-    <div class="offcanvas offcanvas-end mobile-offcanvas" tabindex="-1" id="mobileMenu">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Menú</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
+        <!-- Desktop Links -->
+        @if (Context.Session.IsAuthenticated())
+        {
+            <div class="hidden md:flex items-center gap-8">
+                <a asp-controller="Home" asp-action="Index" class="text-base relative font-semibold relative after:content-[''] after:absolute after:left-0 after:bottom-[-0.25rem] after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full">Inicio</a>
+                <a asp-controller="Posts" asp-action="Create" class="text-base relative font-semibold relative after:content-[''] after:absolute after:left-0 after:bottom-[-0.25rem] after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full">Publicar</a>
+                <a asp-controller="Posts" asp-action="MyPosts" class="text-base relative font-semibold relative after:content-[''] after:absolute after:left-0 after:bottom-[-0.25rem] after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full">Mis Publicaciones</a>
+            </div>
+        }
+
+        <!-- Auth -->
+        <div class="items-center flex gap-4">
             @if (Context.Session.IsAuthenticated())
             {
-                <div class="mobile-menu-section">
-                    <div class="mobile-user-info">
-                        <i class="bi bi-person-circle"></i>
+                <div class="relative">
+                    <!-- Botón del usuario -->
+                    <button id="userMenuButton"
+                            type="button"
+                            class="md:flex hidden items-center gap-2 px-4 py-2 rounded-xl hover:bg-black/5 transition font-semibold">
+                        <span class="material-symbols-outlined text-2xl">account_circle</span>
                         <span>@Context.Session.GetUsername()</span>
+                        <span class="material-symbols-outlined text-lg">expand_more</span>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div id="userMenuDropdown"
+                         class="absolute right-0 mt-3 w-56 bg-background rounded-2xl shadow-xl border border-black/5
+                    opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-top-right z-50">
+
+                        <a asp-controller="Account" asp-action="Profile"
+                           class="dropdown-item">
+                            Mi Perfil
+                        </a>
+
+                        <a asp-controller="Posts" asp-action="MyPosts"
+                           class="dropdown-item">
+                            Mis Publicaciones
+                        </a>
+
+                        @if (Context.Session.IsAdmin())
+                        {
+                            <div class="border-t border-black/5 my-2"></div>
+
+                            <a asp-controller="Admin" asp-action="Dashboard"
+                               class="dropdown-item text-primary font-bold">
+                                Panel Admin
+                            </a>
+                        }
+
+                        <div class="border-t border-black/5 my-2"></div>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit"
+                                    class="w-full text-left px-4 py-3 rounded-xl text-red-600 font-semibold hover:bg-red-50 transition">
+                                Cerrar Sesión
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <hr>
-                <a asp-controller="Posts" asp-action="Create" class="mobile-menu-item">
-                    <i class="bi bi-plus-circle"></i> Publicar
-                </a>
-                <a asp-controller="Posts" asp-action="MyPosts" class="mobile-menu-item">
-                    <i class="bi bi-card-list"></i> Mis Publicaciones
-                </a>
-                <a asp-controller="Account" asp-action="Profile" class="mobile-menu-item">
-                    <i class="bi bi-person"></i> Mi Perfil
-                </a>
-                
-                @if (Context.Session.IsAdmin())
-                {
-                    <hr>
-                    <a asp-controller="Admin" asp-action="Dashboard" class="mobile-menu-item">
-                        <i class="bi bi-shield-lock"></i> Panel Admin
-                    </a>
-                }
-                
-                <hr>
-                <form asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit" class="mobile-menu-item text-danger border-0 bg-transparent w-100 text-start">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                    </button>
-                </form>
             }
+
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="mobile-menu-item">
-                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                </a>
-                <a asp-controller="Account" asp-action="Register" class="mobile-menu-item">
-                    <i class="bi bi-person-plus"></i> Registrarse
+                <a asp-controller="Account" asp-action="Login" class="text-text-dark font-semibold text-base hover:text-primary transition-colors duration-200 relative group">Login</a>
+                <a asp-controller="Account" asp-action="Register"
+                   class="px-6 py-3 rounded-xl bg-primary font-bold shadow-soft hover:shadow-lg transition relative z-10 flex items-center gap-2">
+                    Register
+                    <span class="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
                 </a>
             }
+
+            <!-- Mobile Button -->
+            <button id="openMobileMenu" class="md:hidden p-2 rounded-xl hover:bg-black/5 transition">
+                <span class="material-symbols-outlined text-3xl">menu</span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<!-- ================= MOBILE MENU ================= -->
+<div id="mobileMenuOverlay"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden"></div>
+
+<aside id="mobileMenu"
+       class="fixed top-0 right-0 h-full w-80 bg-background shadow-2xl z-50
+              translate-x-full transition-transform duration-300">
+
+    <div class="h-20 px-6 flex items-center justify-between border-b border-black/5">
+        <h3 class="text-lg font-bold">Menú</h3>
+        <button id="closeMobileMenu" class="p-2 rounded-xl hover:bg-black/5">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+
+    <div class="p-6 space-y-3">
+        @if (Context.Session.IsAuthenticated())
+        {
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-3xl">account_circle</span>
+                <span class="font-semibold">@Context.Session.GetUsername()</span>
+            </div>
+
+            <a asp-controller="Posts" asp-action="Create" class="mobile-link">Publicar</a>
+            <a asp-controller="Posts" asp-action="MyPosts" class="mobile-link">Mis Posts</a>
+            <a asp-controller="Account" asp-action="Profile" class="mobile-link">Mi Perfil</a>
+
+            @if (Context.Session.IsAdmin())
+            {
+                <hr class="my-4">
+                <a asp-controller="Admin" asp-action="Dashboard"
+                   class="mobile-link text-primary font-bold">
+                    Panel Admin
+                </a>
+            }
+
+            <hr class="my-4">
+
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button class="w-full text-left text-red-600 font-semibold">
+                    Cerrar Sesión
+                </button>
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="mobile-link">Iniciar Sesión</a>
+            <a asp-controller="Account" asp-action="Register" class="mobile-link font-bold text-primary">Registrarse</a>
+        }
+    </div>
+</aside>
+
+<!-- ================= ALERTS ================= -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="max-w-7xl mx-auto px-6 mt-4">
+        <div class="flex justify-between items-center bg-green-100 text-green-800 px-5 py-4 rounded-xl shadow-soft">
+            <span>@TempData["SuccessMessage"]</span>
+            <button onclick="this.parentElement.remove()">✕</button>
         </div>
     </div>
-    
-    <!-- Main Content -->
-    <main role="main">
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="container mt-3">
-                <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
-                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        }
+}
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="container mt-3">
-                <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
-                    <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            </div>
-        }
-
-        @RenderBody()
-    </main>
-    
-    <!-- Footer Moderno -->
-    <footer class="modern-footer">
-        <div class="container">
-            <div class="footer-content">
-                <!-- Logo Section -->
-                <div class="footer-logo">
-                    <div class="logo-icon">
-                        <i class="bi bi-shop"></i>
-                    </div>
-                    <span class="logo-text">Flea</span>
-                </div>
-
-                <!-- Copyright -->
-                <div class="footer-copyright">
-                    © 2024 Flea Marketplace. All rights reserved.
-                </div>
-
-                <!-- Social Links -->
-                <div class="footer-social">
-                    <a href="https://twitter.com" target="_blank" class="social-link" title="Twitter">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com" target="_blank" class="social-link" title="Instagram">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                    <a href="https://github.com/melisapo/flea" target="_blank" class="social-link" title="GitHub">
-                        <i class="bi bi-github"></i>
-                    </a>
-                </div>
-            </div>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="max-w-7xl mx-auto px-6 mt-4">
+        <div class="flex justify-between items-center bg-red-100 text-red-800 px-5 py-4 rounded-xl shadow-soft">
+            <span>@TempData["ErrorMessage"]</span>
+            <button onclick="this.parentElement.remove()">✕</button>
         </div>
-    </footer>
-    
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    
-    @await RenderSectionAsync("Scripts", required: false)
+    </div>
+}
+
+<!-- ================= MAIN ================= -->
+<main class="flex-1">
+    @RenderBody()
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="border-t w-full border-black/5 py-8 text-center text-sm mx-auto px-6 lg:px-12 h-24 flex items-center justify-between">
+    <a asp-controller="Home" asp-action="Index"
+       class="flex items-center gap-1 group select-none">
+        <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-glow transition-transform group-hover:rotate-12">
+            <span class="material-symbols-outlined text-text-dark text-[22px]">spa</span>
+        </div>
+        <span class="text-xl font-extrabold tracking-tight">Flea</span>
+    </a>
+    © 2024 Flea Marketplace. All rights reserved.
+    <a href="https://github.com/melisapo/flea">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="bi bi-github" viewBox="0 0 16 16">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+        </svg>
+    </a>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+    const openBtn = document.getElementById("openMobileMenu");
+    const closeBtn = document.getElementById("closeMobileMenu");
+    const menu = document.getElementById("mobileMenu");
+    const overlay = document.getElementById("mobileMenuOverlay");
+
+    function openMenu() {
+        menu.classList.remove("translate-x-full");
+        overlay.classList.remove("hidden");
+    }
+
+    function closeMenu() {
+        menu.classList.add("translate-x-full");
+        overlay.classList.add("hidden");
+    }
+
+    openBtn?.addEventListener("click", openMenu);
+    closeBtn?.addEventListener("click", closeMenu);
+    overlay?.addEventListener("click", closeMenu);
+</script>
+
+<script>
+    const userBtn = document.getElementById("userMenuButton");
+    const userMenu = document.getElementById("userMenuDropdown");
+
+    if (userBtn && userMenu) {
+        userBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            userMenu.classList.toggle("opacity-0");
+            userMenu.classList.toggle("scale-95");
+            userMenu.classList.toggle("pointer-events-none");
+        });
+
+        document.addEventListener("click", () => {
+            userMenu.classList.add("opacity-0", "scale-95", "pointer-events-none");
+        });
+    }
+</script>
+
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

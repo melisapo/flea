@@ -235,7 +235,6 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         return await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
     }
     
-
     public async Task<User?> GetFullUserAsync(int id)
     {
         var addressRepository = new AddressRepository(dbContext);

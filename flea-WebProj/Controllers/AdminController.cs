@@ -216,7 +216,7 @@ namespace flea_WebProj.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -313,7 +313,7 @@ namespace flea_WebProj.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePost(int id)
         {
@@ -425,7 +425,7 @@ namespace flea_WebProj.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCategory(EditCategoryViewModel model)
         {
@@ -482,7 +482,7 @@ namespace flea_WebProj.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCategory(int id)
         {

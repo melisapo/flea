@@ -10,8 +10,7 @@ public interface IFileUploadService
 
 public class FileUploadService(IWebHostEnvironment environment) : IFileUploadService
 {
-    private readonly IWebHostEnvironment _environment = environment;
-    private readonly long _maxFileSize = 5 * 1024 * 1024; // 5mb
+    private const long MaxFileSize = 5 * 1024 * 1024; // 5mb
     private readonly string[] _allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
 
     public async Task<(bool success, string? filePath, string? error)> UploadImageAsync(IFormFile file, string folder = "products")
@@ -22,7 +21,7 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
             if (!IsValidImage(file))
                 return (false, null, "Archivo inválido. Solo se permiten imágenes JPG, PNG, GIF o WebP de máximo 5MB.");
             
-            var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads", folder);
+            var uploadFolder = Path.Combine(environment.WebRootPath, "uploads", folder);
             if (!Directory.Exists(uploadFolder))
                 Directory.CreateDirectory(uploadFolder);
 
@@ -65,7 +64,7 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
             if (string.IsNullOrWhiteSpace(filePath))
                 return false;
             
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+            var fullPath = Path.Combine(environment.WebRootPath, filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
 
             if (!File.Exists(fullPath)) return false;
             
@@ -84,7 +83,7 @@ public class FileUploadService(IWebHostEnvironment environment) : IFileUploadSer
         if (file == null || file.Length == 0)
             return false;
         
-        if (file.Length > _maxFileSize)
+        if (file.Length > MaxFileSize)
             return false;
         
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();

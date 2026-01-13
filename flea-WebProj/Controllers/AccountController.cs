@@ -143,7 +143,7 @@ namespace flea_WebProj.Controllers
             return View(model);
         }
 
-        // POST: /Account/EditProfile
+        // PUT: /Account/EditProfile
         [HttpPost]
         [RequireAuth]
         [ValidateAntiForgeryToken]
@@ -155,7 +155,13 @@ namespace flea_WebProj.Controllers
             var userId = HttpContext.Session.GetUserId();
             if (!userId.HasValue)
                 return RedirectToAction("Login");
-
+            if (model.RemoveProfilePic)
+            {
+                model.CurrentProfilePic = "/images/default-avatar.png";
+                var updatedUser = await authService.GetUserWithRolesAsync(userId.Value);
+                if (updatedUser != null) 
+                    HttpContext.Session.SetUser(updatedUser);
+            }
             // Actualizar foto de perfil si se subió una nueva
             if (model.NewProfilePic != null)
             {
@@ -192,8 +198,8 @@ namespace flea_WebProj.Controllers
             return View();
         }
         
-        // POST: /Account/ChangePassword
-        [HttpPost]
+        // PUT: /Account/ChangePassword
+        [HttpPut]
         [RequireAuth]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)

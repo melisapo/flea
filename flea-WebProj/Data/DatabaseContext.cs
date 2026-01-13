@@ -1,4 +1,3 @@
-using System.Data;
 using Npgsql;
 
 namespace flea_WebProj.Data;

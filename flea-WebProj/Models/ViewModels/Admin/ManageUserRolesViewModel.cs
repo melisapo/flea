@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using flea_WebProj.Models.Entities;
-
 namespace flea_WebProj.Models.ViewModels.Admin;
 
 public class ManageUserRolesViewModel

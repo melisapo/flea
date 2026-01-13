@@ -73,15 +73,15 @@
 
     <!-- Tom Select -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
-
+    
     <!-- Global CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 
-<body class="min-h-screen flex flex-col bg-background text-text-dark font-display antialiased">
+<body class="min-h-screen flex flex-col text-text-dark font-display antialiased">
 
 <!-- ================= NAVBAR ================= -->
-<header class="sticky top-0 z-50 bg-transparent backdrop-blur-xl">
+<header class="sticky top-0 z-50 bg-transparent backdrop-blur-2xl">
     <nav class="mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
 
         <!-- Logo -->
@@ -119,7 +119,7 @@
 
                     <!-- Dropdown -->
                     <div id="userMenuDropdown"
-                         class="absolute right-0 mt-3 w-56 bg-background rounded-2xl shadow-xl border border-black/5
+                         class="absolute right-0 mt-3 w-56 bg-card rounded-2xl shadow-xl border border-black/5
                     opacity-0 scale-95 pointer-events-none transition-all duration-200 origin-top-right z-50">
 
                         <a asp-controller="Account" asp-action="Profile"
@@ -146,7 +146,7 @@
 
                         <form asp-controller="Account" asp-action="Logout" method="post">
                             <button type="submit"
-                                    class="w-full text-left px-4 py-3 rounded-xl text-red-600 font-semibold hover:bg-red-50 transition">
+                                    class="dropdown-item font-bold text-destructive">
                                 Cerrar Sesión
                             </button>
                         </form>
@@ -156,12 +156,15 @@
 
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="text-text-dark font-semibold text-base hover:text-primary transition-colors duration-200 relative group">Login</a>
-                <a asp-controller="Account" asp-action="Register"
-                   class="px-6 py-3 rounded-xl bg-primary font-bold shadow-soft hover:shadow-lg transition relative z-10 flex items-center gap-2">
-                    Register
-                    <span class="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
-                </a>
+                <div class="hidden md:flex items-center gap-5">
+                    <a asp-controller="Account" asp-action="Login" class="text-text-dark font-semibold text-base hover:text-primary transition-colors duration-200 relative group">Login</a>
+                    <a asp-controller="Account" asp-action="Register"
+                       class="px-6 py-3 rounded-xl bg-primary font-bold shadow-soft hover:shadow-lg transition relative z-10 flex items-center gap-2">
+                        Register
+                        <span class="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+                    </a>
+                </div>
+                
             }
 
             <!-- Mobile Button -->

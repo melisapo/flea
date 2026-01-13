@@ -193,7 +193,7 @@ public class PostService(
             Price = post.Product.Price,
             Status = post.Product.GetStatus(),
             PostCategoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(post.ProductId),
-            AvailableCategories = await categoryRepository.GetAllAsync() ?? [],
+            AvailableCategories = await categoryRepository.GetAllAsync(),
             ExistingImages = post
                 .Product.Images.Select(i => new ImageViewModel
                 {

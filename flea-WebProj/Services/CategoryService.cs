@@ -21,7 +21,7 @@ public class CategoryService(
     public async Task<List<Category>?> GetAllCategoriesAsync()
     {
         var categories = await categoryRepository.GetAllAsync();
-        return categories ?? [];
+        return categories;
     }
 
     public Task<Category?> GetCategoryByIdAsync(int categoryId)

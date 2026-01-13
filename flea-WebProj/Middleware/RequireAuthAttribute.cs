@@ -14,7 +14,7 @@ public class RequireAuthAttribute : ActionFilterAttribute
             context.Result = new RedirectToActionResult(
                 "Login", 
                 "Account", 
-                new { returnUrl = returnUrl }
+                new { returnUrl }
             );
         }
         base.OnActionExecuting(context);

@@ -18,7 +18,7 @@ public class ProductDetailViewModel
     
     public List<ImageViewModel> Images { get; set; } = [];
     
-    public List<Shared.CategoryViewModel> Categories { get; set; } = [];
+    public List<CategoryViewModel> Categories { get; set; } = [];
 
     public int AuthorId { get; set; }
     public string AuthorUsername { get; set; } = string.Empty;

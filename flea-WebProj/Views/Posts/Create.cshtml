@@ -3,97 +3,291 @@
 @{
     ViewData["Title"] = "Crear Publicación";
 }
+<div class="min-h-screen font-display text-textMain">
+    <main class="max-w-[1200px] mx-auto px-4 sm:px-6 py-2">
+        
+        <!-- Heading -->
+        <div class="mb-10">
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+                Crear nueva publicación
+            </h1>
+            <p class="text-textMain/60 mt-2">
+                Publica tu producto y compártelo con la comunidad.
+            </p>
+        </div>
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Publicación</h4>
-                </div>
-                <div class="card-body p-4">
-                    <form asp-action="Create" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <!-- Título -->
-                        <div class="mb-3">
-                            <label asp-for="Title" class="form-label">Título *</label>
-                            <input asp-for="Title" class="form-control" placeholder="Ej: iPhone 13 Pro Max 256GB" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
+        <!-- Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <!-- FORM -->
+            <div class="lg:col-span-2 bg-white rounded-xl border border-borderSoft shadow-sm overflow-hidden">
+
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    
+                    <div class="p-6 sm:p-8 space-y-6">
+
+                        <div asp-validation-summary="ModelOnly" class="text-destructive text-sm"></div>
+
+                        <!-- Title -->
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Title" class="text-sm font-bold">Título <span class="text-destructive">*</span></label>
+                            <input asp-for="Title"
+                                   class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"
+                                   placeholder="Ej: iPhone 13 Pro Max 256GB" />
+                            <span asp-validation-for="Title" class="text-red-500 text-sm"></span>
                         </div>
-                        
-                        <!-- Descripción -->
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">Descripción *</label>
-                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Describe el producto, su estado, incluye detalles importantes..."></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
+
+                        <!-- Description -->
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Description" class="text-sm font-bold">Descripción <span class="text-destructive">*</span></label>
+                            <textarea asp-for="Description"
+                                      rows="5"
+                                      class="rounded-xl border-2 border-input bg-card p-4 resize-none text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"
+                                      placeholder="Describe el producto..."></textarea>
+                            <span asp-validation-for="Description" class="text-red-500 text-sm"></span>
                         </div>
-                        
-                        <!-- Precio -->
-                        <div class="mb-3">
-                            <label asp-for="Price" class="form-label">Precio *</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input asp-for="Price" class="form-control" placeholder="0.00" />
+
+                        <!-- Price -->
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="Price" class="text-sm font-bold">Precio <span class="text-destructive">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-textMain/40">$</span>
+                                <input asp-for="Price"
+                                       class="pl-8 block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"
+                                       placeholder="0.00" />
                             </div>
-                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <span asp-validation-for="Price" class="text-red-500 text-sm"></span>
                         </div>
-                        
-                        <!-- Categorías -->
-                        <div class="mb-3">
-                            <<label asp-for="PostCategoriesIds" class="form-label">Categorías *</label>
+
+                        <!-- Categories -->
+                        <div class="flex flex-col gap-2">
+                            <label asp-for="PostCategoriesIds" class="text-sm font-bold">
+                                Categorías <span class="text-destructive">*</span>
+                            </label>
 
                             <select asp-for="PostCategoriesIds"
                                     id="PostCategoriesIds"
-                                    class="form-select"
-                                    multiple
-                                    size="6">
-
+                                    multiple>
                                 @foreach (var category in Model.AvailableCategories)
                                 {
-                                    <option value="@category.Id">
-                                        @category.Name
-                                    </option>
+                                    <option value="@category.Id">@category.Name</option>
                                 }
                             </select>
 
-                            <span asp-validation-for="PostCategoriesIds" class="text-danger"></span>
+                            <span asp-validation-for="PostCategoriesIds" class="text-destructive text-sm"></span>
                         </div>
-                        
-                        <!-- Imágenes -->
-                        <div class="mb-3">
-                            <label asp-for="Images" class="form-label">Imágenes del producto *</label>
-                            <input asp-for="Images" class="form-control" type="file" accept="image/*" multiple>
-                            <span asp-validation-for="Images" class="text-danger"></span>
-                            <small class="form-text text-muted">Puedes subir múltiples imágenes. Formatos: JPG, PNG, GIF. Máximo 5MB cada una.</small>
+
+
+                        <!-- Images -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold">Product Images <span class="text-destructive">*</span></label>
+
+                            <div id="dropZone"
+                                 class="border-2 border-dashed border-border rounded-xl bg-background/60 transition-all duration-200 p-10 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-primary/10">
+
+                                <input asp-for="Images"
+                                       id="ImagesInput"
+                                       type="file"
+                                       multiple
+                                       accept="image/*"
+                                       class="hidden" />
+
+                                <div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                    <span class="material-symbols-outlined text-3xl">cloud_upload</span>
+                                </div>
+
+                                <p class="font-bold text-text-main">Click to upload or drag and drop</p>
+                                <p class="text-sm text-text-main/50">PNG, JPG or WEBP (max. 5MB)</p>
+                            </div>
+
+                            <!-- Preview -->
+                            <div id="imagePreview" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4"></div>
+
+                            <span asp-validation-for="Images" class="text-red-500 text-sm"></span>
                         </div>
-                        
-                        <!-- Botones -->
-                        <div class="d-flex gap-2 mt-4">
-                            <button type="submit" class="btn btn-success flex-fill">
-                                <i class="bi bi-check-circle"></i> Publicar
-                            </button>
-                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+                                            <!-- Footer -->
+                    <div class="flex flex-col sm:flex-row gap-3 justify-end border-t border-borderSoft bg-backgroundLight/40 p-6">
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="px-6 py-3 text-sm font-bold rounded-xl text-foreground hover:bg-primary/15">
+                            Cancelar
+                        </a>
+                        <button type="submit"
+                                class="bg-primary hover:bg-primary/90 px-10 py-3 rounded-xl font-bold text-textMain shadow-sm">
+                            Publicar
+                        </button>
+                    </div>
+                    </div>full
+                </form>
+            </div>
+            
+            <aside class="space-y-6 hidden lg:flex flex-col">
+
+    <!-- Pro Tips -->
+    <div class="bg-white dark:bg-white/5 p-8 rounded-xl border border-border-soft dark:border-white/10 shadow-sm">
+        <h4 class="font-bold text-lg mb-6 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">lightbulb</span>
+            Pro Tips
+        </h4>
+
+        <ul class="space-y-6">
+            <li class="flex gap-4">
+                <div class="flex-shrink-0 size-8 rounded-full bg-primary/20 text-text-main flex items-center justify-center text-xs font-bold">
+                    1
                 </div>
+                <div>
+                    <p class="font-bold text-sm">Quality Lighting</p>
+                    <p class="text-xs text-text-main/60 mt-1 leading-relaxed">
+                        Natural light makes products look more authentic and appealing.
+                    </p>
+                </div>
+            </li>
+
+            <li class="flex gap-4">
+                <div class="flex-shrink-0 size-8 rounded-full bg-primary/20 text-text-main flex items-center justify-center text-xs font-bold">
+                    2
+                </div>
+                <div>
+                    <p class="font-bold text-sm">Detailed Specs</p>
+                    <p class="text-xs text-text-main/60 mt-1 leading-relaxed">
+                        Include dimensions, material, and care instructions to reduce questions.
+                    </p>
+                </div>
+            </li>
+
+            <li class="flex gap-4">
+                <div class="flex-shrink-0 size-8 rounded-full bg-primary/20 text-text-main flex items-center justify-center text-xs font-bold">
+                    3
+                </div>
+                <div>
+                    <p class="font-bold text-sm">Tell a Story</p>
+                    <p class="text-xs text-text-main/60 mt-1 leading-relaxed">
+                        Buyers connect with the “why” behind your creation.
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Live Preview Placeholder -->
+    <div class="bg-white rounded-xl border border-border shadow-sm overflow-hidden group">
+        <div class="h-48 bg-primary/10 relative overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center text-primary/40">
+                <span class="material-symbols-outlined text-5xl">image</span>
             </div>
         </div>
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-2">
+                <div class="h-5 w-32 bg-background rounded"></div>
+                <div class="h-5 w-12 bg-primary/20 rounded"></div>
+            </div>
+            <div class="h-3 w-full bg-background rounded mb-2"></div>
+            <div class="h-3 w-2/3 bg-background rounded"></div>
+        </div>
+        <div class="px-6 pb-6 text-center">
+            <span class="text-[12px] tracking-widest font-black text-mutedForeground">Card Preview</span>
+        </div>
     </div>
+</aside>
+
+
+        </div>
+    </main>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        new TomSelect("#PostCategoriesIds", {
-            plugins: ['remove_button'],
-            persist: false,
-            create: false
+        document.addEventListener("DOMContentLoaded", function () {
+            new TomSelect("#PostCategoriesIds", {
+                plugins: ['remove_button'],
+                persist: false,
+                create: false,
+                placeholder: "Selecciona categorías…"
+            });
         });
+    </script>
+    
+    <script>
+const dropZone = document.getElementById("dropZone");
+const input = document.getElementById("ImagesInput");
+const preview = document.getElementById("imagePreview");
+
+let filesStore = [];
+
+// Click abre input
+dropZone.addEventListener("click", () => input.click());
+
+// Input change
+input.addEventListener("change", (e) => {
+    addFiles(e.target.files);
+});
+
+// Drag & drop
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("bg-primary/10");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("bg-primary/10");
+});
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-primary/10");
+    addFiles(e.dataTransfer.files);
+});
+
+function addFiles(files) {
+    for (const file of files) {
+        if (!file.type.startsWith("image/")) continue;
+        filesStore.push(file);
+    }
+    syncInput();
+    renderPreview();
+}
+
+function removeFile(index) {
+    filesStore.splice(index, 1);
+    syncInput();
+    renderPreview();
+}
+
+function syncInput() {
+    const dt = new DataTransfer();
+    filesStore.forEach(f => dt.items.add(f));
+    input.files = dt.files;
+}
+
+function renderPreview() {
+    preview.innerHTML = "";
+
+    filesStore.forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = e => {
+            const card = document.createElement("div");
+            card.className = "image-card aspect-square";
+
+            card.innerHTML = `
+                <img src="${e.target.result}" alt="">
+                <button type="button"
+                        class="remove-image"
+                        onclick="removeFile(${index})">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            `;
+
+            preview.appendChild(card);
+        };
+
+        reader.readAsDataURL(file);
     });
+}
 </script>
 
+    
+    
 }

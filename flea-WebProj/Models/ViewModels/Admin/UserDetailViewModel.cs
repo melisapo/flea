@@ -1,4 +1,3 @@
-using flea_WebProj.Models.Enums;
 using flea_WebProj.Models.ViewModels.Product;
 
 namespace flea_WebProj.Models.ViewModels.Admin;

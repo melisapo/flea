@@ -66,8 +66,8 @@
 
             <!-- INFORMACIÓN DE CONTACTO -->
             <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden">
+                <div class="h-2 bg-primary"></div>
                 <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">contact_mail</span>
                     <h5 class="text-text-main font-bold text-lg">Información de Contacto</h5>
                 </div>
 
@@ -76,8 +76,11 @@
                     {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
                             <div class="space-y-1.5">
-                                <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
                                     Email
+                                    <span class="material-symbols-outlined text-primary">
+                                        mail
+                                    </span>
                                 </label>
                                 <p class="text-text-main font-medium text-base">
                                     @Model.Contact.Email
@@ -87,8 +90,11 @@
                             @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
                             {
                                 <div class="space-y-1.5">
-                                    <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                    <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
                                         Teléfono
+                                        <span class="material-symbols-outlined text-primary">
+                                            call
+                                        </span>
                                     </label>
                                     <p class="text-text-main font-medium text-base">
                                         @Model.Contact.PhoneNumber
@@ -99,8 +105,11 @@
                             @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
                             {
                                 <div class="space-y-1.5">
-                                    <label class="text-[10px] font-bold text-text-sub/60 uppercase tracking-widest">
+                                    <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
                                         Telegram
+                                        <span class="material-symbols-outlined text-primary">
+                                            send
+                                        </span>
                                     </label>
                                     <p class="text-text-main font-medium text-base">
                                         @@@Model.Contact.TelegramUser
@@ -116,75 +125,76 @@
                 </div>
             </div>
             <div class="flex justify-between gap-5 flex-col sm:flex-row">
+                
                 <!-- DIRECCIONES -->
                 <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
-                <div class="p-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">location_on</span>
-                    <h5 class="text-text-main font-bold text-lg">Direccion</h5>
-                </div>
+                    <div class="h-2 bg-primary"></div>
+                    <div class="p-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                        <h5 class="text-text-main font-bold text-lg">Direccion</h5>
+                    </div>
 
-                <div class="p-8">
-                    @if (Model.Address != null)
-                    {
-                        <div class="flex items-center gap-6 p-6 rounded-xl bg-background-light border border-[#e5e9d8]">
-                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-primary shadow-sm">
-                                <span class="material-symbols-outlined">home</span>
+                    <div class="p-8">
+                        @if (Model.Address != null)
+                        {
+                            <div class="grid place-items-center gap-6 rounded-xl">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-primary">
+                                    <span class="material-symbols-outlined text-4xl font-bold">location_on</span>
+                                </div>
+                                <div class="grid place-items-center">
+                                    <p class="text-text-main font-bold text-2xl">
+                                        @Model.Address.City
+                                    </p>
+                                    <p class="text-text-sub text-lg">
+                                        @Model.Address.StateProvince, @Model.Address.Country
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-text-main font-bold text-lg">
-                                    @Model.Address.City
-                                </p>
-                                <p class="text-text-sub text-sm">
-                                    @Model.Address.StateProvince, @Model.Address.Country
-                                </p>
+                        }
+                        else
+                        {
+                            <p class="text-text-sub">No hay direcciones registradas.</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- PUBLICACIONES -->
+                <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
+                    <div class="h-2 bg-primary"></div>
+                    <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
+                        <h5 class="text-text-main font-bold text-lg">Mis Publicaciones</h5>
+                    </div>
+
+                    <div class="p-10 text-center">
+                        @if (Model.Posts != null && Model.Posts.Any())
+                        {
+                            <div class="text-5xl font-bold text-text-main mb-2">
+                                @Model.Posts.Count
                             </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-text-sub">No hay direcciones registradas.</p>
-                    }
+                            <p class="text-text-sub font-medium mb-8">
+                                Publicaciones compartidas
+                            </p>
+
+                            <a asp-controller="Posts"
+                               asp-action="MyPosts"
+                               class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
+                                Ver publicaciones
+                            </a>
+                        }
+                        else
+                        {
+                            <p class="text-text-sub mb-6">
+                                Aún no tienes publicaciones.
+                            </p>
+
+                            <a asp-controller="Posts"
+                               asp-action="Create"
+                               class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
+                                Crear mi primera publicación
+                            </a>
+                        }
+                    </div>
                 </div>
-            </div>
 
-            <!-- PUBLICACIONES -->
-            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
-                <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                    <span class="material-symbols-outlined text-primary">grid_view</span>
-                    <h5 class="text-text-main font-bold text-lg">Mis Publicaciones</h5>
-                </div>
-
-                <div class="p-10 text-center">
-                    @if (Model.Posts != null && Model.Posts.Any())
-                    {
-                        <div class="text-5xl font-bold text-text-main mb-2">
-                            @Model.Posts.Count
-                        </div>
-                        <p class="text-text-sub font-medium mb-8">
-                            Publicaciones compartidas
-                        </p>
-
-                        <a asp-controller="Posts"
-                           asp-action="MyPosts"
-                           class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
-                            Ver publicaciones
-                        </a>
-                    }
-                    else
-                    {
-                        <p class="text-text-sub mb-6">
-                            Aún no tienes publicaciones.
-                        </p>
-
-                        <a asp-controller="Posts"
-                           asp-action="Create"
-                           class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
-                            Crear mi primera publicación
-                        </a>
-                    }
-                </div>
-            </div>
-                
             </div>
         </div>
     </div>

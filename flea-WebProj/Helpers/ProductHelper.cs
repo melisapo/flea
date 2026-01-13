@@ -1,4 +1,3 @@
-using flea_WebProj.Models;
 using flea_WebProj.Models.Entities;
 using flea_WebProj.Models.Enums;
 

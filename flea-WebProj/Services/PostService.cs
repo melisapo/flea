@@ -39,7 +39,8 @@ public class PostService(
     IImageRepository imageRepository,
     IFileUploadService fileUploadService,
     IUserRepository userRepository,
-    IContactRepository contactRepository
+    IContactRepository contactRepository,
+    IAddressRepository addressRepository
 ) : IPostService
 {
     // Obtener detalle completo de un post
@@ -93,12 +94,17 @@ public class PostService(
 
         // Obtener contacto del autor
         var contact = await contactRepository.GetByUserIdAsync(post.AuthorId);
-        if (contact == null)
-            return model;
-
-        model.AuthorEmail = contact.Email;
-        model.AuthorPhoneNumber = contact.PhoneNumber;
-        model.AuthorTelegramUser = contact.TelegramUser;
+        if (contact != null)
+        {
+            model.AuthorEmail = contact.Email;
+            model.AuthorPhoneNumber = contact.PhoneNumber;
+            model.AuthorTelegramUser = contact.TelegramUser;
+        }
+        
+        var address = await addressRepository.GetByUserIdAsync(post.AuthorId);
+        if (address == null) return model;
+        model.AuthorState = address.StateProvince;
+        model.AuthorCountry = address.Country;
 
         return model;
     }

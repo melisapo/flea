@@ -7,7 +7,7 @@
 <div class="font-display text-textMain">
     <main class="max-w-[800px] mx-auto px-4 sm:px-6 py-2">
         <!-- Header -->
-        <div class="mb-104">
+        <div class="mb-10">
             <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Editar publicación</h1>
             <p class="text-foreground/60 mt-2">
                 Actualiza la información del producto y sus imágenes.
@@ -66,12 +66,16 @@
                         <label asp-for="Status" class="text-md font-bold">
                             Estado <span class="text-destructive">*</span>
                         </label>
+
                         <select asp-for="Status"
-                                asp-items="Html.GetEnumSelectList<flea_WebProj.Models.Enums.ProductStatus>()"
-                                class="input-field">
+                                id="Status"
+                                class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200 "
+                                asp-items="Html.GetEnumSelectList<flea_WebProj.Models.Enums.ProductStatus>()">
                         </select>
+
                         <span asp-validation-for="Status" class="text-sm text-destructive"></span>
                     </div>
+
 
                 </div>
 

@@ -227,26 +227,29 @@
     </div>
 </aside>
 
-<!-- ================= ALERTS ================= -->
+<!-- ================= TOAST CONTAINER ================= -->
+<div id="toast-container"
+     class="fixed top-6 right-6 z-50 flex flex-col gap-4 pointer-events-none">
+</div>
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="max-w-7xl mx-auto px-6 mt-4">
-        <div class="flex justify-between items-center bg-green-100 text-green-800 px-5 py-4 rounded-xl shadow-soft">
-            <span>@TempData["SuccessMessage"]</span>
-            <button onclick="this.parentElement.remove()">✕</button>
-        </div>
+    <div data-toast
+         data-type="success"
+         class="hidden">
+        @TempData["SuccessMessage"]
     </div>
 }
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="max-w-7xl mx-auto px-6 mt-4">
-        <div class="flex justify-between items-center bg-red-100 text-red-800 px-5 py-4 rounded-xl shadow-soft">
-            <span>@TempData["ErrorMessage"]</span>
-            <button onclick="this.parentElement.remove()">✕</button>
-        </div>
+    <div data-toast
+         data-type="error"
+         class="hidden">
+        @TempData["ErrorMessage"]
     </div>
 }
+
 
 <!-- ================= MAIN ================= -->
 <main class="flex-1">
@@ -314,6 +317,58 @@
     }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("toast-container");
+
+    document.querySelectorAll("[data-toast]").forEach(el => {
+        const type = el.dataset.type;
+        const message = el.innerText;
+
+        const colors = {
+            success: "bg-green-100 text-green-800",
+            error: "bg-red-100 text-red-800"
+        };
+
+        const toast = document.createElement("div");
+        toast.className = `
+            pointer-events-auto
+            flex items-center justify-between gap-4
+            px-5 py-4 rounded-xl shadow-lg
+            min-w-[280px] max-w-sm
+            ${colors[type]}
+            transform translate-x-full opacity-0
+            transition-all duration-300 ease-out
+        `;
+
+        toast.innerHTML = `
+            <span class="text-sm font-medium">${message}</span>
+            <button class="text-lg leading-none opacity-60 hover:opacity-100 transition">
+                ×
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Entrada
+        requestAnimationFrame(() => {
+            toast.classList.remove("translate-x-full", "opacity-0");
+        });
+
+        // Cierre manual
+        toast.querySelector("button").addEventListener("click", () => closeToast());
+
+        // Auto close
+        const timeout = setTimeout(closeToast, 5000);
+
+        function closeToast() {
+            clearTimeout(timeout);
+            toast.classList.add("translate-x-full", "opacity-0");
+            setTimeout(() => toast.remove(), 300);
+        }
+    });
+});
+</script>
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>

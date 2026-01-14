@@ -24,10 +24,14 @@ public class ProductDetailViewModel
     public string AuthorUsername { get; set; } = string.Empty;
     public string AuthorName { get; set; } = string.Empty;
     public string AuthorProfilePic { get; set; } = string.Empty;
+    
+    public string AuthorState { get; set; } = string.Empty;
+    
+    public string AuthorCountry {get; set; } = string.Empty;
 
     public string AuthorEmail { get; set; } = string.Empty;
     public string? AuthorPhoneNumber { get; set; }
     public string? AuthorTelegramUser { get; set; }
 
-    public bool IsOwner { get; set; } = false;
+    public bool IsOwner { get; set; }
 }

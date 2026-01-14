@@ -4,135 +4,219 @@
     ViewData["Title"] = "Editar Publicación";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Publicación</h4>
-                </div>
-                <div class="card-body p-4">
-                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                        <input type="hidden" asp-for="PostId" />
-                        <input type="hidden" asp-for="ProductId" />
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        
-                        <!-- Título -->
-                        <div class="mb-3">
-                            <label asp-for="Title" class="form-label">Título *</label>
-                            <input asp-for="Title" class="form-control" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                        
-                        <!-- Descripción -->
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">Descripción *</label>
-                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="row">
-                            <!-- Precio -->
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Price" class="form-label">Precio *</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <input asp-for="Price" class="form-control" />
-                                </div>
-                                <span asp-validation-for="Price" class="text-danger"></span>
-                            </div>
-                            
-                            <!-- Estado -->
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Status" class="form-label">Estado *</label>
-                                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<flea_WebProj.Models.Enums.ProductStatus>()"></select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                        </div>
-                        
-                        <!-- Categorías -->
-                        <div class="mb-3">
-                            <label asp-for="PostCategoriesIds" class="form-label">Categorías *</label>
-
-                            <select asp-for="PostCategoriesIds"
-                                    id="PostCategoriesIds"
-                                    class="form-select"
-                                    multiple
-                                    size="6">
-
-                                @foreach (var category in Model.AvailableCategories)
-                                {
-                                    <option value="@category.Id"
-                                            selected="@Model.PostCategoriesIds.Contains(category.Id)">
-                                        @category.Name
-                                    </option>
-                                }
-                            </select>
-
-                            <span asp-validation-for="PostCategoriesIds" class="text-danger"></span>
-                        </div>
-
-                        
-                        <!-- Imágenes existentes -->
-                        @if (Model.ExistingImages.Any())
-                        {
-                            <div class="mb-3">
-                                <label class="form-label">Imágenes actuales</label>
-                                <div class="row">
-                                    @foreach (var image in Model.ExistingImages)
-                                    {
-                                        <div class="col-md-3 col-sm-4 mb-3">
-                                            <div class="card">
-                                                <img src="@image.Path" class="card-img-top" alt="Imagen" style="height: 150px; object-fit: cover;">
-                                                <div class="card-body p-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="ImagesToDelete" value="@image.Id" id="del_@image.Id">
-                                                        <label class="form-check-label text-danger" for="del_@image.Id">
-                                                            <small>Eliminar</small>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                        
-                        <!-- Nuevas imágenes -->
-                        <div class="mb-3">
-                            <label asp-for="NewImages" class="form-label">Agregar más imágenes</label>
-                            <input asp-for="NewImages" class="form-control" type="file" accept="image/*" multiple>
-                            <small class="form-text text-muted">Formatos: JPG, PNG, GIF. Máximo 5MB cada una.</small>
-                        </div>
-                        
-                        <!-- Botones -->
-                        <div class="d-flex gap-2 mt-4">
-                            <button type="submit" class="btn btn-warning flex-fill">
-                                <i class="bi bi-check-circle"></i> Guardar Cambios
-                            </button>
-                            <a asp-action="Details" asp-route-id="@Model.PostId" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="font-display text-textMain">
+    <main class="max-w-[800px] mx-auto px-4 sm:px-6 py-2">
+        <!-- Header -->
+        <div class="mb-104">
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">Editar publicación</h1>
+            <p class="text-foreground/60 mt-2">
+                Actualiza la información del producto y sus imágenes.
+            </p>
         </div>
-    </div>
+        <!--Form-->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+            <div class="h-1.5 bg-primary"></div>
+
+            <form asp-action="Edit"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="p-6 sm:p-8 space-y-6">
+
+                <input type="hidden" asp-for="PostId"/>
+                <input type="hidden" asp-for="ProductId"/>
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-sm text-destructive"></div>
+
+                <!-- Título -->
+                <div class="flex flex-col gap-2">
+                    <label asp-for="Title" class="text-md font-bold">
+                        Título <span class="text-destructive">*</span>
+                    </label>
+                    <input asp-for="Title" class="block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"/>
+                    <span asp-validation-for="Title" class="text-sm text-destructive"></span>
+                </div>
+
+                <!-- Descripción -->
+                <div class="flex flex-col gap-2">
+                    <label asp-for="Description" class="text-md font-bold">
+                        Descripción <span class="text-destructive">*</span>
+                    </label>
+                    <textarea asp-for="Description"
+                          rows="5"
+                          class="rounded-xl border-2 border-input bg-card p-4 resize-none text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"></textarea>
+                    <span asp-validation-for="Description" class="text-sm text-destructive"></span>
+                </div>
+
+                <!-- Precio + Estado -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Price" class="text-md font-bold">
+                            Precio <span class="text-destructive">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-textMain/40">$</span>
+                            <input asp-for="Price" class="pl-8 block w-full h-11 px-4 rounded-xl border-2 border-input bg-card text-foreground placeholder:text-mutedForeground/60 focus:ring-0 focus:outline-none focus:border-primary hover:border-primary/50 transition-all duration-200"/>
+                        </div>
+                        <span asp-validation-for="Price" class="text-sm text-destructive"></span>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label asp-for="Status" class="text-md font-bold">
+                            Estado <span class="text-destructive">*</span>
+                        </label>
+                        <select asp-for="Status"
+                                asp-items="Html.GetEnumSelectList<flea_WebProj.Models.Enums.ProductStatus>()"
+                                class="input-field">
+                        </select>
+                        <span asp-validation-for="Status" class="text-sm text-destructive"></span>
+                    </div>
+
+                </div>
+
+                <!-- Categorías -->
+                <div class="flex flex-col gap-2">
+                    <label asp-for="PostCategoriesIds" class="text-md font-bold">
+                        Categorías <span class="text-destructive">*</span>
+                    </label>
+
+                    <select asp-for="PostCategoriesIds"
+                            id="PostCategoriesIds"
+                            multiple>
+                        @foreach (var category in Model.AvailableCategories)
+                        {
+                            <option value="@category.Id"
+                                    selected="@Model.PostCategoriesIds.Contains(category.Id)">
+                                @category.Name
+                            </option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="PostCategoriesIds"
+                          class="text-sm text-destructive"></span>
+                </div>
+
+                <!-- Imágenes actuales -->
+                @if (Model.ExistingImages.Any())
+                {
+                    <div class="space-y-4">
+                        <h3 class="text-md font-bold">Imágenes actuales</h3>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            @foreach (var image in Model.ExistingImages)
+                            {
+                                <div class="rounded-xl border border-border overflow-hidden">
+                                    <img src="@image.Path" class="h-32 w-full object-cover" alt=""/>
+
+                                    <label class="flex items-center gap-2 p-2 text-sm text-destructive">
+                                        <input type="checkbox"
+                                               name="ImagesToDelete"
+                                               value="@image.Id"
+                                               class="accent-destructive"/>
+                                        Eliminar
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Drag & Drop nuevas imágenes -->
+                <div class="space-y-3">
+                    <label asp-for="NewImages" class="text-md font-bold">Agregar nuevas imágenes</label>
+
+                    <div id="dropZone"
+                         class="border-2 border-dashed border-border rounded-xl bg-background/60 transition-all duration-200 p-10 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-primary/10">
+
+                        <input asp-for="NewImages"
+                               id="ImagesInput"
+                               type="file"
+                               multiple
+                               accept="image/*"
+                               class="hidden"/>
+
+                        <div class="size-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-3xl">cloud_upload</span>
+                        </div>
+
+                        <p class="font-bold text-text-main">Click to upload or drag and drop</p>
+                        <p class="text-sm text-text-main/50">PNG, JPG or WEBP (max. 5MB)</p>
+                    </div>
+                    <div id="previewGrid"
+                         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex flex-col sm:flex-row gap-3 justify-end border-t border-border p-6">
+                    <a asp-action="Details"
+                       asp-route-id="@Model.PostId"
+                       class="px-6 py-3 text-sm font-bold rounded-xl text-foreground hover:bg-primary/15">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="bg-primary hover:bg-primary/90 px-10 py-3 rounded-xl font-bold text-textMain shadow-sm">
+                        Guardar Cambios
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            new TomSelect("#PostCategoriesIds", {
+                plugins: ['remove_button'],
+                persist: false,
+                create: false,
+                placeholder: "Selecciona categorías…"
+            });
+        });
+    </script>
     
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        new TomSelect("#PostCategoriesIds", {
-            plugins: ['remove_button'],
-            persist: false,
-            create: false
-        });
-    });
-</script>
+        const dropZone = document.getElementById("dropZone");
+        const fileInput = document.getElementById("ImagesInput");
+        const previewGrid = document.getElementById("previewGrid");
 
+        dropZone.addEventListener("click", () => fileInput.click());
+
+        dropZone.addEventListener("dragover", e => {
+            e.preventDefault();
+            dropZone.classList.add("border-primary", "bg-primary/15");
+        });
+
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("border-primary", "bg-primary/15");
+        });
+
+        dropZone.addEventListener("drop", e => {
+            e.preventDefault();
+            dropZone.classList.remove("border-primary", "bg-primary/15");
+            fileInput.files = e.dataTransfer.files;
+            renderPreviews();
+        });
+
+        fileInput.addEventListener("change", renderPreviews);
+
+        function renderPreviews() {
+            previewGrid.innerHTML = "";
+            [...fileInput.files].forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    previewGrid.innerHTML += `
+                        <div class="rounded-xl overflow-hidden border border-border">
+                            <img src="${e.target.result}"
+                                 class="h-32 w-full object-cover" alt=""/>
+                        </div>`;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
 }

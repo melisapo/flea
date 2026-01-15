@@ -4,198 +4,243 @@
     ViewData["Title"] = "Mi Perfil";
 }
 
-<div class="max-w-[1140px] mx-auto px-6 py-12">
-    <div class="grid grid-cols-12 gap-10">
-
-        <!-- PERFIL -->
-        <div class="col-span-12 lg:col-span-4">
-            <div class="bg-white rounded-2xl card-shadow border border-border overflow-hidden sticky top-28">
-                <div class="h-2 bg-primary"></div>
-
-                <div class="p-8 flex flex-col items-center text-center">
-                    <div class="relative mb-6">
-                        <img src="@Model.ProfilePicture"
-                             alt="@Model.Name"
-                             class="w-28 h-28 rounded-full object-cover ring-background-light" />
+<main class="flex-1 flex flex-col items-center">
+    <!-- Header Image Section -->
+    <div class="w-full max-w-[1440px] px-8 pt-8">
+        <div class="header-gradient rounded-3xl h-[280px] w-full relative flex items-end">
+            <div class="header-pattern absolute inset-0"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#fbfdf1]/40 to-transparent"></div>
+            
+            <!-- Overlapping Avatar Container -->
+            <div class="absolute -bottom-16 left-12 flex items-end gap-8">
+                <div class="relative">
+                    <div class="w-40 h-40 rounded-full bg-white p-1.5 shadow-soft">
+                        <div class="w-full h-full rounded-full bg-cover bg-center border border-gray-100" 
+                             style="background-image: url('@Model.ProfilePicture')"></div>
                     </div>
-
-                    <h4 class="text-2xl font-bold tracking-tight text-text-main">
-                        @Model.Name
-                    </h4>
-
-                    <p class="text-text-sub text-sm mt-1">
-                        @@@Model.Username
-                    </p>
-
-                    <p class="mt-3 flex items-center gap-1.5 text-xs font-medium text-text-sub/70">
-                        <span class="material-symbols-outlined text-base">calendar_today</span>
-                        Miembro desde @Model.CreatedAt.ToString("MMMM yyyy")
-                    </p>
-
-                    @if (Model.Roles != null && Model.Roles.Any())
-                    {
-                        <div class="flex gap-2 mt-6 flex-wrap justify-center">
-                            @foreach (var role in Model.Roles)
-                            {
-                                <span class="px-3 py-1 bg-[#f0f4e4] text-text-main text-[10px] font-bold uppercase tracking-widest rounded-md border border-[#e5e9d8]">
-                                    @role.Name
-                                </span>
-                            }
-                        </div>
-                    }
-
-                    <div class="w-full mt-10 space-y-3">
-                        <a asp-action="EditProfile"
-                           class="w-full bg-primary hover:bg-primary/90 text-text-main font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all">
-                            <i class="bi bi-pencil"></i>
-                            Editar Perfil
-                        </a>
-
-                        <a asp-action="ChangePassword"
-                           class="w-full bg-white border border-[#e5e9d8] hover:border-primary/40 text-text-main font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all">
-                            <i class="bi bi-key"></i>
-                            Cambiar Contraseña
-                        </a>
+                    <div class="absolute bottom-2 right-2 bg-[#98cf54] text-white p-2 rounded-full border-4 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined block" style="font-size: 18px;">photo_camera</span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- CONTENIDO -->
-        <div class="col-span-12 lg:col-span-8 space-y-8">
-
-            <!-- INFORMACIÓN DE CONTACTO -->
-            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden">
-                <div class="h-2 bg-primary"></div>
-                <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                    <h5 class="text-text-main font-bold text-lg">Información de Contacto</h5>
+    <!-- Content Grid -->
+    <div class="w-full max-w-[1440px] px-8 pt-24 pb-12 grid grid-cols-12 gap-8">
+        
+        <!-- Left Column: Basic Info -->
+        <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+            <div class="bg-white p-8 rounded-2xl shadow-touch">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-extrabold text-[#25231e] leading-tight">@Model.Name</h1>
+                    <p class="text-[#25231e]/50 font-medium">@@@Model.Username</p>
                 </div>
+                
+                @if (Model.Roles != null && Model.Roles.Any())
+                {
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <span class="px-3 py-1 bg-[#98cf54]/10 text-[#98cf54] rounded-full text-xs font-bold uppercase tracking-wider">
+                                @role.Name
+                            </span>
+                        }
+                    </div>
+                }
 
-                <div class="p-8">
-                    @if (Model.Contact != null)
-                    {
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
-                            <div class="space-y-1.5">
-                                <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
-                                    Email
-                                    <span class="material-symbols-outlined text-primary">
-                                        mail
-                                    </span>
-                                </label>
-                                <p class="text-text-main font-medium text-base">
-                                    @Model.Contact.Email
-                                </p>
-                            </div>
-
-                            @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
-                            {
-                                <div class="space-y-1.5">
-                                    <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
-                                        Teléfono
-                                        <span class="material-symbols-outlined text-primary">
-                                            call
-                                        </span>
-                                    </label>
-                                    <p class="text-text-main font-medium text-base">
-                                        @Model.Contact.PhoneNumber
-                                    </p>
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
-                            {
-                                <div class="space-y-1.5">
-                                    <label class="text-md flex justify-start gap-2 font-bold text-text-sub/60">
-                                        Telegram
-                                        <span class="material-symbols-outlined text-primary">
-                                            send
-                                        </span>
-                                    </label>
-                                    <p class="text-text-main font-medium text-base">
-                                        @@@Model.Contact.TelegramUser
-                                    </p>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-text-sub">No hay información de contacto disponible.</p>
-                    }
+                <p class="text-[#25231e]/50 text-sm leading-relaxed mb-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">calendar_today</span>
+                    Miembro desde @Model.CreatedAt.ToString("MMMM yyyy")
+                </p>
+                
+                <div class="flex flex-col gap-3 mt-8">
+                    <a asp-action="EditProfile"
+                       class="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                        Editar Perfil
+                    </a>
+                    <a asp-action="ChangePassword"
+                       class="w-full bg-[#f0f2ea] text-[#25231e]/60 hover:bg-[#e2e4db] py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">lock</span>
+                        Cambiar Contraseña
+                    </a>
                 </div>
             </div>
-            <div class="flex justify-between gap-5 flex-col sm:flex-row">
+            <div class="bg-[#25231e] p-8 rounded-2xl text-white shadow-touch relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <span class="material-symbols-outlined text-[80px]">auto_graph</span>
+                </div>
+                <h3 class="text-[#98cf54] font-bold text-xs uppercase tracking-widest mb-6">Mis Publicaciones</h3>
                 
-                <!-- DIRECCIONES -->
-                <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
-                    <div class="h-2 bg-primary"></div>
-                    <div class="p-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                        <h5 class="text-text-main font-bold text-lg">Direccion</h5>
+                @if (Model.Posts != null && Model.Posts.Any())
+                {
+                    <div class="flex flex-col gap-1">
+                        <span class="text-6xl font-black leading-none">@Model.Posts.Count</span>
+                        <span class="text-white/50 font-medium">Publicaciones</span>
                     </div>
+                    <a asp-controller="Posts"
+                       asp-action="MyPosts"
+                       class="mt-8 flex items-center gap-2 text-[#98cf54] font-bold cursor-pointer group">
+                        <span>Ver todas</span>
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="flex flex-col gap-1">
+                        <span class="text-6xl font-black leading-none">0</span>
+                        <span class="text-white/50 font-medium">Publicaciones</span>
+                    </div>
+                    <a asp-controller="Posts"
+                       asp-action="Create"
+                       class="mt-8 flex items-center gap-2 text-[#98cf54] font-bold cursor-pointer group">
+                        <span>Crear primera</span>
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+                    </a>
+                }
+            </div>
 
-                    <div class="p-8">
-                        @if (Model.Address != null)
+        </div>
+
+        <!-- Center Column: Core Info -->
+        <div class="col-span-12 lg:col-span-6 flex flex-col gap-8">
+            
+            <!-- Contact Information -->
+            <div class="bg-white p-10 rounded-2xl shadow-touch">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="bg-[#98cf54]/20 p-3 rounded-xl">
+                        <span class="material-symbols-outlined text-[#98cf54] font-bold">contact_mail</span>
+                    </div>
+                    <h2 class="text-xl font-bold">Información de Contacto</h2>
+                </div>
+                
+                @if (Model.Contact != null)
+                {
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-xs font-bold uppercase tracking-widest text-[#25231e]/30">Email</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[#25231e]/80 font-semibold">@Model.Contact.Email</span>
+                                <span class="material-symbols-outlined text-[#98cf54] text-[18px]">verified</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
                         {
-                            <div class="grid place-items-center gap-6 rounded-xl">
-                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-primary">
-                                    <span class="material-symbols-outlined text-4xl font-bold">location_on</span>
-                                </div>
-                                <div class="grid place-items-center">
-                                    <p class="text-text-main font-bold text-2xl">
-                                        @Model.Address.City
-                                    </p>
-                                    <p class="text-text-sub text-lg">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-bold uppercase tracking-widest text-[#25231e]/30">Teléfono</span>
+                                <span class="text-[#25231e]/80 font-semibold">@Model.Contact.PhoneNumber</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
+                        {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-bold uppercase tracking-widest text-[#25231e]/30">Telegram</span>
+                                <span class="text-[#25231e]/80 font-semibold">@@@Model.Contact.TelegramUser</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-[#25231e]/50">No hay información de contacto disponible.</p>
+                }
+            </div>
+
+            <!-- Addresses Detail -->
+            @if (Model.Address != null)
+            {
+                <div class="bg-white p-10 rounded-2xl shadow-touch">
+                    <div class="flex items-center justify-between mb-10">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-[#98cf54]/20 p-3 rounded-xl">
+                                <span class="material-symbols-outlined text-[#98cf54] font-bold">location_on</span>
+                            </div>
+                            <h2 class="text-xl font-bold">Dirección</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-6">
+                        <div class="p-6 bg-[#fbfdf1] border border-[#98cf54]/20 rounded-2xl flex items-start justify-between">
+                            <div class="flex gap-4">
+                                <span class="material-symbols-outlined text-[#98cf54] mt-1">home</span>
+                                <div>
+                                    <p class="font-bold text-[#25231e]">Dirección Principal</p>
+                                    <p class="text-sm text-[#25231e]/60 mt-1">
+                                        @if (!string.IsNullOrEmpty(Model.Address.City))
+                                        {
+                                            <text>@Model.Address.City<br/></text>
+                                        }
                                         @Model.Address.StateProvince, @Model.Address.Country
                                     </p>
                                 </div>
                             </div>
-                        }
-                        else
-                        {
-                            <p class="text-text-sub">No hay direcciones registradas.</p>
-                        }
+                            <span class="bg-[#98cf54]/10 text-[#98cf54] px-3 py-1 rounded-full text-[10px] font-bold uppercase">Principal</span>
+                        </div>
                     </div>
                 </div>
+            }
+        </div>
 
-                <!-- PUBLICACIONES -->
-                <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden w-full">
-                    <div class="h-2 bg-primary"></div>
-                    <div class="px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                        <h5 class="text-text-main font-bold text-lg">Mis Publicaciones</h5>
-                    </div>
-
-                    <div class="p-10 text-center">
-                        @if (Model.Posts != null && Model.Posts.Any())
-                        {
-                            <div class="text-5xl font-bold text-text-main mb-2">
-                                @Model.Posts.Count
-                            </div>
-                            <p class="text-text-sub font-medium mb-8">
-                                Publicaciones compartidas
-                            </p>
-
-                            <a asp-controller="Posts"
-                               asp-action="MyPosts"
-                               class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
-                                Ver publicaciones
-                            </a>
-                        }
-                        else
-                        {
-                            <p class="text-text-sub mb-6">
-                                Aún no tienes publicaciones.
-                            </p>
-
-                            <a asp-controller="Posts"
-                               asp-action="Create"
-                               class="inline-flex bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-6 rounded-xl transition-all">
-                                Crear mi primera publicación
-                            </a>
-                        }
-                    </div>
+        <!-- Right Column: Stats & Actions -->
+        <div class="col-span-12 lg:col-span-3 flex flex-col gap-8">
+            <!-- Quick Create -->
+            <div class="bg-white p-8 rounded-2xl shadow-touch border-t-4 border-[#98cf54]">
+                <h3 class="font-bold text-lg mb-4">Acciones Rápidas</h3>
+                <p class="text-[#25231e]/50 text-sm mb-8 leading-relaxed">
+                    Gestiona tus publicaciones y perfil desde aquí.
+                </p>
+                
+                <div class="flex flex-col gap-4">
+                    <a asp-controller="Posts"
+                       asp-action="Create"
+                       class="flex items-center gap-3 p-4 bg-[#fbfdf1] rounded-xl cursor-pointer hover:border-[#98cf54]/50 border border-transparent transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-[#98cf54]/20 flex items-center justify-center text-[#98cf54] group-hover:bg-[#98cf54] group-hover:text-white transition-all">
+                            <span class="material-symbols-outlined">add_circle</span>
+                        </div>
+                        <span class="font-bold text-sm">Nueva Publicación</span>
+                    </a>
+                    
+                    <a asp-controller="Posts"
+                       asp-action="MyPosts"
+                       class="flex items-center gap-3 p-4 bg-[#fbfdf1] rounded-xl cursor-pointer hover:border-[#98cf54]/50 border border-transparent transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-[#98cf54]/20 flex items-center justify-center text-[#98cf54] group-hover:bg-[#98cf54] group-hover:text-white transition-all">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </div>
+                        <span class="font-bold text-sm">Mis Publicaciones</span>
+                    </a>
                 </div>
-
+                
+                <a asp-action="EditProfile"
+                   class="w-full mt-8 bg-[#98cf54] text-white py-4 rounded-xl font-bold shadow-lg shadow-[#98cf54]/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center">
+                    Editar Mi Perfil
+                </a>
             </div>
+            
         </div>
     </div>
-</div>
+</main>
+
+<style>
+    .header-gradient {
+        background: linear-gradient(135deg, #eef7e2 0%, #fbfdf1 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .header-pattern {
+        opacity: 0.4;
+        background-image: radial-gradient(#98cf54 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+    }
+    
+    .shadow-soft {
+        box-shadow: 0 10px 40px -10px rgba(152, 207, 84, 0.12);
+    }
+    
+    .shadow-touch {
+        box-shadow: 0 20px 50px -12px rgba(37, 35, 30, 0.05);
+    }
+</style>

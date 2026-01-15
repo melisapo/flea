@@ -14,18 +14,9 @@
                 <p class="lead lato-regular">Compra y vende productos de segunda mano en tu comunidad</p>
             </div>
             <div class="col-md-4 text-end">
-                @if (isAuth)
-                {
                     <a asp-controller="Posts" asp-action="Create" class="btn btn-light btn-lg">
                         <i class="bi bi-plus-circle"></i> Publicar Producto
                     </a>
-                }
-                else
-                {
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg">
-                        <i class="bi bi-person-plus"></i> Registrarse
-                    </a>
-                }
             </div>
         </div>
     </div>
@@ -134,7 +125,7 @@
                                     </span>
                                 </div>
                                 <p class="card-text text-muted small">
-                                    @(post.Description.Length > 80 ? post.Description.Substring(0, 80) + "..." : post.Description)
+                                    @(post.Description.Length > 80 ? post.Description[..80] + "..." : post.Description)
                                 </p>
                                 <h5 class="text-primary mb-2">$@post.Price.ToString("N2")</h5>
                                 <div class="d-flex align-items-center">

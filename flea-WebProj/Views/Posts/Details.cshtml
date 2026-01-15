@@ -4,204 +4,247 @@
     ViewData["Title"] = Model.Title;
 }
 
-<main class="max-w-[1200px] mx-auto px-6 lg:px-16 py-10 text-text-main">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-
-        <!-- ================= LEFT: GALLERY + DESCRIPTION ================= -->
-        <div class="lg:col-span-8 flex flex-col gap-10">
-
-            <!-- ===== Image Gallery ===== -->
-            <section class="flex flex-col gap-4">
-                <div class="aspect-[16/10] w-full rounded-2xl overflow-hidden bg-white shadow-sm border border-border-soft">
+<main class="flex-1">
+    <section class="max-w-7xl mx-auto px-6 md:px-10 lg:px-20 pt-10 pb-6">
+        <!-- Hero Section: Image + Main Info -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <!-- Main Image -->
+            <div class="relative group">
+                <div class="aspect-square rounded-3xl overflow-hidden bg-white shadow-lg border border-border">
                     @if (Model.Images.Any())
                     {
-                        <img id="mainImage"
-                             src="@Model.Images.First().Path"
-                             class="w-full h-full object-contain"
-                             alt="@Model.Title" />
+                        <div id="mainImage"
+                             class="w-full h-full transition-transform duration-500">
+                            <img src='@Model.Images.First().Path' alt="Product Image" class="w-full h-full object-cover object-center">
+                        </div>
                     }
                     else
                     {
-                        <img src="/images/no-image.png"
-                             class="w-full h-full object-contain"
-                             alt="Sin imagen" />
+                        <div class="grid place-items-center aspect-square rounded-3xl overflow-hidden bg-primary/15 shadow-lg border-2 border-primary/60">
+                            <span class="material-symbols-outlined text-6xl text-primary/60">
+                                hide_image
+                            </span>
+                        </div>
                     }
                 </div>
+            </div>
 
-                @if (Model.Images.Count > 1)
-                {
-                    <div class="flex gap-4 overflow-x-auto pb-2">
-                        @foreach (var image in Model.Images)
-                        {
-                            <button type="button"
-                                    onclick="document.getElementById('mainImage').src='@image.Path'"
-                                    class="min-w-[120px] aspect-square rounded-xl bg-white border border-border-soft hover:border-primary transition overflow-hidden">
-                                <img src="@image.Path" class="w-full h-full object-cover" alt=""/>
-                            </button>
-                        }
-                    </div>
-                }
-            </section>
-
-            <!-- ===== Description ===== -->
-            <section class="bg-white rounded-2xl p-8 lg:p-12 border border-border-soft shadow-sm">
-                <h3 class="text-xl font-bold mb-6">Descripción</h3>
-
-                <p class="text-text-main/70 leading-relaxed whitespace-pre-line">
-                    @Model.Description
-                </p>
-
-                @if (Model.Categories.Any())
-                {
-                    <div class="mt-10 pt-6 border-t border-border-soft flex flex-wrap gap-2">
-                        @foreach (var category in Model.Categories)
-                        {
-                            <span class="px-4 py-1.5 rounded-full bg-background-light border border-primary/20 text-primary text-sm font-medium">
-                                @category.Name
-                            </span>
-                        }
-                    </div>
-                }
-            </section>
-        </div>
-
-        <!-- ================= RIGHT: SIDEBAR ================= -->
-        <aside class="lg:col-span-4">
-            <div class="sticky top-28 flex flex-col gap-6">
-
-                <!-- ===== Main Info Card ===== -->
-                <div class="bg-white rounded-2xl p-8 border border-border-soft shadow-sm">
-                    <div class="flex flex-col gap-4">
-                        <span class="inline-flex self-start px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest
-                                     @(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available
-                                       ? "bg-primary/20 text-text-main"
-                                       : "bg-gray-200 text-gray-600")">
-                            @Model.StatusText
-                        </span>
-
-                        <h1 class="text-3xl font-black leading-tight">
-                            @Model.Title
-                        </h1>
-
-                        <div class="text-4xl font-black">
-                            $@Model.Price.ToString("N2")
-                        </div>
-                    </div>
-
-                    <!-- ===== Actions ===== -->
-                    <div class="mt-8 flex flex-col gap-3">
-                        @if (Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available && !Model.IsOwner)
-                        {
-                            <div class="bg-background-light rounded-xl p-4">
-                                <p class="text-sm font-bold mb-2">Contacto</p>
-
-                                <p class="text-sm">
-                                    📧 <a href="mailto:@Model.AuthorEmail" class="text-primary font-medium">@Model.AuthorEmail</a>
-                                </p>
-
-                                @if (!string.IsNullOrEmpty(Model.AuthorPhoneNumber))
-                                {
-                                    <p class="text-sm mt-1">📞 @Model.AuthorPhoneNumber</p>
-                                }
-
-                                @if (!string.IsNullOrEmpty(Model.AuthorTelegramUser))
-                                {
-                                    <p class="text-sm mt-1">✈️ @@@Model.AuthorTelegramUser</p>
-                                }
-                            </div>
-                        }
-
-                        @if (Model.IsOwner)
-                        {
-                            <div class="grid grid-cols-2 gap-3">
-                                <a asp-action="Edit"
-                                   asp-route-id="@Model.PostId"
-                                   class="border border-border-soft hover:bg-background-light rounded-xl py-3 text-sm font-bold text-center transition">
-                                    Editar
-                                </a>
-
-                                <button type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal"
-                                        class="border border-red-200 text-red-500 hover:bg-red-50 rounded-xl py-3 text-sm font-bold transition">
-                                    Eliminar
-                                </button>
-                            </div>
-                        }
+            <!-- Main Product Info -->
+            <div class="flex flex-col justify-center h-full">
+                <div class="mb-6">
+                    <span class="inline-flex items-center px-4 py-1 rounded-full @(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-[#98cf54]/20 text-[#758c5a]" : "bg-gray-200 text-gray-600") text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                        @Model.StatusText
+                    </span>
+                    
+                    <h2 class="text-4xl md:text-6xl font-extrabold leading-[1.1] text-[#25231e] tracking-tight mb-4">
+                        @Model.Title
+                    </h2>
+                    
+                    <div class="text-4xl font-light text-[#758c5a]">
+                        $@Model.Price.ToString("N2")
                     </div>
                 </div>
 
-                <!-- ===== Seller Card ===== -->
-                <div class="bg-white rounded-2xl p-6 border border-border-soft shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <img src="@Model.AuthorProfilePic"
-                             class="size-16 rounded-full object-cover ring-4 ring-background-light"
-                             alt="@Model.AuthorName" />
+                <!-- Action Buttons -->
+                <div class="flex flex-col gap-4 mt-8">
+                    @if (Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available && !Model.IsOwner)
+                    {
+                        <button class="w-full bg-[#98cf54] hover:bg-[#88bf44] text-[#25231e] px-10 py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#98cf54]/20">
+                            <span class="material-symbols-outlined">chat_bubble</span>
+                            Contactar Vendedor
+                        </button>
+                    }
 
-                        <div>
-                            <a asp-controller="User"
-                               asp-action="Profile"
-                               asp-route-id="@Model.AuthorId"
-                               class="font-extrabold text-lg hover:underline">
-                                @Model.AuthorName
+                    @if (Model.IsOwner)
+                    {
+                        <div class="grid grid-cols-2 gap-3">
+                            <a asp-action="Edit" 
+                               asp-route-id="@Model.PostId"
+                               class="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-xl">edit</span>
+                                <span>Editar</span>
                             </a>
-
-                            <p class="text-sm text-text-main/60">
-                                @@@Model.AuthorUsername
-                            </p>
+                            <button type="button"
+                                    onclick="document.getElementById('deleteModal').classList.remove('hidden')"
+                                    class="bg-red-50 hover:bg-red-100 border border-red-100 text-red-500 px-6 py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-xl">delete</span>
+                                <span>Eliminar</span>
+                            </button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- ===== Quick Details ===== -->
-                <div class="bg-white rounded-2xl p-6 border border-border-soft shadow-sm">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-text-main/50 mb-4">
-                        Detalles
-                    </h4>
-
-                    <div class="flex flex-col gap-3 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-text-main/60">Ubicación</span>
-                            <span class="font-bold">@Model.AuthorState, @Model.AuthorCountry</span>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
-        </aside>
+        </div>
+    </section>
+
+    <!-- Thumbnail Gallery -->
+    @if (Model.Images.Count > 1)
+    {
+        <section class="mb-12">
+            <div class="max-w-7xl mx-auto px-6 md:px-10 lg:px-20">
+                <div class="flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x">
+                    @foreach (var image in Model.Images)
+                    {
+                        <div onclick="document.getElementById('mainImage').style.backgroundImage = 'url(@image.Path)'"
+                             class="min-w-[140px] md:min-w-[200px] aspect-[4/3] rounded-2xl bg-white shadow-md overflow-hidden cursor-pointer snap-start hover:border-[#98cf54]/50 border-2 border-transparent transition-all">
+                            <div class="w-full h-full bg-center bg-cover" style="background-image: url('@image.Path')"></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- Description & Details Section -->
+    <div class="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-20">
+        <!-- Description -->
+        <section class="space-y-10">
+            <div class="flex flex-col gap-2">
+                <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#758c5a]">Detalles</h3>
+                <h4 class="text-3xl font-extrabold text-[#25231e]">Descripción del Producto</h4>
+            </div>
+            
+            <div class="text-[#25231e]/80 leading-relaxed text-lg space-y-6 font-light whitespace-pre-line">
+                @Model.Description
+            </div>
+
+            @if (Model.Categories.Any())
+            {
+                <div class="flex flex-wrap gap-3">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <span class="px-5 py-2 rounded-full bg-[#f9fcf3] border border-[#98cf54]/20 text-[#758c5a] text-sm font-semibold">
+                            @category.Name
+                        </span>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Quick Info Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 p-10 bg-white rounded-3xl shadow-xl border border-[#25231e]/5">
+            <div class="flex flex-col gap-2 md:border-r border-[#eef1e9] last:border-0 md:pr-4">
+                <span class="text-xs font-black uppercase tracking-widest text-[#7A808A]">Estado</span>
+                <span class="text-lg font-bold text-[#25231e]">@Model.StatusText</span>
+            </div>
+            <div class="flex flex-col gap-2 md:border-r border-[#eef1e9] last:border-0 md:pr-4">
+                <span class="text-xs font-black uppercase tracking-widest text-[#7A808A]">Ubicación</span>
+                <span class="text-lg font-bold text-[#25231e]">@Model.AuthorState, @Model.AuthorCountry</span>
+            </div>
+            <div class="flex flex-col gap-2 last:border-0">
+                <span class="text-xs font-black uppercase tracking-widest text-[#7A808A]">Publicado</span>
+                <span class="text-lg font-bold text-[#25231e]">@Model.CreatedAt.ToString("dd/MM/yyyy")</span>
+            </div>
+        </section>
+
+        <!-- Seller Card -->
+        <section class="flex flex-col md:flex-row items-center justify-between gap-10 p-10 bg-[#25231e] rounded-[3rem] text-white">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="size-20 rounded-full bg-cover bg-center ring-4 ring-[#98cf54]/40 shadow-2xl shadow-[#98cf54]/20" 
+                     style="background-image: url('@Model.AuthorProfilePic')"></div>
+                <div class="text-center md:text-left">
+                    <h4 class="text-2xl font-extrabold">@Model.AuthorName</h4>
+                    <p class="text-[#98cf54] font-medium text-sm">@@@Model.AuthorUsername</p>
+                </div>
+            </div>
+            
+            @if (Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available && !Model.IsOwner)
+            {
+                <div class="flex gap-3">
+                    @if (!string.IsNullOrEmpty(Model.AuthorEmail))
+                    {
+                        <a href="mailto:@Model.AuthorEmail"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">mail</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AuthorPhoneNumber))
+                    {
+                        <a href="tel:@Model.AuthorPhoneNumber"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">call</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AuthorTelegramUser))
+                    {
+                        <a href="https://t.me/@Model.AuthorTelegramUser" target="_blank"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">send</span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
     </div>
 
-    <!-- ===== Metadata ===== -->
-    <footer class="mt-16 pt-6 border-t border-border-soft text-sm text-text-main/50 flex flex-col md:flex-row justify-between gap-4">
-        <span>
-            Publicado el @Model.CreatedAt.ToString("dd/MM/yyyy")
+    <!-- Footer Metadata -->
+    <footer class="max-w-7xl mx-auto px-6 mt-10 pt-10 border-t border-[#eef1e9] flex flex-col md:flex-row justify-between items-center gap-6 text-[#7A808A] text-[10px] font-black uppercase tracking-[0.2em] pb-16">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-base">event</span>
+                Publicado el @Model.CreatedAt.ToString("dd 'de' MMMM, yyyy")
+            </div>
             @if (Model.UpdatedAt.HasValue)
             {
-                <span> • Actualizado el @Model.UpdatedAt.Value.ToString("dd/MM/yyyy")</span>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-base">update</span>
+                    Actualizado el @Model.UpdatedAt.Value.ToString("dd 'de' MMMM, yyyy")
+                </div>
             }
-        </span>
+        </div>
+        <div class="flex items-center gap-8">
+            <button class="hover:text-[#25231e] transition-colors">Denunciar publicación</button>
+            <button class="hover:text-[#25231e] transition-colors">Compartir</button>
+        </div>
     </footer>
 </main>
 
-<!-- ===== Delete Modal ===== -->
+<!-- Delete Modal -->
 @if (Model.IsOwner)
 {
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-red-500 text-white">
-                    <h5 class="modal-title">Eliminar publicación</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl">
+            <div class="bg-red-500 text-white p-6">
+                <div class="flex justify-between items-center">
+                    <h5 class="text-xl font-bold">Eliminar publicación</h5>
+                    <button type="button" 
+                            onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                            class="text-white hover:text-white/80">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    Esta acción no se puede deshacer.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form asp-action="Delete" asp-route-id="@Model.PostId" method="post">
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            <div class="p-6">
+                <p class="text-[#25231e] mb-6">Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar esta publicación?</p>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" 
+                            onclick="document.getElementById('deleteModal').classList.add('hidden')"
+                            class="px-6 py-3 rounded-xl border border-[#e3e6d9] text-[#25231e] font-bold hover:bg-[#f9fcf3] transition-all">
+                        Cancelar
+                    </button>
+                    <form asp-action="Delete" asp-route-id="@Model.PostId" method="post" class="inline">
+                        <button type="submit" 
+                                class="px-6 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all">
+                            Eliminar
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 }
+
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>

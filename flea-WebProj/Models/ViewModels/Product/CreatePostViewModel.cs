@@ -19,8 +19,7 @@ public class CreatePostViewModel
 
     [Required(ErrorMessage = "Debe seleccionar al menos una categoría")]
     public List<int> PostCategoriesIds { get; set; } = [];
-
-    [Required(ErrorMessage = "Debe subir al menos una imagen")]
+    
     public List<IFormFile> Images { get; set; } = [];
     
     public List<Category> AvailableCategories { get; set; } = [];

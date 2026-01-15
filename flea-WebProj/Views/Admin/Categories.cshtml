@@ -1,80 +1,232 @@
 @model flea_WebProj.Models.ViewModels.Admin.ManageCategoriesViewModel
+
 @{
     ViewData["Title"] = "Gestión de Categorías";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-tags"></i> Gestión de Categorías</h1>
-        <div>
-            <a asp-action="CreateCategory" class="btn btn-success me-2">
-                <i class="bi bi-plus-circle"></i> Nueva Categoría
-            </a>
-            <a asp-action="Dashboard" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver al Dashboard
-            </a>
-        </div>
-    </div>
+<div class="flex">
+    <!-- Sidebar -->
+    @await Html.PartialAsync("_AdminSidebar")
 
-    <div class="card">
-        <div class="card-body">
-            @if (Model.Categories != null && Model.Categories.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Slug</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var category in Model.Categories)
-                            {
-                                <tr>
-                                    <td>@category.CategoryId</td>
-                                    <td>
-                                        <strong>@category.Name</strong>
-                                    </td>
-                                    <td>
-                                        <code>@category.Slug</code>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="EditCategory" asp-route-id="@category.CategoryId" class="btn btn-sm btn-warning" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a asp-action="DeleteCategoryConfirm" asp-route-id="@category.CategoryId" class="btn btn-sm btn-danger" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-                    <p class="text-muted mt-3">No hay categorías creadas</p>
-                    <a asp-action="CreateCategory" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Crear Primera Categoría
-                    </a>
-                </div>
-            }
-        </div>
-    </div>
+    <!-- Main Content Area -->
+    <main class="flex-1 p-3">
+        <!-- Header & Breadcrumbs -->
+        <header class="mb-8">
+            <nav class="flex items-center gap-2 text-sm text-mutedForeground mb-4">
+                <span class="hover:text-primary cursor-pointer">Admin Panel</span>
+                <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <span class="text-text-main dark:text-white font-medium">Categorías</span>
+            </nav>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h2 class="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">Gestión de Categorías</h2>
+            </div>
+        </header>
 
-    @if (Model.Categories.Any())
-    {
-        <div class="alert alert-info mt-3">
-            <i class="bi bi-info-circle"></i>
-            <strong>Total:</strong> @Model.Categories.Count categoría(s) registrada(s)
+        <!-- Dashboard Grid: 70/30 Split -->
+        <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
+            <!-- Left Side: Table (70%) -->
+            <section class="lg:col-span-7">
+                <div class="bg-white border border-[#dce3d3] rounded-xl overflow-hidden shadow-sm">
+                    @if (Model.Categories != null && Model.Categories.Any())
+                    {
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="dark:bg-[#252525] border-b border-border">
+                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Nombre</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Slug</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider text-center">Publicaciones</th>
+                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#dce3d3] dark:divide-[#333]">
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <tr class="hover:bg-secondarytransition-colors group">
+                                            <td class="px-6 py-4 text-sm font-semibold">@category.Name</td>
+                                            <td class="px-6 py-4 text-sm font-mono text-muted">@category.Slug</td>
+                                            <td class="px-6 py-4 text-center">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20">
+                                                    @category.PostCount
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-right">
+                                                <div class="flex justify-end gap-2">
+                                                    <a asp-action="Categories" 
+                                                       asp-route-editId="@category.CategoryId"
+                                                       class="p-2 hover:bg-primary/10 rounded-lg transition-colors text-primary inline-block" 
+                                                       title="Editar">
+                                                        <span class="material-symbols-outlined">edit_note</span>
+                                                    </a>
+                                                    <a asp-action="DeleteCategoryConfirm" 
+                                                       asp-route-id="@category.CategoryId"
+                                                       class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors text-red-500 inline-block" 
+                                                       title="Eliminar">
+                                                        <span class="material-symbols-outlined">delete</span>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Footer -->
+                        <div class="px-6 py-4 bg-background-light/50 dark:bg-background-dark/50 border-t border-[#dce3d3] dark:border-[#333] flex items-center justify-between">
+                            <p class="text-xs text-muted">Mostrando @Model.Categories.Count categoría(s)</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Empty State -->
+                        <div class="py-16 text-center">
+                            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/15 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary/90 text-4xl">category</span>
+                            </div>
+                            <h3 class="text-lg font-bold mb-2">No hay categorías</h3>
+                            <p class="text-sm text-mutedForeground">Crea tu primera categoría usando el formulario lateral</p>
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <!-- Right Side: Create/Edit Form (30%) -->
+            <section class="lg:col-span-3">
+                <div class="bg-white border border-[#dce3d3] rounded-xl shadow-lg p-6 sticky top-8">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">
+                            @(Model.IsEditMode ? "edit_note" : "add_circle")
+                        </span>
+                        <h3 class="text-xl font-bold">
+                            @(Model.IsEditMode ? "Editar Categoría" : "Añadir Categoría")
+                        </h3>
+                    </div>
+
+                    <form asp-action="SaveCategory" 
+                          method="post" 
+                          class="space-y-5">
+                        @Html.AntiForgeryToken()
+                        
+                        @if (Model.IsEditMode && Model.Form.CategoryId.HasValue)
+                        {
+                            <input type="hidden" asp-for="Form.CategoryId" />
+                        }
+
+                        <!-- Name Field -->
+                        <div class="space-y-2">
+                            <label asp-for="Form.Name" 
+                                   class="text-sm font-semibold">
+                                Nombre
+                            </label>
+                            <input asp-for="Form.Name"
+                                   class="w-full border border-[#dce3d3] rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-mutedForeground/60"
+                                   placeholder="Escribe el nombre..."
+                                   type="text"
+                                   id="categoryName"/>
+                            <span asp-validation-for="Form.Name" class="text-xs text-red-500"></span>
+                        </div>
+
+                        <!-- Slug Field -->
+                        <div class="space-y-2">
+                            <label asp-for="Form.Slug" 
+                                   class="text-sm font-semibold">
+                                Slug
+                            </label>
+                            <div class="relative">
+                                <input asp-for="Form.Slug"
+                                       class="w-full border border-[#dce3d3] rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-mutedForeground/60"
+                                       placeholder="url-amigable-aqui"
+                                       type="text"
+                                       id="categorySlug"/>
+                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-mutedForeground text-lg pointer-events-none">link</span>
+                            </div>
+                            <span asp-validation-for="Form.Slug" class="text-xs text-red-500"></span>
+                            <p class="text-[10px] text-mutedForeground italic mt-1">
+                                El slug se utiliza para la URL pública (ej: shop.com/c/nombre-slug)
+                            </p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-4">
+                            <button type="submit"
+                                    class="w-full bg-primary hover:bg-primary/90 text-text-main font-bold py-3 px-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2 group">
+                                <span class="material-symbols-outlined text-xl transition-transform group-active:scale-95">save</span>
+                                @(Model.IsEditMode ? "Actualizar Categoría" : "Guardar Categoría")
+                            </button>
+                        </div>
+
+                        @if (Model.IsEditMode)
+                        {
+                            <div class="pt-2">
+                                <a asp-action="Categories"
+                                   class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-text-main dark:text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-xl">close</span>
+                                    Cancelar Edición
+                                </a>
+                            </div>
+                        }
+                    </form>
+
+                    <!-- Pro Tip Box -->
+                    <div class="mt-8 p-4 bg-primary/10 rounded-lg border border-primary/30">
+                        <h4 class="text-xs font-bold text-text-main mb-2 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">info</span>
+                            Consejo Pro
+                        </h4>
+                        <p class="text-[11px] leading-relaxed text-mutedForeground">
+                            Mantén los slugs cortos y descriptivos para mejorar el SEO de tu tienda online. Evita usar caracteres especiales o espacios.
+                        </p>
+                    </div>
+                </div>
+            </section>
         </div>
-    }
+    </main>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Auto-generate slug from name
+        const nameInput = document.getElementById('categoryName');
+        const slugInput = document.getElementById('categorySlug');
+        
+        if (nameInput && slugInput && !@Model.IsEditMode.ToString().ToLower()) {
+            nameInput.addEventListener('input', function() {
+                slugInput.value = this.value
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[áàäâ]/g, 'a')
+                    .replace(/[éèëê]/g, 'e')
+                    .replace(/[íìïî]/g, 'i')
+                    .replace(/[óòöô]/g, 'o')
+                    .replace(/[úùüû]/g, 'u')
+                    .replace(/ñ/g, 'n')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            });
+        }
+
+        // Simple search filter
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('td:first-child').textContent.toLowerCase();
+                    const slug = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || slug.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+}

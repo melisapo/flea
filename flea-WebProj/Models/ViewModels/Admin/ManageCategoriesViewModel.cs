@@ -6,10 +6,8 @@ public class ManageCategoriesViewModel
 {
     // Tabla de categorías
     public List<CategoryManageItem>? Categories { get; set; } = [];
-
     // Formulario lateral (crear / editar)
     public CategoryFormViewModel Form { get; set; } = new();
-
     // UI state
     public bool IsEditMode { get; set; }
 }
@@ -17,11 +15,8 @@ public class ManageCategoriesViewModel
 public class CategoryManageItem
 {
     public int CategoryId { get; set; }
-
     public string Name { get; set; } = string.Empty;
-
     public string Slug { get; set; } = string.Empty;
-
     public int PostCount { get; set; }
 }
 

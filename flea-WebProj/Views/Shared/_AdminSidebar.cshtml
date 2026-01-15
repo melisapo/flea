@@ -4,14 +4,14 @@
     var user = ViewBag.User as flea_WebProj.Models.Entities.User;
 }
 
-<aside class="w-64 border-r border-[#dce3d3] dark:border-[#333] bg-background-light dark:bg-background-dark flex flex-col fixed h-full transition-colors duration-300 z-40">
+<aside class="w-64 border-r border-[#dce3d3] bg-background dark:bg-background-dark flex flex-col fixed h-full transition-colors duration-300 z-40">
     <!-- Header -->
     <div class="p-6 flex items-center gap-3">
         <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
             <span class="material-symbols-outlined">inventory_2</span>
         </div>
         <div>
-            <h1 class="text-text-main dark:text-white font-bold text-sm leading-tight uppercase tracking-wider">Admin Panel</h1>
+            <h1 class="text-foreground dark:text-white font-bold text-sm leading-tight uppercase tracking-wider">Admin Panel</h1>
             <p class="text-muted text-xs">Gestión de Tienda</p>
         </div>
     </div>
@@ -22,7 +22,7 @@
         <a 
            asp-controller="Admin" 
            asp-action="Dashboard"
-           class="flex items-center gap-3 px-4 py-3 @(currentController == "Dashboard" ? "text-text-main dark:text-white bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
+           class="flex items-center gap-3 px-4 py-3 @(currentController == "Dashboard" ? " bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
             <span class="material-symbols-outlined @(currentController == "Dashboard" ? "text-primary" : "group-hover:text-primary")">dashboard</span>
             <span class="text-sm @(currentController == "Dashboard" ? "font-semibold" : "font-medium")">Dashboard</span>
         </a>

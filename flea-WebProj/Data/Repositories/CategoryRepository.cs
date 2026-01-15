@@ -16,6 +16,7 @@ public interface ICategoryRepository
     Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId);
     Task<List<CategoryStatsItem>?> GetTrendingCategoriesAsync(int limit);
     Task<List<int>> GetProductCategoriesIdsAsync(int productId);
+    Task<bool> ExistSlugAsync(string modelSlug, int modelCategoryId);
 }
 
 public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
@@ -190,6 +191,18 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
             """;
         var parameters = new[] { new NpgsqlParameter("@productId", productId) };
         return await dbContext.ExecuteQueryAsync(query, MapCategoryId, parameters);
+    }
+
+    public async Task<bool> ExistSlugAsync(string modelSlug, int modelCategoryId)
+    {
+        const string query = "SELECT COUNT(*) FROM categories WHERE slug = @slug AND id != @categoryId";
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@slug", modelSlug),
+            new NpgsqlParameter("categoryId", modelCategoryId)
+        };
+        var result = await dbContext.ExecuteScalarAsync(query, parameters);
+        return Convert.ToInt64(result) > 0;
     }
 
     private static int MapCategoryId(NpgsqlDataReader reader)

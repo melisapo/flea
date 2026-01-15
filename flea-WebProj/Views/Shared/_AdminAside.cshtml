@@ -1,0 +1,60 @@
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    var user = ViewBag.User as flea_WebProj.Models.Entities.User;
+}
+
+<aside class="w-64 border-r border-[#dce3d3] dark:border-[#333] bg-background-light dark:bg-background-dark flex flex-col fixed h-full transition-colors duration-300 z-40">
+    <!-- Header -->
+    <div class="p-6 flex items-center gap-3">
+        <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+            <span class="material-symbols-outlined">inventory_2</span>
+        </div>
+        <div>
+            <h1 class="text-text-main dark:text-white font-bold text-sm leading-tight uppercase tracking-wider">Admin Panel</h1>
+            <p class="text-muted text-xs">Gestión de Tienda</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <!-- Dashboard -->
+        <a 
+           asp-controller="Admin" 
+           asp-action="Dashboard"
+           class="flex items-center gap-3 px-4 py-3 @(currentController == "Dashboard" ? "text-text-main dark:text-white bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
+            <span class="material-symbols-outlined @(currentController == "Dashboard" ? "text-primary" : "group-hover:text-primary")">dashboard</span>
+            <span class="text-sm @(currentController == "Dashboard" ? "font-semibold" : "font-medium")">Dashboard</span>
+        </a>
+
+        <!-- Categories -->
+        <a 
+           asp-controller="Admin" 
+           asp-action="Categories"
+           class="flex items-center gap-3 px-4 py-3 @(currentController == "Categories" ? "text-text-main dark:text-white bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
+            <span class="material-symbols-outlined @(currentController == "Categories" ? "text-primary" : "group-hover:text-primary")">category</span>
+            <span class="text-sm @(currentController == "Categories" ? "font-semibold" : "font-medium")">Categorías</span>
+        </a>
+
+        <!-- Posts -->
+        <a 
+           asp-controller="Admin" 
+           asp-action="Posts"
+           class="flex items-center gap-3 px-4 py-3 @(currentController == "Posts" ? "text-text-main dark:text-white bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
+            <span class="material-symbols-outlined @(currentController == "Posts" ? "text-primary" : "group-hover:text-primary")">article</span>
+            <span class="text-sm @(currentController == "Posts" ? "font-semibold" : "font-medium")">Publicaciones</span>
+        </a>
+
+        <!-- Users -->
+        <a 
+            asp-controller="Admin" 
+           asp-action="Users"
+           class="flex items-center gap-3 px-4 py-3 @(currentController == "Users" ? "text-text-main dark:text-white bg-primary/10 border-r-4 border-primary" : "text-muted hover:bg-primary/10") rounded-lg transition-all group">
+            <span class="material-symbols-outlined @(currentController == "Users" ? "text-primary" : "group-hover:text-primary")">group</span>
+            <span class="text-sm @(currentController == "Users" ? "font-semibold" : "font-medium")">Usuarios</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- Spacer for fixed sidebar -->
+<div class="w-64 flex-shrink-0"></div>

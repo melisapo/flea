@@ -30,6 +30,7 @@ public interface IPostService
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 20);
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int authorId, int limit);
     Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
+    
 }
 
 public class PostService(
@@ -256,11 +257,9 @@ public class PostService(
                 foreach (var imageId in model.ImagesToDelete)
                 {
                     var image = await imageRepository.GetByIdAsync(imageId);
-                    if (image != null)
-                    {
-                        fileUploadService.DeleteImage(image.Path);
-                        await imageRepository.DeleteAsync(imageId);
-                    }
+                    if (image == null) continue;
+                    fileUploadService.DeleteImage(image.Path);
+                    await imageRepository.DeleteAsync(imageId);
                 }
             }
 

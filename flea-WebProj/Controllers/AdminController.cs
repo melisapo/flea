@@ -10,7 +10,8 @@ namespace flea_WebProj.Controllers
     [RequireAdmin]
     public class AdminController(
         IAdminService adminService,
-        IPostService postService) : Controller
+        IPostService postService,
+        ICategoryService categoryService) : Controller
     {
         // ============ DASHBOARD ============
 
@@ -67,50 +68,7 @@ namespace flea_WebProj.Controllers
                 return RedirectToAction("Dashboard");
             }
         }
-
-        [HttpGet]
-        public async Task<IActionResult> UserDetails(int id)
-        {
-            try
-            {
-                var user = await adminService.GetUserByIdAsync(id);
-                var roles = await adminService.GetUserRolesAsync(id);
-
-                if (user is not { Contact: not null, Posts: not null, Address: not null })
-                {
-                    TempData["ErrorMessage"] = $"Error al cargar detalles:\n user: {user.Name}\nuserContact: {user.Contact?.Email}\nuserAddress: {user.Address?.StateProvince} ";
-                    return RedirectToAction("Users");
-                }
-                   
-                
-                var viewModel = new UserDetailViewModel
-                {
-                    UserId = user.Id,
-                    Username = user.Username,
-                    Name = user.Name,
-                    Email = user.Contact.Email,
-                    PhoneNumber = user.Contact.PhoneNumber,
-                    TelegramUser = user.Contact.TelegramUser,
-                    ProfilePic = user.ProfilePicture,
-                    CreatedAt = user.CreatedAt,
-                    Roles = roles.Select(r => r.Name).ToList(),
-                    City = user.Address.City,
-                    StateProvince = user.Address.StateProvince,
-                    Country = user.Address.Country,
-                    TotalPosts = user.Posts.Count,
-                    RecentPosts = await postService.GetRecentPostsAsync(user.Id, 20)
-                };
-
-                return View(viewModel);
-
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error al cargar detalles: {ex.Message}";
-                return RedirectToAction("Users");
-            }
-        }
-
+        
         [HttpGet]
         [RequireAdmin]
         public async Task<IActionResult> ManageUserRoles(int userId)
@@ -257,6 +215,8 @@ namespace flea_WebProj.Controllers
                 {
                     var author = await adminService.GetUserByIdAsync(post.AuthorId);
                     var product = await postService.GetProductByPostIdAsync(post.Id);
+                    var categoryList = await categoryService.GetByProductIdAsync(product.Id);
+                    
                         viewModel.Posts.Add(new PostManageItem
                         {
                             PostId = post.Id,
@@ -270,7 +230,9 @@ namespace flea_WebProj.Controllers
                             AuthorId = author.Id,
                             AuthorUsername = author.Username,
                             AuthorName = author.Name,
-                            Categories = await adminService.GetProductCategoriesAsync(product.Id)
+                            Categories = categoryList
+                                .Select(c => c.Name)
+                                .ToList()
                         });
                 }
 
@@ -340,20 +302,32 @@ namespace flea_WebProj.Controllers
         // ============ CATEGORY MANAGEMENT ============
 
         [HttpGet]
-        public async Task<IActionResult> Categories()
+        public async Task<IActionResult> Categories(int? editId = null)
         {
             try
             {
-                var categories = await adminService.GetAllCategoriesAsync();
+                var categories = await categoryService.GetAllCategoriesAsync() ?? [];
                 var viewModel = new ManageCategoriesViewModel
                 {
                     Categories = categories.Select(c => new CategoryManageItem
                     {
                         CategoryId = c.Id,
                         Name = c.Name,
-                        Slug = c.Slug
-                    }).ToList()
+                        Slug = c.Slug,
+                        PostCount = c.Products.Count
+                    }) as List<CategoryManageItem>
                 };
+                
+                if (!editId.HasValue) return View(viewModel);
+                {
+                    var category = categories.FirstOrDefault(c => c.Id == editId.Value);
+                    if (category == null) return View(viewModel);
+                    
+                    viewModel.IsEditMode = true;
+                    viewModel.Form.CategoryId = category.Id;
+                    viewModel.Form.Name = category.Name;
+                    viewModel.Form.Slug = category.Slug;
+                }
 
                 return View(viewModel);
             }
@@ -363,101 +337,51 @@ namespace flea_WebProj.Controllers
                 return RedirectToAction("Dashboard");
             }
         }
-
-        [HttpGet]
-        public IActionResult CreateCategory()
-        {
-            return View();
-        }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCategory(CreateCategoryViewModel model)
+        public async Task<IActionResult> SaveCategory(CategoryFormViewModel form)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                TempData["ErrorMessage"] = "Revisa los campos del formulario";
+                return RedirectToAction(nameof(Categories), new { editId = form.CategoryId });
             }
 
             try
             {
-                await adminService.CreateCategoryAsync(model);
-                TempData["SuccessMessage"] = "Categoría creada correctamente";
-                return RedirectToAction("Categories");
-            }
-            catch (InvalidOperationException ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                return View(model);
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return View(model);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> EditCategory(int id)
-        {
-            try
-            {
-                var category = await adminService.GetCategoryByIdAsync(id);
-                if (category == null)
+                if (form.CategoryId is null)
                 {
-                    TempData["ErrorMessage"] = "Categoría no encontrada";
-                    return RedirectToAction("Categories");
+                    await categoryService.CreateCategoryAsync(form);
+                    TempData["SuccessMessage"] = "Categoría creada correctamente";
+                }
+                else
+                {
+                    await categoryService.UpdateCategoryAsync(form);
+                    TempData["SuccessMessage"] = "Categoría actualizada correctamente";
                 }
 
-                var viewModel = new EditCategoryViewModel
-                {
-                    CategoryId = category.Id,
-                    Name = category.Name,
-                    Slug = category.Slug
-                };
-
-                return View(viewModel);
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return RedirectToAction("Categories");
-            }
-        }
-
-        [HttpPut]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCategory(EditCategoryViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            try
-            {
-                await adminService.UpdateCategoryAsync(model);
-                TempData["SuccessMessage"] = "Categoría actualizada correctamente";
-                return RedirectToAction("Categories");
+                return RedirectToAction(nameof(Categories));
             }
             catch (InvalidOperationException ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View(model);
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Categories), new { editId = form.CategoryId });
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return View(model);
+                return RedirectToAction(nameof(Categories));
             }
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> DeleteCategoryConfirm(int id)
         {
             try
             {
-                var category = await adminService.GetCategoryByIdAsync(id);
+                var category = await categoryService.GetCategoryByIdAsync(id);
                 if (category == null)
                 {
                     TempData["ErrorMessage"] = "Categoría no encontrada";
@@ -482,14 +406,14 @@ namespace flea_WebProj.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try
             {
-                var result = await adminService.DeleteCategoryAsync(id);
-                if (result)
+                var result = await categoryService.DeleteCategoryAsync(id);
+                if (result.success)
                 {
                     TempData["SuccessMessage"] = "Categoría eliminada correctamente";
                 }

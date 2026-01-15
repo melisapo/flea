@@ -7,7 +7,6 @@ public interface IProductRepository
 {
     Task<Product?> GetByIdAsync(int id);
     Task<List<Product>> GetByStatusAsync(string status);
-    Task<List<Product>> GetByCategoryIdAsync(int categoryId);
     Task<Product?> GetByPostIdAsync (int postId);
     Task<Product?> GetWithDetailsAsync(int id);
     Task<int> CreateAsync(Product product);
@@ -42,19 +41,7 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         var productParams = new[] { new NpgsqlParameter("@status", status) };
         return await dbContext.ExecuteQueryAsync(productQuery, MapProduct, productParams);
     }
-
-    public async Task<List<Product>> GetByCategoryIdAsync(int categoryId)
-    {
-        const string query = """
-                             SELECT p.id, p.price, p.status
-                             FROM products p 
-                             INNER JOIN product_categories pc on pc.product_id = p.id
-                             WHERE pc.category_id = @categoryId
-                             """;
-        var productParams = new[] { new NpgsqlParameter("@categoryId", categoryId) };
-        return await dbContext.ExecuteQueryAsync(query, MapProduct, productParams);
-    }
-
+    
     public async Task<Product?> GetByPostIdAsync(int postId)
     {
         const string query = """

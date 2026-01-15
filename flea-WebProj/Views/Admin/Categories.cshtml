@@ -18,7 +18,7 @@
 
     <div class="card">
         <div class="card-body">
-            @if (Model.Categories.Any())
+            @if (Model.Categories != null && Model.Categories.Any())
             {
                 <div class="table-responsive">
                     <table class="table table-hover">

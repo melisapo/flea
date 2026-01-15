@@ -19,14 +19,6 @@ public interface IAdminService
     Task<List<Post>> GetAllPostsAsync();
     Task<Post?> GetPostByIdAsync(int postId);
     Task<bool> DeletePostAsync(int postId);
-        
-    // Category Management
-    Task<List<Category>> GetAllCategoriesAsync();
-    Task<List<string>> GetProductCategoriesAsync(int productId);
-    Task<Category?> GetCategoryByIdAsync(int id);
-    Task<Category> CreateCategoryAsync(CreateCategoryViewModel model);
-    Task<Category> UpdateCategoryAsync(EditCategoryViewModel model);
-    Task<bool> DeleteCategoryAsync(int id);
     
     //Role Management
     Task<List<Role>> GetAllRolesAsync();
@@ -190,59 +182,7 @@ public class AdminService(
     {
         return await postRepository.DeleteAsync(postId);
     }
-
-    public async Task<List<Category>> GetAllCategoriesAsync()
-    {
-        return await categoryRepository.GetAllAsync();
-    }
-
-    public async Task<List<string>> GetProductCategoriesAsync(int productId)
-    {
-        var categoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(productId);
-        var categories = new List<string>();
-            
-        foreach(var id in categoriesIds){
-                var category = await categoryRepository.GetByIdAsync(id) ?? new Category();
-                categories.Add(category.Name);
-        }
-
-        return categories;
-    }
-
-    public async Task<Category?> GetCategoryByIdAsync(int id)
-    {
-        return await categoryRepository.GetByIdAsync(id);
-    }
-
-    public async Task<Category> CreateCategoryAsync(CreateCategoryViewModel model)
-    {
-        var category = new Category
-        {
-            Name = model.Name,
-            Slug = model.Slug
-        };
-        var id =  await categoryRepository.CreateAsync(category);
-        
-        return await categoryRepository.GetByIdAsync(id) ?? new Category();
-    }
-
-    public async Task<Category> UpdateCategoryAsync(EditCategoryViewModel model)
-    {
-        var category = new Category
-        {
-            Id = model.CategoryId,
-            Name = model.Name,
-            Slug = model.Slug
-        };
-        await categoryRepository.UpdateAsync(category);
-        return await categoryRepository.GetByIdAsync(model.CategoryId) ?? category;
-    }
-
-    public async Task<bool> DeleteCategoryAsync(int id)
-    {
-        return await categoryRepository.DeleteAsync(id);
-    }
-
+    
     public async Task<List<Role>> GetAllRolesAsync()
     {
         return await roleRepository.GetAllAsync();

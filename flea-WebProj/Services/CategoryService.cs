@@ -9,14 +9,16 @@ public interface ICategoryService
     public Task<List<Category>?> GetAllCategoriesAsync();
     public Task<Category?> GetCategoryByIdAsync(int categoryId);
     Task<List<CategoryStatsItem>?> GetTrendingCategoriesAsync(int limit);
-    public Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model);
-    public Task<(bool success, string message)> UpdateCategoryAsync(ManageCategoriesViewModel model);
+    Task<List<Category>> GetByProductIdAsync(int productId);
+    Task<(bool success, string message)> CreateCategoryAsync(CategoryFormViewModel model);
+    Task<(bool success, string message)> UpdateCategoryAsync(CategoryFormViewModel model);
     public Task<(bool success, string message)> DeleteCategoryAsync(int categoryId);
 }
 
 public class CategoryService(
     ICategoryRepository categoryRepository,
-    IPostRepository postRepository) : ICategoryService
+    IPostRepository postRepository,
+    IProductRepository productRepository) : ICategoryService
 {
     public async Task<List<Category>?> GetAllCategoriesAsync()
     {
@@ -36,48 +38,89 @@ public class CategoryService(
         return categories ?? [];
     }
 
-    public async Task<(bool success, string message)> CreateCategoryAsync(ManageCategoriesViewModel model)
+    public async Task<List<Category>> GetByProductIdAsync(int productId)
     {
-        var category = new Category
+        var categoriesIds = await categoryRepository.GetProductCategoriesIdsAsync(productId);
+        List<Category> categories = [];
+        foreach (var id in categoriesIds)
         {
-            Name = model.Name,
-            Slug = model.Slug,
-        };
-        
-        var categoryId = await categoryRepository.CreateAsync(category);
-        return (true, "Categoria creado correctamente, id: " + categoryId);
+            var category = await categoryRepository.GetByIdAsync(id) ?? new Category();
+            categories.Add(category);
+        }
+        return categories;
     }
 
-    public async Task<(bool success, string message)> UpdateCategoryAsync(ManageCategoriesViewModel model)
+    public async Task<(bool success, string message)> CreateCategoryAsync(CategoryFormViewModel model)
     {
+        var exists = await categoryRepository.GetBySlugAsync(model.Slug);
+        if (exists != null)
+            return (false, "Ya existe una categoría con ese slug");
+
         var category = new Category
         {
             Name = model.Name,
-            Slug = model.Slug,
+            Slug = model.Slug
         };
-        
+
+        await categoryRepository.CreateAsync(category);
+
+        return (true, "Categoría creada correctamente");
+    }
+    public async Task<(bool success, string message)> UpdateCategoryAsync(CategoryFormViewModel model)
+    {
+        if (model.CategoryId is null)
+            return (false, "ID de categoría inválido");
+
+        var category = await categoryRepository.GetByIdAsync(model.CategoryId.Value);
+        if (category == null)
+            return (false, "Categoría no encontrada");
+
+        var slugInUse = await categoryRepository.ExistSlugAsync(model.Slug, model.CategoryId.Value);
+
+        if (slugInUse)
+            return (false, "Ya existe otra categoría con ese slug");
+
+        category.Name = model.Name;
+        category.Slug = model.Slug;
+
         var updated = await categoryRepository.UpdateAsync(category);
-        return !updated ? (false, "Error al actualizar categoria") : (true, "Categoria actualizada correctamente");
+
+        return updated
+            ? (true, "Categoría actualizada correctamente")
+            : (false, "Error al actualizar categoría");
     }
 
 
     public async Task<(bool success, string message)> DeleteCategoryAsync(int categoryId)
     {
+        var category = await categoryRepository.GetByIdAsync(categoryId);
+        if (category == null)
+            return (false, "La categoría no existe");
+
         var posts = await postRepository.GetByCategoryAsync(categoryId);
-        if (posts != null && posts.Count != 0)
+
+        if (posts is { Count: > 0 })
         {
             var otherCategory = await categoryRepository.GetBySlugAsync("otros");
+
             foreach (var post in posts)
             {
-                await categoryRepository
-                    .RemoveCategoryFromProductAsync(post.ProductId, categoryId);
+                await categoryRepository.RemoveCategoryFromProductAsync(post.ProductId, categoryId);
+
                 if (otherCategory != null)
-                    await categoryRepository.AssignCategoryToProductAsync(post.ProductId, otherCategory.Id);
+                {
+                    await categoryRepository.AssignCategoryToProductAsync(
+                        post.ProductId,
+                        otherCategory.Id
+                    );
+                }
             }
         }
-        
+
         var deleted = await categoryRepository.DeleteAsync(categoryId);
-        
-        return !deleted? (false, "Error al eliminar categoria") : (true, "Categoria eliminada");
+
+        return deleted
+            ? (true, "Categoría eliminada correctamente")
+            : (false, "Error al eliminar categoría");
     }
 }

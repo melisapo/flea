@@ -10,7 +10,7 @@ body {
           rgba(151, 207, 84, 0.16) 100%
   );
   color: var(--foreground);
-  font-family: "Plus Jakarta Sans", "Lato", sans-serif;
+  font-family: "Lato", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

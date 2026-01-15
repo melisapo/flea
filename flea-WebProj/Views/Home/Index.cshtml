@@ -5,200 +5,340 @@
     var isAuth = ViewBag.IsAuthenticated as bool? ?? false;
 }
 
-<!-- Banner principal -->
-<div class="bg-primary text-white py-5 mb-4">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="display-4">flea</h1>
-                <p class="lead lato-regular">Compra y vende productos de segunda mano en tu comunidad</p>
-            </div>
-            <div class="col-md-4 text-end">
-                    <a asp-controller="Posts" asp-action="Create" class="btn btn-light btn-lg">
-                        <i class="bi bi-plus-circle"></i> Publicar Producto
-                    </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Filtros de búsqueda -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <form asp-action="Index" method="get">
-                <div class="row g-3">
-                    <!-- Búsqueda por texto -->
-                    <div class="col-md-4">
-                        <input type="text" name="searchTerm" class="form-control" placeholder="Buscar productos..." value="@Model.SearchTerm">
-                    </div>
-                    
-                    <!-- Categoría -->
-                    <div class="col-md-3">
-                        <select name="categoryId" class="form-select">
-                            <option value="">Todas las categorías</option>
-                            @if (Model.AvailableCategories != null)
-                            {
-                                foreach (var category in Model.AvailableCategories)
-                                {
-                                    <option value="@category.Id" selected="@(Model.CategoryId == category.Id)">@category.Name</option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    
-                    <!-- Precio mínimo -->
-                    <div class="col-md-2">
-                        <input type="number" name="minPrice" class="form-control" placeholder="Precio mín" step="0.01" value="@Model.MinPrice">
-                    </div>
-                    
-                    <!-- Precio máximo -->
-                    <div class="col-md-2">
-                        <input type="number" name="maxPrice" class="form-control" placeholder="Precio máx" step="0.01" value="@Model.MaxPrice">
-                    </div>
-                    
-                    <!-- Botón buscar -->
-                    <div class="col-md-1">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
+<main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Hero Banner -->
+    <div class="bg-[#25231e] rounded-3xl p-16 mb-8 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-50" style="background-image: radial-gradient(#98cf54 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+        <div class="relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1">
+                    <h1 class="text-5xl md:text-6xl font-extrabold text-secondary mb-4 tracking-tight">
+                        FLEA<span class="text-primary">MARKET</span>
+                    </h1>
+                    <p class="text-xl text-muted/70 font-medium max-w-xl">
+                        Compra y vende productos de segunda mano en tu comunidad
+                    </p>
                 </div>
-                
-                <!-- Limpiar filtros -->
-                @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.CategoryId.HasValue || Model.MinPrice.HasValue || Model.MaxPrice.HasValue)
-                {
-                    <div class="mt-2">
-                        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> Limpiar filtros
+                    <div>
+                        <a asp-controller="Posts" asp-action="Create" 
+                           class="inline-flex items-center gap-3 bg-[#98cf54] hover:bg-[#88bf44] text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-[#98cf54]/20 transition-all hover:scale-105">
+                            <span class="material-symbols-outlined">add_circle</span>
+                            Publicar Producto
                         </a>
                     </div>
-                }
-            </form>
+            </div>
         </div>
     </div>
-    
-    <!-- Resultados -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>
-            @if (Model.TotalResults > 0)
+
+    <div class="flex gap-10">
+        <!-- Sidebar: Filters (25%) -->
+        <aside class="w-1/4 sticky top-24 h-fit space-y-8">
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-6">Filtros</h3>
+                
+                <form asp-action="Index" method="get" id="filterForm">
+                    <!-- Search -->
+                    <div class="mb-8">
+                        <h4 class="font-bold text-sm mb-4">Búsqueda</h4>
+                        <div class="relative">
+                            <input type="text" 
+                                   name="searchTerm" 
+                                   value="@Model.SearchTerm"
+                                   class="w-full px-4 py-3 text-sm bg-white border-none ring-1 ring-gray-200 rounded-xl focus:ring-2 focus:ring-[#98cf54] outline-none" 
+                                   placeholder="Buscar productos..."/>
+                            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="space-y-4 mb-10">
+                        <h4 class="font-bold text-sm">Categorías</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" 
+                                       name="categoryId" 
+                                       value="" 
+                                       checked="@(!Model.CategoryId.HasValue)"
+                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4" 
+                                       onchange="this.form.submit()"/>
+                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Todas las categorías</span>
+                            </label>
+                            @if (Model.AvailableCategories != null)
+                            {
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="radio" 
+                                               name="categoryId" 
+                                               value="@category.Id" 
+                                               checked="@(Model.CategoryId == category.Id)"
+                                               class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                               onchange="this.form.submit()"/>
+                                        <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">@category.Name</span>
+                                    </label>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="space-y-4 mb-10">
+                        <h4 class="font-bold text-sm">Rango de Precio</h4>
+                        <div class="flex items-center gap-3">
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                                <input type="number" 
+                                       name="minPrice" 
+                                       value="@Model.MinPrice"
+                                       class="w-full pl-7 pr-3 py-2 text-sm bg-white border-none ring-1 ring-gray-200 rounded-lg focus:ring-2 focus:ring-[#98cf54] outline-none" 
+                                       placeholder="Min"
+                                       step="0.01"/>
+                            </div>
+                            <span class="text-gray-400">—</span>
+                            <div class="relative flex-1">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                                <input type="number" 
+                                       name="maxPrice" 
+                                       value="@Model.MaxPrice"
+                                       class="w-full pl-7 pr-3 py-2 text-sm bg-white border-none ring-1 ring-gray-200 rounded-lg focus:ring-2 focus:ring-[#98cf54] outline-none" 
+                                       placeholder="Max"
+                                       step="0.01"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="space-y-4 mb-10">
+                        <h4 class="font-bold text-sm">Estado del Producto</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" 
+                                       name="status" 
+                                       value="" 
+                                       checked="@(!Model.Status.HasValue)"
+                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                       onchange="this.form.submit()"/>
+                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Todos</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" 
+                                       name="status" 
+                                       value="0" 
+                                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available)"
+                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                       onchange="this.form.submit()"/>
+                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Disponible</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" 
+                                       name="status" 
+                                       value="1" 
+                                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Sold)"
+                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                       onchange="this.form.submit()"/>
+                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Vendido</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full py-3 bg-[#25231e] text-white font-bold rounded-xl hover:opacity-90 transition-opacity">
+                        Aplicar Filtros
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.CategoryId.HasValue || Model.MinPrice.HasValue || Model.MaxPrice.HasValue || Model.Status.HasValue)
+                    {
+                        <a asp-action="Index" 
+                           class="w-full py-3 mt-2 text-sm font-medium text-gray-500 hover:text-[#25231e] transition-colors flex items-center justify-center">
+                            Limpiar Todo
+                        </a>
+                    }
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content (75%) -->
+        <section class="flex-1">
+            <!-- Results Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-2xl font-extrabold mb-1">
+                        @if (Model.TotalResults > 0)
+                        {
+                            <text>Explorar Productos</text>
+                        }
+                        else
+                        {
+                            <text>Productos Recientes</text>
+                        }
+                    </h1>
+                    <p class="text-sm text-gray-500">
+                        Mostrando <span class="font-bold text-[#25231e]">@Model.TotalResults</span> resultado(s)
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-500">Ordenar:</span>
+                    <select class="bg-white border-none ring-1 ring-gray-200 rounded-lg py-2 pl-4 pr-10 text-sm font-bold focus:ring-2 focus:ring-[#98cf54] cursor-pointer outline-none">
+                        <option>Recientes</option>
+                        <option>Precio: Menor a Mayor</option>
+                        <option>Precio: Mayor a Menor</option>
+                    </select>
+                </div>
+            </div>
+
+            @if (!Model.Results.Any())
             {
-                <span>@Model.TotalResults producto(s) encontrado(s)</span>
+                <!-- Empty State -->
+                <div class="text-center py-20">
+                    <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-gray-400 text-5xl">inventory_2</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-[#25231e] mb-2">No se encontraron productos</h4>
+                    <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                        Intenta con otros filtros o crea una nueva publicación
+                    </p>
+                    @if (isAuth)
+                    {
+                        <a asp-controller="Posts" asp-action="Create" 
+                           class="inline-flex items-center gap-2 bg-[#98cf54] hover:bg-[#88bf44] text-white px-6 py-3 rounded-xl font-bold transition-all">
+                            <span class="material-symbols-outlined">add_circle</span>
+                            Crear Publicación
+                        </a>
+                    }
+                </div>
             }
             else
             {
-                <span>Productos recientes</span>
-            }
-        </h4>
-    </div>
-    
-    @if (!Model.Results.Any())
-    {
-        <!-- Sin resultados -->
-        <div class="text-center py-5">
-            <i class="bi bi-inbox text-muted" style="font-size: 5rem;"></i>
-            <h4 class="mt-3">No se encontraron productos</h4>
-            <p class="text-muted">Intenta con otros filtros o crea una nueva publicación</p>
-            @if (isAuth)
-            {
-                <a asp-controller="Posts" asp-action="Create" class="btn btn-primary mt-3">
-                    <i class="bi bi-plus-circle"></i> Crear Publicación
-                </a>
-            }
-        </div>
-    }
-    else
-    {
-        <!-- Grid de productos -->
-        <div class="row">
-            @foreach (var post in Model.Results)
-            {
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm hover-shadow">
-                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId" class="text-decoration-none text-dark">
-                            <img src="@post.MainImage" class="card-img-top" alt="@post.Title" style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 class="card-title mb-0">@post.Title</h6>
-                                    <span class="badge @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-success" : "bg-secondary") ms-2">
+                <!-- Results Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    @foreach (var post in Model.Results)
+                    {
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId"
+                           class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                            <!-- Image -->
+                            <div class="relative aspect-[4/5] overflow-hidden">
+                                <img src="@post.MainImage" 
+                                     alt="@post.Title" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"/>
+                                <div class="absolute top-4 left-4">
+                                    <span class="@(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-[#98cf54]" : "bg-[#25231e]") text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                                         @post.StatusText
                                     </span>
                                 </div>
-                                <p class="card-text text-muted small">
-                                    @(post.Description.Length > 80 ? post.Description[..80] + "..." : post.Description)
+                            </div>
+
+                            <!-- Content -->
+                            <div class="p-5 flex-1 flex flex-col">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-bold text-lg text-[#25231e] leading-tight line-clamp-1">@post.Title</h3>
+                                    <span class="font-extrabold text-lg text-[#25231e] ml-2 flex-shrink-0">$@post.Price.ToString("N2")</span>
+                                </div>
+                                <p class="text-sm text-gray-500 line-clamp-2 mb-4">
+                                    @post.Description
                                 </p>
-                                <h5 class="text-primary mb-2">$@post.Price.ToString("N2")</h5>
-                                <div class="d-flex align-items-center">
-                                    <img src="@post.AuthorProfilePic" alt="@post.AuthorUsername" class="rounded-circle me-2" style="width: 25px; height: 25px; object-fit: cover;">
-                                    <small class="text-muted">@@@post.AuthorUsername</small>
+                                <div class="flex items-center gap-2 mt-auto pt-4 border-t border-gray-100">
+                                    <img src="@post.AuthorProfilePic" 
+                                         alt="@post.AuthorUsername" 
+                                         class="w-6 h-6 rounded-full object-cover"/>
+                                    <span class="text-xs font-semibold text-gray-500">@@@post.AuthorUsername</span>
+                                    <span class="text-[10px] text-gray-400 ml-auto">@post.CreatedAt.ToString("dd/MM/yyyy")</span>
                                 </div>
                             </div>
                         </a>
-                        <div class="card-footer bg-white border-0 pt-0">
-                            <small class="text-muted">
-                                <i class="bi bi-clock"></i> @post.CreatedAt.ToString("dd/MM/yyyy")
-                            </small>
-                        </div>
-                    </div>
+                    }
                 </div>
-            }
-        </div>
-        
-        <!-- Paginación -->
-        @if (Model.TotalPages > 1)
-        {
-            <nav aria-label="Navegación de páginas">
-                <ul class="pagination justify-content-center">
-                    <!-- Anterior -->
-                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-                        <a class="page-link" 
-                           asp-action="Index" 
-                           asp-route-searchTerm="@Model.SearchTerm"
-                           asp-route-categoryId="@Model.CategoryId"
-                           asp-route-minPrice="@Model.MinPrice"
-                           asp-route-maxPrice="@Model.MaxPrice"
-                           asp-route-status="@Model.Status"
-                           asp-route-page="@(Model.Page - 1)">
-                            Anterior
-                        </a>
-                    </li>
-                    
-                    <!-- Páginas -->
-                    @for (var i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(Model.Page == i ? "active" : "")">
 
-                            @{
-                                var i1 = i;
-                            }
-                            <a class="page-link" 
-                               asp-action="Index" 
+                <!-- Pagination -->
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="mt-16 flex items-center justify-center gap-2">
+                        <!-- Previous -->
+                        @if (Model.Page > 1)
+                        {
+                            <a asp-action="Index" 
                                asp-route-searchTerm="@Model.SearchTerm"
                                asp-route-categoryId="@Model.CategoryId"
                                asp-route-minPrice="@Model.MinPrice"
                                asp-route-maxPrice="@Model.MaxPrice"
                                asp-route-status="@Model.Status"
-                               asp-route-page="@i1">
-                                @i1
+                               asp-route-page="@(Model.Page - 1)"
+                               class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white transition-colors text-gray-400">
+                                <span class="material-symbols-outlined">chevron_left</span>
                             </a>
-                        </li>
-                    }
-                    
-                    <!-- Siguiente -->
-                    <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link" 
-                           asp-action="Index" 
-                           asp-route-searchTerm="@Model.SearchTerm"
-                           asp-route-categoryId="@Model.CategoryId"
-                           asp-route-minPrice="@Model.MinPrice"
-                           asp-route-maxPrice="@Model.MaxPrice"
-                           asp-route-status="@Model.Status"
-                           asp-route-page="@(Model.Page + 1)">
-                            Siguiente
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        }
+                        }
+                        else
+                        {
+                            <button disabled class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-300 cursor-not-allowed">
+                                <span class="material-symbols-outlined">chevron_left</span>
+                            </button>
+                        }
+
+                        <!-- Pages -->
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            var pageNum = i;
+                            @if (pageNum == Model.Page)
+                            {
+                                <button class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#98cf54] text-white font-bold shadow-lg shadow-[#98cf54]/30">
+                                    @pageNum
+                                </button>
+                            }
+                            else if (pageNum == 1 || pageNum == Model.TotalPages || (pageNum >= Model.Page - 1 && pageNum <= Model.Page + 1))
+                            {
+                                <a asp-action="Index" 
+                                   asp-route-searchTerm="@Model.SearchTerm"
+                                   asp-route-categoryId="@Model.CategoryId"
+                                   asp-route-minPrice="@Model.MinPrice"
+                                   asp-route-maxPrice="@Model.MaxPrice"
+                                   asp-route-status="@Model.Status"
+                                   asp-route-page="@pageNum"
+                                   class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white transition-colors font-bold">
+                                    @pageNum
+                                </a>
+                            }
+                            else if (pageNum == Model.Page - 2 || pageNum == Model.Page + 2)
+                            {
+                                <span class="px-2 text-gray-400">...</span>
+                            }
+                        }
+
+                        <!-- Next -->
+                        @if (Model.Page < Model.TotalPages)
+                        {
+                            <a asp-action="Index" 
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-categoryId="@Model.CategoryId"
+                               asp-route-minPrice="@Model.MinPrice"
+                               asp-route-maxPrice="@Model.MaxPrice"
+                               asp-route-status="@Model.Status"
+                               asp-route-page="@(Model.Page + 1)"
+                               class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white transition-colors text-gray-400">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button disabled class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-300 cursor-not-allowed">
+                                <span class="material-symbols-outlined">chevron_right</span>
+                            </button>
+                        }
+                    </div>
+                }
+            }
+        </section>
+    </div>
+</main>
+
+<style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
     }
-</div>
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+</style>

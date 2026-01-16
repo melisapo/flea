@@ -1,76 +1,161 @@
 @model flea_WebProj.Models.ViewModels.Admin.UserListViewModel
+
 @{
     ViewData["Title"] = "Gestión de Usuarios";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-people"></i> Gestión de Usuarios</h1>
-        <a asp-action="Dashboard" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Volver al Dashboard
-        </a>
-    </div>
+<div class="flex">
+    <!-- Sidebar -->
+    @await Html.PartialAsync("_AdminSidebar")
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Posts</th>
-                            <th>Roles</th>
-                            <th>Fecha Registro</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Users.Any())
-                        {
-                            @foreach (var user in Model.Users)
-                            {
-                                <tr>
-                                    <td>
-                                        <img src="@user.ProfilePic" alt="@user.Username" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                        <strong>@user.Username</strong>
-                                    </td>
-                                    <td>@user.Name</td>
-                                    <td>@user.Email</td>
-                                    <td><span class="badge bg-info">@user.PostCount</span></td>
-                                    <td>
-                                        @foreach (var role in user.Roles)
-                                        {
-                                            <span class="badge bg-secondary me-1">@role</span>
-                                        }
-                                    </td>
-                                    <td>@user.CreatedAt.ToString("dd/MM/yyyy")</td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="UserDetails" asp-route-id="@user.UserId" class="btn btn-sm btn-info" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a asp-action="ManageUserRoles" asp-route-userId="@user.UserId" class="btn btn-sm btn-warning" title="Gestionar roles">
-                                                <i class="bi bi-shield"></i>
-                                            </a>
-                                            <a asp-action="DeleteUserConfirm" asp-route-id="@user.UserId" class="btn btn-sm btn-danger" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
+    <!-- Main Content Area -->
+    <main class="flex-1 px-10 py-8">
+        <div class="max-w-[1280px] mx-auto flex flex-col gap-6">
+            
+            <!-- Page Heading & Search/Filter Section -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="flex flex-col gap-1">
+                    <h1 class="text-main-text dark:text-white text-3xl font-extrabold tracking-tight">Gestión de Usuarios</h1>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Control de accesos, roles y estados de cuenta en la plataforma.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative w-72">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                        <input class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm transition-all" 
+                               placeholder="Buscar por nombre o email..." 
+                               type="text"
+                               id="searchInput"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Table Section -->
+            <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
+                @if (Model.Users.Any())
+                {
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800">
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary">Usuario</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary">Email</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary text-center">Roles</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary text-center">Posts</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary">Registro</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-primary text-right">Acciones</th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No hay usuarios registrados</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr class="hover:bg-[#f9fcf3] dark:hover:bg-gray-800/50 transition-colors">
+                                        <!-- User Info -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="size-10 rounded-full bg-cover bg-center border-2 border-white shadow-sm" 
+                                                     style="background-image: url('@user.ProfilePic')"></div>
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-sm text-main-text dark:text-white">@user.Name</span>
+                                                    <span class="text-xs text-gray-400">@@@user.Username</span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Email -->
+                                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">@user.Email</td>
+
+                                        <!-- Roles -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex justify-center gap-1 flex-wrap">
+                                                @foreach (var role in user.Roles)
+                                                {
+                                                    <span class="bg-primary/20 text-main-text dark:text-primary text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">
+                                                        @role
+                                                    </span>
+                                                }
+                                            </div>
+                                        </td>
+
+                                        <!-- Post Count -->
+                                        <td class="px-6 py-4 text-sm text-center font-medium text-main-text dark:text-white">@user.PostCount</td>
+
+                                        <!-- Created Date -->
+                                        <td class="px-6 py-4 text-sm text-gray-500">@user.CreatedAt.ToString("dd MMM, yyyy")</td>
+
+                                        <!-- Actions -->
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex justify-end gap-2">
+                                                <a asp-action="Profile" 
+                                                   asp-controller="User" 
+                                                   asp-route-id="@user.UserId"
+                                                   class="p-1.5 rounded-lg text-gray-400 hover:text-primary hover:bg-primary/10 transition-all" 
+                                                   title="Ver Perfil">
+                                                    <span class="material-symbols-outlined !text-[20px]">visibility</span>
+                                                </a>
+                                                <a asp-action="ManageUserRoles" 
+                                                   asp-route-userId="@user.UserId"
+                                                   class="p-1.5 rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all" 
+                                                   title="Gestionar Roles">
+                                                    <span class="material-symbols-outlined !text-[20px]">settings</span>
+                                                </a>
+                                                <a asp-action="DeleteUserConfirm" 
+                                                   asp-route-id="@user.UserId"
+                                                   class="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" 
+                                                   title="Eliminar">
+                                                    <span class="material-symbols-outlined !text-[20px]">delete</span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Bar -->
+                    <div class="flex items-center justify-between px-6 py-4 bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-800">
+                        <p class="text-sm text-gray-500">
+                            Mostrando <span class="font-bold text-main-text dark:text-white">@Model.Users.Count</span> usuario(s)
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <!-- Empty State -->
+                    <div class="py-20 text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-gray-400 text-4xl">group</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-main-text dark:text-white mb-2">No hay usuarios registrados</h3>
+                        <p class="text-sm text-gray-500">Los usuarios aparecerán aquí cuando se registren en la plataforma</p>
+                    </div>
+                }
             </div>
         </div>
-    </div>
+    </main>
 </div>
+
+@section Scripts {
+    <script>
+        // Simple search filter
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const name = row.querySelector('td:first-child .font-bold').textContent.toLowerCase();
+                    const username = row.querySelector('td:first-child .text-xs').textContent.toLowerCase();
+                    const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+}

@@ -81,7 +81,7 @@
 <body class="min-h-screen flex flex-col text-text-dark font-display antialiased selection:bg-primary/30">
 
 <!-- ================= NAVBAR ================= -->
-<header class="sticky top-0 z-50 bg-transparent backdrop-blur-2xl">
+<header class="sticky top-0 z-50 bg-transparent fixed backdrop-blur-2xl">
     <nav class="mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
 
         <!-- Logo -->
@@ -257,7 +257,7 @@
 </main>
 
 <!-- ================= FOOTER ================= -->
-<footer class="w-full py-8 text-center text-sm mx-auto px-6 lg:px-12 h-24 flex items-center justify-between">
+<footer class="w-full py-4 text-center text-sm mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
     <a asp-controller="Home" asp-action="Index"
        class="flex items-center gap-2 group select-none">
         <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-glow transition-transform group-hover:rotate-12">

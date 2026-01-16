@@ -9,7 +9,7 @@
     @await Html.PartialAsync("_AdminSidebar")
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-3">
+    <main class="flex-1 px-5">
         <!-- Header & Breadcrumbs -->
         <header class="mb-8">
             <nav class="flex items-center gap-2 text-sm text-mutedForeground mb-4">
@@ -33,24 +33,24 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="dark:bg-[#252525] border-b border-border">
-                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Nombre</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider">Slug</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider text-center">Publicaciones</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-muted uppercase tracking-wider text-right">Acciones</th>
+                                        <th class="px-6 py-4 text-md font-bold tracking-wider">Nombre</th>
+                                        <th class="px-6 py-4 text-md font-bold tracking-wider">Slug</th>
+                                        <th class="px-6 py-4 text-md font-bold tracking-wider text-center">Publicaciones</th>
+                                        <th class="px-6 py-4 text-md font-bold tracking-wider text-right">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-[#dce3d3] dark:divide-[#333]">
                                     @foreach (var category in Model.Categories)
                                     {
                                         <tr class="hover:bg-secondarytransition-colors group">
-                                            <td class="px-6 py-4 text-sm font-semibold">@category.Name</td>
-                                            <td class="px-6 py-4 text-sm font-mono text-muted">@category.Slug</td>
-                                            <td class="px-6 py-4 text-center">
+                                            <td class="px-6 py-1 text-sm font-semibold">@category.Name</td>
+                                            <td class="px-6 py-1 text-sm font-mono text-mutedForeground">@category.Slug</td>
+                                            <td class="px-6 py-1 text-center">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/20">
                                                     @category.PostCount
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 text-right">
+                                            <td class="px-6 py-1 text-right">
                                                 <div class="flex justify-end gap-2">
                                                     <a asp-action="Categories" 
                                                        asp-route-editId="@category.CategoryId"
@@ -73,8 +73,8 @@
                         </div>
 
                         <!-- Pagination Footer -->
-                        <div class="px-6 py-4 bg-background-light/50 dark:bg-background-dark/50 border-t border-[#dce3d3] dark:border-[#333] flex items-center justify-between">
-                            <p class="text-xs text-muted">Mostrando @Model.Categories.Count categoría(s)</p>
+                        <div class="px-6 py-4 bg-background/50 border-t border-[#dce3d3] flex items-center justify-between">
+                            <p class="text-xs text-mutedForeground">Mostrando @Model.Categories.Count categoría(s)</p>
                         </div>
                     }
                     else
@@ -93,7 +93,7 @@
 
             <!-- Right Side: Create/Edit Form (30%) -->
             <section class="lg:col-span-3">
-                <div class="bg-white border border-[#dce3d3] rounded-xl shadow-lg p-6 sticky top-8">
+                <div class="bg-white border border-[#dce3d3] rounded-xl shadow-lg p-6 sticky top-20">
                     <div class="flex items-center gap-2 mb-6">
                         <span class="material-symbols-outlined text-primary">
                             @(Model.IsEditMode ? "edit_note" : "add_circle")

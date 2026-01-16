@@ -300,36 +300,35 @@ namespace flea_WebProj.Controllers
         }
 
         // ============ CATEGORY MANAGEMENT ============
-
         [HttpGet]
         public async Task<IActionResult> Categories(int? editId = null)
         {
             try
             {
                 var categories = await categoryService.GetAllCategoriesAsync() ?? [];
-                var viewModel = new ManageCategoriesViewModel
-                {
-                    Categories = categories.Select(c => new CategoryManageItem
+                    var viewModel = new ManageCategoriesViewModel
                     {
-                        CategoryId = c.Id,
-                        Name = c.Name,
-                        Slug = c.Slug,
-                        PostCount = c.Products.Count
-                    }) as List<CategoryManageItem>
-                };
+                        Categories = categories.Select(c => new CategoryManageItem
+                        {
+                            CategoryId = c.Id,
+                            Name = c.Name,
+                            Slug = c.Slug,
+                            PostCount = c.Products.Count
+                        }).ToList()
+                    };
                 
-                if (!editId.HasValue) return View(viewModel);
-                {
-                    var category = categories.FirstOrDefault(c => c.Id == editId.Value);
-                    if (category == null) return View(viewModel);
+                    if (!editId.HasValue) return View(viewModel);
+                    {
+                        var category = categories.FirstOrDefault(c => c.Id == editId.Value);
+                        if (category == null) return View(viewModel);
                     
-                    viewModel.IsEditMode = true;
-                    viewModel.Form.CategoryId = category.Id;
-                    viewModel.Form.Name = category.Name;
-                    viewModel.Form.Slug = category.Slug;
-                }
+                        viewModel.IsEditMode = true;
+                        viewModel.Form.CategoryId = category.Id;
+                        viewModel.Form.Name = category.Name;
+                        viewModel.Form.Slug = category.Slug;
+                    }
 
-                return View(viewModel);
+                    return View(viewModel);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="PROJECT" libraries="{@tailwindcss, bootstrap, bootstrap-icons, jquery-3.7.0, tom-select}" />
+  </component>
+</project>

@@ -152,11 +152,9 @@ public class PostService(
                 foreach (var (success, filePath, _) in uploadResults)
                 {
                     if (success && filePath != null)
-                    {
                         await imageRepository.CreateAsync(
                             new Image { Path = filePath, ProductId = productId }
                         );
-                    }
                 }
             }
 

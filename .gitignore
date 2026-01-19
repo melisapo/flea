@@ -1,9 +1,0 @@
-bin/
-obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
-
-wwwroot/uploads/*
-!wwwroot/uploads/.gitkeep
-!wwwroot/uploads/products/.gitkeep

@@ -1,0 +1,17 @@
+# Archivos de compilación y caché
+bin/
+obj/
+packages/
+riderModule.iml
+_ReSharper.Caches/
+.vs/
+.idea/
+
+# --- CARPETA DE UPLOADS ---
+# Ignorar todo dentro de la carpeta products
+wwwroot/uploads/products/
+wwwroot/uploads/profiles/
+
+# Excepto los archivos .gitkeep para mantener la estructura de carpetas en GitHub
+!wwwroot/uploads/.gitkeep
+

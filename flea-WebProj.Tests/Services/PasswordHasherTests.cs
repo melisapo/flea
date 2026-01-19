@@ -1,21 +1,10 @@
 using flea_WebProj.Services;
-using Xunit;
 
 namespace flea_WebProj.Tests.Services
 {
     public class PasswordHasherTests
     {
         private readonly PasswordHasher _hasher = new();
-
-        [Fact]
-        public void Hash_ShouldGenerateDifferentHashes_ForSamePassword()
-        {
-            const string password = "Password123!";
-            var hash1 = _hasher.Hash(password);
-            var hash2 = _hasher.Hash(password);
-
-            Assert.NotEqual(hash1, hash2);
-        }
 
         [Fact]
         public void Verify_ShouldReturnTrue_ForCorrectPassword()

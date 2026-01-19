@@ -64,12 +64,12 @@
                                 <span class="material-symbols-outlined text-xl">edit</span>
                                 <span>Editar</span>
                             </a>
-                            <button type="button"
-                                    onclick="document.getElementById('deleteModal').classList.remove('hidden')"
-                                    class="bg-red-50 hover:bg-red-100 border border-red-100 text-red-500 px-6 py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-xl">delete</span>
-                                <span>Eliminar</span>
-                            </button>
+                            <form asp-action="Delete" asp-route-id="@Model.PostId" method="post" class="inline">
+                                <button type="submit" 
+                                        class="px-6 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all">
+                                    Eliminar
+                                </button>
+                            </form>
                         </div>
                     }
                 </div>
@@ -148,7 +148,7 @@
                 </div>
             </div>
             
-            @if (Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available && !Model.IsOwner)
+            @if (Model is { Status: flea_WebProj.Models.Enums.ProductStatus.Available, IsOwner: false })
             {
                 <div class="flex gap-3">
                     @if (!string.IsNullOrEmpty(Model.AuthorEmail))

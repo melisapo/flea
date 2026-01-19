@@ -4,174 +4,219 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="max-w-[1140px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
-    <div class="grid grid-cols-12 gap-6 lg:gap-10">
+<main class="flex-1 flex flex-col items-center">
+    <!-- Header Image Section -->
+    <div class="w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
+        <div class="header-gradient relative rounded-3xl h-[160px] sm:h-[200px] w-full">
 
-        <!-- SIDEBAR -->
-        <div class="col-span-12 lg:col-span-4">
-            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden lg:sticky lg:top-28">
-                <div class="h-2 bg-primary"></div>
+            <div class="header-pattern absolute inset-0"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#fbfdf1]/40 to-transparent"></div>
 
-                <div class="p-8 flex flex-col items-center text-center">
-                    <div class="relative mb-6">
-                        <img src="@Model.ProfilePic"
-                             alt="@Model.Name"
-                             class="w-28 h-28 rounded-full object-cover ring-background-light" />
-                    </div>
+            <!-- Avatar -->
+            <div class="absolute -bottom-8 sm:-bottom-6 left-1/2 sm:left-12 transform -translate-x-1/2 sm:translate-x-0">
+                <div class="w-40 h-40 rounded-full bg-white p-1.5 shadow-soft">
+                    <img src="@Model.ProfilePic"
+                         alt="Profile picture"
+                         class="w-full h-full rounded-full object-cover border border-gray-100" />
+                </div>
+            </div>
 
-                    <h4 class="text-2xl font-bold tracking-tight text-text-main">
-                        @Model.Name
-                    </h4>
+        </div>
+    </div>
 
-                    <p class="text-text-sub text-sm mt-1">
-                        @@@Model.Username
-                    </p>
+    <!-- Content Grid -->
+    <div class="w-full max-w-[1440px] px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 md:pt-14 pb-6 grid grid-cols-12 gap-4 md:gap-6">
+        
+        <!-- Left Column: Basic Info -->
+        <div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-touch">
+                <div class="mb-2">
+                    <h1 class="text-2xl font-extrabold text-[#25231e] leading-tight">@Model.Name</h1>
+                    <p class="text-[#25231e]/50 font-medium">@@@Model.Username</p>
+                </div>
+                
+                <p class="text-[#25231e]/50 text-sm leading-relaxed flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">calendar_today</span>
+                    Miembro desde @Model.MemberSince.ToString("MMMM yyyy")
+                </p>
+            </div>
 
-                    <p class="mt-3 flex items-center gap-1.5 text-xs font-medium text-text-sub/70">
-                        <span class="material-symbols-outlined text-base">calendar_today</span>
-                        Miembro desde @Model.MemberSince.ToString("MMMM yyyy")
-                    </p>
-                    <!-- Stats -->
-                    <div class="mt-6 pt-6 border-t border-[#f0f4e4] w-full flex justify-center">
-                        <div class="grid place-items-center">
-                            <div class="text-3xl sm:text-4xl font-bold text-text-main">
-                                @Model.TotalPosts
-                            </div>
-                            <p class="text-text-sub text-sm font-medium">
-                                Publicaciones
-                            </p>
+            <!-- Stats Card -->
+            <div class="bg-[#25231e] p-6 sm:p-8 rounded-2xl text-white shadow-touch relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <span class="material-symbols-outlined text-[80px]">auto_graph</span>
+                </div>
+                <h3 class="text-[#98cf54] font-bold text-md tracking-widest mb-6">Publicaciones</h3>
+                <div class="flex flex-col gap-1">
+                    <span class="text-6xl font-black leading-none">@Model.TotalPosts</span>
+                    <span class="text-white/50 font-medium">Productos publicados</span>
+                </div>
+            </div>
+
+            <!-- Location Card -->
+            @if (!string.IsNullOrEmpty(Model.StateProvince))
+            {
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-touch">
+                    <h3 class="font-bold text-md tracking-widest text-foreground/60 mb-6">Ubicación</h3>
+                    <div class="flex flex-col items-center text-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-[#98cf54]/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[#98cf54] text-3xl">location_on</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-[#25231e] text-lg">@Model.City</p>
+                            <p class="text-[#25231e]/60 text-sm">@Model.StateProvince, @Model.Country</p>
                         </div>
                     </div>
+                </div>
+            }
+        </div>
 
-                    <!-- Contacto -->
-                    <div class="w-full mt-6 pt-6 border-t border-[#f0f4e4]
-                                grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1
-                                gap-3 text-sm text-text-main">
-
-                        <div class="flex items-center gap-2 justify-center sm:justify-start break-all">
-                            <span class="material-symbols-outlined text-base text-primary">mail</span>
-                            <a href="mailto:@Model.Email" class="text-sm relative relative after:content-[''] after:absolute after:left-0 after:bottom-[-0.25rem] after:h-0.5 after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full">
+        <!-- Center Column: Contact & Posts -->
+        <div class="col-span-12 lg:col-span-9 flex flex-col gap-8">
+            
+            <!-- Contact Information -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-touch">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="bg-[#98cf54]/20 p-3 rounded-xl">
+                        <span class="material-symbols-outlined text-[#98cf54] font-bold">contact_mail</span>
+                    </div>
+                    <h2 class="text-xl font-bold">Información de Contacto</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Email</span>
+                        <div class="flex items-center gap-2">
+                            <a href="mailto:@Model.Email" 
+                               class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
                                 @Model.Email
                             </a>
-                        </div>
-
-                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
-                        {
-                            <div class="flex items-center gap-2 justify-center sm:justify-start">
-                                <span class="material-symbols-outlined text-base text-primary">call</span>
-                                @Model.PhoneNumber
                             </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.TelegramUser))
-                        {
-                            <div class="flex items-center gap-2 justify-center sm:justify-start">
-                                <span class="material-symbols-outlined text-base text-primary">send</span>
-                                @@@Model.TelegramUser
-                            </div>
-                        }
                     </div>
 
-                    <!-- Dirección -->
-                    @if (!string.IsNullOrEmpty(Model.StateProvince))
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
                     {
-                        <div class="w-full mt-4 pt-2 border-t border-[#f0f4e4]">
-                            <div class="grid place-items-center rounded-xl">
-                                <div class="w-12 h-12 rounded-full flex items-center justify-center text-primary">
-                                    <span class="material-symbols-outlined text-2xl font-bold">location_on</span>
-                                </div>
-                                <div class="grid place-items-center">
-                                    <p class="text-text-main font-bold text-lg">
-                                        @Model.City
-                                    </p>
-                                    <p class="text-text-sub font-semibold text-sm">
-                                        @Model.StateProvince, @Model.Country
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Teléfono</span>
+                            <span class="text-[#25231e]/80 font-semibold">@Model.PhoneNumber</span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.TelegramUser))
+                    {
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Telegram</span>
+                            <span class="text-[#25231e]/80 font-semibold">@@@Model.TelegramUser</span>
                         </div>
                     }
                 </div>
             </div>
-        </div>
 
-        <!-- PUBLICACIONES -->
-        <div class="col-span-12 lg:col-span-8">
-            <div class="bg-white rounded-2xl card-shadow border border-[#e5e9d8] overflow-hidden">
+            <!-- Publications Section -->
+            <div class="bg-white rounded-2xl shadow-touch overflow-hidden">
                 <div class="h-2 bg-primary"></div>
                 <div class="px-6 sm:px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
-                    <h5 class="text-text-main font-bold text-base sm:text-lg">
+                    <h5 class="text-[#25231e] font-bold text-lg">
                         Publicaciones de @Model.Username
                     </h5>
                 </div>
 
                 <div class="p-6 sm:p-8">
-
                     @if (!Model.RecentPosts.Any())
                     {
-                        <div class="flex flex-col items-center text-center py-12">
-                            <span class="material-symbols-outlined text-5xl text-text-sub mb-4">
-                                inbox
-                            </span>
-                            <p class="text-text-sub text-sm sm:text-base">
-                                Este usuario no tiene publicaciones aún
+                        <!-- Empty State -->
+                        <div class="flex flex-col items-center text-center py-16">
+                            <div class="w-20 h-20 mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-gray-400 text-5xl">inventory_2</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-[#25231e] mb-2">
+                                No hay publicaciones disponibles
+                            </h3>
+                            <p class="text-[#25231e]/60 text-sm">
+                                Este usuario no tiene publicaciones activas en este momento
                             </p>
                         </div>
                     }
                     else
                     {
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Products Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach (var post in Model.RecentPosts)
                             {
-                                <div class="bg-white rounded-xl border border-[#e5e9d8] overflow-hidden hover:shadow-md transition-all">
-                                    <a asp-controller="Posts"
-                                       asp-action="Details"
-                                       asp-route-id="@post.PostId"
-                                       class="block text-text-main no-underline">
-
+                                <a asp-controller="Posts"
+                                   asp-action="Details"
+                                   asp-route-id="@post.PostId"
+                                   class="group bg-white border border-[#e5e9d8] rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                                    
+                                    <!-- Image -->
+                                    <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
                                         <img src="@post.MainImage"
                                              alt="@post.Title"
-                                             class="w-full h-40 sm:h-44 object-cover" />
-
-                                        <div class="p-4 sm:p-5 space-y-2">
-                                            <h6 class="font-bold text-base">
-                                                @post.Title
-                                            </h6>
-
-                                            <p class="text-text-sub text-sm">
-                                                @(post.Description.Length > 60
-                                                    ? post.Description[..60] + "..."
-                                                    : post.Description)
-                                            </p>
-
-                                            <div class="flex items-center justify-between pt-2">
-                                                <span class="font-bold text-primary text-lg">
-                                                    $@post.Price.ToString("N2")
-                                                </span>
-
-                                                <span class="text-xs text-text-sub flex items-center gap-1">
-                                                    <span class="material-symbols-outlined text-sm">
-                                                        schedule
-                                                    </span>
-                                                    @post.CreatedAt.ToString("dd/MM/yyyy")
-                                                </span>
-                                            </div>
+                                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                        <div class="absolute top-3 left-3">
+                                            <span class="bg-[#98cf54]/90 backdrop-blur-sm text-[#25231e] text-[10px] uppercase tracking-widest font-black px-2.5 py-1 rounded-full">
+                                                Disponible
+                                            </span>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="p-4 flex-1 flex flex-col">
+                                        <h3 class="font-bold text-base text-[#25231e] mb-2 line-clamp-1">
+                                            @post.Title
+                                        </h3>
+                                        <p class="text-sm text-[#25231e]/60 mb-4 line-clamp-2">
+                                            @post.Description
+                                        </p>
+                                        <div class="mt-auto flex items-center justify-between pt-3 border-t border-[#f0f4e4]">
+                                            <span class="font-black text-xl text-[#25231e]">
+                                                $@post.Price.ToString("N2")
+                                            </span>
+                                            <span class="text-xs text-[#25231e]/40 flex items-center gap-1">
+                                                <span class="material-symbols-outlined text-sm">schedule</span>
+                                                @post.CreatedAt.ToString("dd/MM/yyyy")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
                             }
                         </div>
 
-                        @if (Model.TotalPosts > 12)
+                        @if (Model.TotalPosts > Model.RecentPosts.Count)
                         {
-                            <div class="text-center mt-6 text-text-sub text-sm">
-                                Mostrando @Model.RecentPosts.Count de @Model.TotalPosts publicaciones
+                            <div class="text-center mt-8 pt-6 border-t border-[#f0f4e4]">
+                                <p class="text-sm text-[#25231e]/60 mb-4">
+                                    Mostrando @Model.RecentPosts.Count de @Model.TotalPosts publicaciones
+                                </p>
+                                <button class="px-8 py-3 rounded-xl border-2 border-[#98cf54] text-[#25231e] font-bold hover:bg-[#98cf54] hover:text-white transition-all">
+                                    Ver todas las publicaciones
+                                </button>
                             </div>
                         }
                     }
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+</main>
+
+<style>
+    .header-gradient {
+        background: linear-gradient(135deg, #eef7e2 0%, #fbfdf1 100%);
+        position: relative;
+    }
+    
+    .header-pattern {
+        opacity: 0.4;
+        background-image: radial-gradient(#98cf54 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+    }
+    
+    .shadow-soft {
+        box-shadow: 0 10px 40px -10px rgba(152, 207, 84, 0.12);
+    }
+    
+    .shadow-touch {
+        box-shadow: 0 20px 50px -12px rgba(37, 35, 30, 0.05);
+    }
+</style>

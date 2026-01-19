@@ -11,7 +11,7 @@
             <h2 class="text-4xl font-black text-[#25231e] tracking-tight">Mis Publicaciones</h2>
             <p class="text-[#6b6a64] font-medium">
                 Gestiona tu catálogo: 
-                <span class="text-[#25231e] font-bold">@Model.Count(p => p.Status == flea_WebProj.Models.Enums.ProductStatus.Available) anuncios activos</span> 
+                <span class="text-[#25231e] font-bold">@Model.Count(p => p.Status == flea_WebProj.Models.Enums.ProductStatus.Available) producto activos</span> 
                 de @Model.Count totales
             </p>
         </div>
@@ -43,54 +43,48 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach (var post in Model)
             {
-                <div class="group bg-white border border-[#e3e6d9] rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "opacity-80 bg-white/60" : "")">
-                    <!-- Image -->
-                    <div class="relative aspect-[4/3] overflow-hidden @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "grayscale" : "")">
-                        <div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110" 
-                             style="background-image: url('@post.MainImage')"></div>
-                        <div class="absolute top-3 left-3">
-                            <span class="@(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-[#98cf54]/90" : "bg-gray-400/90") backdrop-blur-sm @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-white") text-[10px] uppercase tracking-widest font-black px-2.5 py-1 rounded-full">
-                                @post.StatusText
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="p-5 flex flex-col grow">
-                        <h3 class="text-lg font-bold @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-gray-400") mb-1 truncate">
-                            @post.Title
-                        </h3>
-                        <p class="text-2xl font-black @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-gray-400") mb-2">
-                            $@post.Price.ToString("N2")
-                        </p>
-                        <p class="text-sm text-[#6b6a64] line-clamp-2 mb-4">
-                            @post.Description
-                        </p>
-                        <p class="text-xs text-[#6b6a64] mb-4">
-                            Publicado el @post.CreatedAt.ToString("dd/MM/yyyy")
-                        </p>
-
-                        <!-- Actions -->
-                        <div class="mt-auto pt-4 border-t border-[#e3e6d9] flex items-center justify-between">
-                            <a asp-action="Details" asp-route-id="@post.PostId" 
-                               class="text-xs font-bold text-[#6b6a64] hover:text-[#98cf54] transition-colors flex items-center gap-1">
-                                <span class="material-symbols-outlined text-lg">visibility</span> 
-                                DETALLES
-                            </a>
-                            <div class="flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@post.PostId" 
-                                   class="p-2 rounded-lg bg-[#f2f4ea] text-[#6b6a64] hover:bg-[#98cf54]/20 hover:text-[#98cf54] transition-all @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "cursor-not-allowed opacity-50" : "")">
-                                    <span class="material-symbols-outlined text-lg">edit</span>
-                                </a>
-                                <button type="button" 
-                                        class="p-2 rounded-lg bg-[#f2f4ea] text-[#6b6a64] hover:bg-[#ef4444]/10 hover:text-[#ef4444] transition-all"
-                                        onclick="confirmDelete(@post.PostId)">
-                                    <span class="material-symbols-outlined text-lg">delete</span>
-                                </button>
+                    <div class="group bg-white border border-[#e3e6d9] rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "opacity-80 bg-white/60" : "")">
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.PostId">
+                        <!-- Image -->
+                        <div class="relative aspect-[4/3] overflow-hidden @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "grayscale" : "")">
+                            <div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110" 
+                                 style="background-image: url('@post.MainImage')"></div>
+                            <div class="absolute top-3 left-3">
+                                <span class="@(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-[#98cf54]/90" : "bg-gray-400/90") backdrop-blur-sm @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-white") text-[10px] uppercase tracking-widest font-black px-2.5 py-1 rounded-full">
+                                    @post.StatusText
+                                </span>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        </a>
+                        <!-- Content -->
+                        <div class="p-5 flex flex-col grow">
+                            <h3 class="text-lg font-bold @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-gray-400") mb-1 truncate">
+                                @post.Title
+                            </h3>
+                            <p class="text-2xl font-black @(post.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "text-[#25231e]" : "text-gray-400") mb-2">
+                                $@post.Price.ToString("N2")
+                            </p>
+                            
+                            <p class="text-xs text-[#6b6a64] mb-4">
+                                Publicado el @post.CreatedAt.ToString("dd/MM/yyyy")
+                            </p>
+                            
+                            <!-- Actions -->
+                            <div class="pt-4 border-t border-[#e3e6d9] flex gap-4 items-center justify-between">
+                                <form asp-action="Edit" asp-route-id="@post.PostId" method="get"
+                                   class="px-6 flex items-center gap-3 py-3 rounded-xl text-primary border border-primary font-bold hover:bg-primary hover:text-white transition-all @(post.Status != flea_WebProj.Models.Enums.ProductStatus.Available ? "cursor-not-allowed opacity-50" : "")">
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                    Editar
+                                </form>
+                                <form asp-action="Delete" asp-route-id="@post.PostId" method="post" class="inline">
+                                    <button type="submit" 
+                                            class="px-6 py-3 rounded-xl text-destructive font-bold hover:bg-destructive/80 hover:text-white transition-all">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
             }
         </div>
 
@@ -105,17 +99,6 @@
         }
     }
 </div>
-
-@section Scripts {
-    <script>
-        function confirmDelete(postId) {
-            if (confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
-                // Aquí puedes agregar la lógica para eliminar
-                window.location.href = '@Url.Action("Delete")' + '/' + postId;
-            }
-        }
-    </script>
-}
 
 <style>
     .material-symbols-outlined {

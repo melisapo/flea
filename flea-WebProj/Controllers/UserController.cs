@@ -12,6 +12,7 @@ public class UserController(
     IPostService postService) : Controller
 {
     // GET: /User/Profile/5 o /User/Profile?username=melissa
+    [HttpGet]
     public async Task<IActionResult> Profile(int? id = null, string? username = null)
     {
         // Buscar por ID o username

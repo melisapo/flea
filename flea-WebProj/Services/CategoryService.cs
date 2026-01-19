@@ -17,8 +17,7 @@ public interface ICategoryService
 
 public class CategoryService(
     ICategoryRepository categoryRepository,
-    IPostRepository postRepository,
-    IProductRepository productRepository) : ICategoryService
+    IPostRepository postRepository) : ICategoryService
 {
     public async Task<List<Category>?> GetAllCategoriesAsync()
     {

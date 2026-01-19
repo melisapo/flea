@@ -1,3 +1,4 @@
+using flea_WebProj.Data;
 using flea_WebProj.Data.Repositories;
 using flea_WebProj.Helpers;
 using flea_WebProj.Models.Entities;
@@ -41,7 +42,8 @@ public class PostService(
     IFileUploadService fileUploadService,
     IUserRepository userRepository,
     IContactRepository contactRepository,
-    IAddressRepository addressRepository
+    IAddressRepository addressRepository,
+    DatabaseContext dbContext
 ) : IPostService
 {
     // Obtener detalle completo de un post
@@ -118,19 +120,27 @@ public class PostService(
 
     // Crear post
     public async Task<(bool success, string message, int postId)> CreatePostAsync(
-        CreatePostViewModel model,
-        int authorId
-    )
+    CreatePostViewModel model,
+    int authorId)
+{
+    // VALIDACIÓN PREVIA (clave)
+    if (model.PostCategoriesIds.Count == 0)
+        return (false, "Debe seleccionar al menos una categoría", 0);
+
+    try
     {
-        try
+        var postId = 0;
+
+        await dbContext.ExecuteTransactionAsync(async (conn, tx) =>
         {
             // 1. Crear producto
             var product = new Product
             {
                 Price = model.Price,
-                Status = ProductStatus.Available.ToStatusString(),
+                Status = ProductStatus.Available.ToStatusString()
             };
-            var productId = await productRepository.CreateAsync(product);
+
+            var productId = await productRepository.CreateAsync(product, conn, tx);
 
             // 2. Crear post
             var post = new Post
@@ -138,40 +148,54 @@ public class PostService(
                 Title = model.Title,
                 Description = model.Description,
                 ProductId = productId,
-                AuthorId = authorId,
+                AuthorId = authorId
             };
-            var postId = await postRepository.CreateAsync(post);
+
+            postId = await postRepository.CreateAsync(post, conn, tx);
 
             // 3. Subir imágenes
             if (model.Images.Count != 0)
             {
-                var uploadResults = await fileUploadService.UploadMultipleImagesAsync(
-                    model.Images.ToList()
-                );
+                var uploadResults =
+                    await fileUploadService.UploadMultipleImagesAsync(model.Images.ToList());
 
                 foreach (var (success, filePath, _) in uploadResults)
                 {
                     if (success && filePath != null)
+                    {
                         await imageRepository.CreateAsync(
-                            new Image { Path = filePath, ProductId = productId }
+                            new Image
+                            {
+                                Path = filePath,
+                                ProductId = productId
+                            },
+                            conn,
+                            tx
                         );
+                    }
                 }
             }
 
-            // // 4. Asignar categorías
-            if (model.PostCategoriesIds.Count == 0)
-                return (false, "Error al asignar categorias", 0);
-
+            // 4. Asignar categorías
             foreach (var categoryId in model.PostCategoriesIds)
-                await categoryRepository.AssignCategoryToProductAsync(productId, categoryId);
+            {
+                await categoryRepository.AssignCategoryToProductAsync(
+                    productId,
+                    categoryId,
+                    conn,
+                    tx
+                );
+            }
+        });
 
-            return (true, "Publicación creada exitosamente", postId);
-        }
-        catch (Exception ex)
-        {
-            return (false, $"Error al crear publicación: {ex.Message}", 0);
-        }
+        return (true, "Publicación creada exitosamente", postId);
     }
+    catch (Exception ex)
+    {
+        return (false, $"Error al crear publicación: {ex.Message}", 0);
+    }
+}
+
 
     // Obtener datos para editar post
     public async Task<EditPostViewModel?> GetEditPostDataAsync(int postId, int userId)

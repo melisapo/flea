@@ -122,7 +122,6 @@ public class PostsController(
     // POST: /Post/Delete/5
     [HttpPost]
     [RequireAuth]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.Session.GetUserId();

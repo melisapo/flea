@@ -14,6 +14,7 @@ public interface IProductRepository
     Task<bool> DeleteAsync(int id);
     Task<List<Category>> GetProductCategoriesAsync(int productId);
     Task<List<Image>> GetProductImagesAsync(int productId);
+    Task<int> CreateAsync(Product product, NpgsqlConnection conn, NpgsqlTransaction tx);
 }
 
 public class ProductRepository(DatabaseContext dbContext) : IProductRepository
@@ -94,6 +95,27 @@ public class ProductRepository(DatabaseContext dbContext) : IProductRepository
         var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt32(result);
     }
+    public async Task<int> CreateAsync(
+        Product product,
+        NpgsqlConnection conn,
+        NpgsqlTransaction tx)
+    {
+        const string sql = """
+                               INSERT INTO products (id, price, status)
+                               VALUES (@id, @price, @status)
+                               RETURNING id;
+                           """;
+
+        product.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        
+        await using var cmd = new NpgsqlCommand(sql, conn, tx);
+        cmd.Parameters.AddWithValue("@id", product.Id);
+        cmd.Parameters.AddWithValue("@price", product.Price);
+        cmd.Parameters.AddWithValue("@status", product.Status);
+
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+    }
+
 
     public async Task<bool> UpdateAsync(Product product)
     {

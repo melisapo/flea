@@ -17,6 +17,7 @@ public interface ICategoryRepository
     Task<List<CategoryStatsItem>?> GetTrendingCategoriesAsync(int limit);
     Task<List<int>> GetProductCategoriesIdsAsync(int productId);
     Task<bool> ExistSlugAsync(string modelSlug, int modelCategoryId);
+    Task AssignCategoryToProductAsync(int productId, int categoryId, NpgsqlConnection conn, NpgsqlTransaction tx);
 }
 
 public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
@@ -143,6 +144,27 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         var rowsAffected = await dbContext.ExecuteNonQueryAsync(insertQuery, insertParams);
         return rowsAffected > 0;
     }
+    public async Task AssignCategoryToProductAsync(
+        int productId,
+        int categoryId,
+        NpgsqlConnection conn,
+        NpgsqlTransaction tx)
+    {
+        const string sql = """
+                               INSERT INTO product_categories (id, product_id, category_id)
+                               VALUES (@id, @productId, @categoryId);
+                           """;
+
+        var id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        
+        await using var cmd = new NpgsqlCommand(sql, conn, tx);
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@productId", productId);
+        cmd.Parameters.AddWithValue("@categoryId", categoryId);
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
 
     public async Task<bool> RemoveCategoryFromProductAsync(int productId, int categoryId)
     {

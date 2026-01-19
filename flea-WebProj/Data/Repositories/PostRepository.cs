@@ -33,6 +33,8 @@ public interface IPostRepository
         decimal? maxPrice = null,
         string? status = null
     );
+
+    Task<int> CreateAsync(Post post, NpgsqlConnection conn, NpgsqlTransaction tx);
 }
 
 public class PostRepository(DatabaseContext dbContext) : IPostRepository
@@ -108,6 +110,28 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt32(result);
     }
+    public async Task<int> CreateAsync(
+        Post post,
+        NpgsqlConnection conn,
+        NpgsqlTransaction tx)
+    {
+        const string sql = """
+                               INSERT INTO posts (id, title, description, created_at, product_id, author_id)
+                               VALUES (@id, @title, @description, CURRENT_TIMESTAMP, @productId, @authorId)
+                               RETURNING id;
+                           """;
+        post.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        
+        await using var cmd = new NpgsqlCommand(sql, conn, tx);
+        cmd.Parameters.AddWithValue("@id", post.Id);
+        cmd.Parameters.AddWithValue("@title", post.Title);
+        cmd.Parameters.AddWithValue("@description", post.Description);
+        cmd.Parameters.AddWithValue("@productId", post.ProductId);
+        cmd.Parameters.AddWithValue("@authorId", post.AuthorId);
+
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+    }
+
     
     public async Task<bool> UpdateAsync(Post post)
     {

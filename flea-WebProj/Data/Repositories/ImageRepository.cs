@@ -10,6 +10,7 @@ public interface IImageRepository
     Task<int> CreateAsync(Image image);
     Task<bool> UpdateAsync(Image image);
     Task<bool> DeleteAsync(int imageId);
+    Task CreateAsync(Image image, NpgsqlConnection conn, NpgsqlTransaction tx);
 }
 
 public class ImageRepository(DatabaseContext dbContext) : IImageRepository
@@ -47,6 +48,25 @@ public class ImageRepository(DatabaseContext dbContext) : IImageRepository
         var result = await dbContext.ExecuteScalarAsync(query, parameters);
         return Convert.ToInt32(result);
     }
+    public async Task CreateAsync(
+        Image image,
+        NpgsqlConnection conn,
+        NpgsqlTransaction tx)
+    {
+        const string sql = """
+                               INSERT INTO images (id, path, product_id)
+                               VALUES (@id, @path, @productId);
+                           """;
+        image.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
+        
+        await using var cmd = new NpgsqlCommand(sql, conn, tx);
+        cmd.Parameters.AddWithValue("@id", image.Id);
+        cmd.Parameters.AddWithValue("@path", image.Path);
+        cmd.Parameters.AddWithValue("@productId", image.ProductId);
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
 
     public async Task<bool> UpdateAsync(Image image)
     {

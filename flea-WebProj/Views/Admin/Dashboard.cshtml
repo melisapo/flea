@@ -1,137 +1,284 @@
 @model flea_WebProj.Models.ViewModels.Admin.DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard Admin";
 }
+
 <div class="flex">
-<!-- Sidebar -->
-@await Html.PartialAsync("_AdminSidebar")
+    <!-- Sidebar -->
+    @await Html.PartialAsync("_AdminSidebar")
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-speedometer2"></i> Dashboard Administrativo</h1>
-    </div>
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-[1440px] mx-auto w-full px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full items-start">
+            
+            <!-- Left Column (8/12) -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                
+                <!-- Executive Snapshot -->
+                <div class="bg-white dark:bg-[#23291a] rounded-3xl p-8 border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden relative group">
+                    <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <span class="material-symbols-outlined text-9xl">analytics</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">Resumen Ejecutivo</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                        <!-- Total Users -->
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">group</span>
+                                </div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-bold">Total Usuarios</p>
+                            </div>
+                            <div>
+                                <p class="text-[#25231e] dark:text-white text-5xl font-extrabold tracking-tighter">
+                                    @Model.TotalUsers.ToString("N0")
+                                </p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <div class="px-2 py-1 rounded bg-primary/10 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm font-bold text-primary">trending_up</span>
+                                        <span class="text-xs font-bold text-primary">+@Model.NewUsersThisWeek</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-gray-400">esta semana</span>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- Estadísticas generales -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-people"></i> Usuarios</h5>
-                    <h2>@Model.TotalUsers</h2>
-                    <small>+@Model.NewUsersThisWeek esta semana</small>
+                        <!-- Total Posts -->
+                        <div class="flex flex-col gap-4 border-l border-gray-100 dark:border-gray-800 pl-0 md:pl-12">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">article</span>
+                                </div>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm font-bold">Total Publicaciones</p>
+                            </div>
+                            <div>
+                                <p class="text-[#25231e] dark:text-white text-5xl font-extrabold tracking-tighter">
+                                    @Model.TotalPosts.ToString("N0")
+                                </p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <div class="px-2 py-1 rounded bg-primary/10 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm font-bold text-primary">trending_up</span>
+                                        <span class="text-xs font-bold text-primary">+@Model.NewPostsThisWeek</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-gray-400">esta semana</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-file-post"></i> Posts</h5>
-                    <h2>@Model.TotalPosts</h2>
-                    <small>+@Model.NewPostsThisWeek esta semana</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-check-circle"></i> Activos</h5>
-                    <h2>@Model.ActivePosts</h2>
-                    <small>Posts disponibles</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-tags"></i> Categorías</h5>
-                    <h2>@Model.TotalCategories</h2>
-                    <small>@Model.SoldPosts vendidos</small>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <!-- Actividad reciente -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Actividad Reciente</h5>
+                <!-- Quick Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Active Posts -->
+                    <div class="flex items-center justify-between rounded-2xl p-6 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 shadow-sm">
+                        <div class="flex flex-col gap-1">
+                            <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Posts Activos</p>
+                            <p class="text-[#25231e] dark:text-white text-3xl font-extrabold">@Model.ActivePosts.ToString("N0")</p>
+                            <div class="flex items-center gap-1 text-xs font-bold text-primary/80 mt-1">
+                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                <span>Disponibles</span>
+                            </div>
+                        </div>
+                        <div class="h-14 w-14 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">bolt</span>
+                        </div>
+                    </div>
+
+                    <!-- Sold Posts -->
+                    <div class="flex items-center justify-between rounded-2xl p-6 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 shadow-sm">
+                        <div class="flex flex-col gap-1">
+                            <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Posts Vendidos</p>
+                            <p class="text-[#25231e] dark:text-white text-3xl font-extrabold">@Model.SoldPosts.ToString("N0")</p>
+                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-1">
+                                <span class="material-symbols-outlined text-sm">history</span>
+                                <span>@((Model.TotalPosts > 0 ? (Model.SoldPosts * 100.0 / Model.TotalPosts) : 0).ToString("F1"))% conversión</span>
+                            </div>
+                        </div>
+                        <div class="h-14 w-14 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    @if (Model.RecentActivity.Any())
-                    {
-                        <div class="list-group">
-                            @foreach (var activity in Model.RecentActivity)
+
+                <!-- Stats + Categories Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Weekly Stats -->
+                    <div class="md:col-span-5 flex flex-col gap-4">
+                        <div class="flex items-center gap-4 rounded-2xl p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800">
+                            <div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-[20px]">person_add</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-[10px] font-bold">NUEVOS USUARIOS SEMANA</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-lg font-extrabold text-[#25231e] dark:text-white">+@Model.NewUsersThisWeek</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 rounded-2xl p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800">
+                            <div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-[20px]">post_add</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-[10px] font-bold">NUEVOS POSTS SEMANA</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-lg font-extrabold text-[#25231e] dark:text-white">+@Model.NewPostsThisWeek</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 rounded-2xl p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800">
+                            <div class="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-[20px]">today</span>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400 text-[10px] font-bold">NUEVOS POSTS HOY</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-lg font-extrabold text-[#25231e] dark:text-white">+@Model.NewPostsToday</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Categories -->
+                    <div class="md:col-span-7 bg-white dark:bg-[#23291a] rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold tracking-wider uppercase text-gray-400">Top Categorías</h3>
+                            <span class="material-symbols-outlined text-gray-300 text-sm">bar_chart</span>
+                        </div>
+                        <div class="space-y-4">
+                            @if (Model.TopCategories.Any())
                             {
-                                <div class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <p class="mb-1">
-                                            <i class="bi @activity.Icon @activity.Color"></i>
-                                            @activity.Description
+                                var maxCount = Model.TopCategories.Max(c => c.PostCount);
+                                @foreach (var category in Model.TopCategories.Take(5))
+                                {
+                                    var percentage = maxCount > 0 ? (category.PostCount * 100.0 / maxCount) : 0;
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between items-center text-[11px] font-bold">
+                                            <p class="text-[#25231e] dark:text-gray-200">@category.CategoryName</p>
+                                            <p class="text-primary">@category.PostCount.ToString("N0")</p>
+                                        </div>
+                                        <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                            <div class="h-full bg-primary rounded-full" style="width: @percentage.ToString("F0")%"></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-sm text-gray-400 text-center py-4">No hay categorías disponibles</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (4/12) - Activity Feed -->
+            <div class="lg:col-span-4 h-full">
+                <div class="bg-white dark:bg-[#23291a] rounded-3xl p-8 border border-gray-100 dark:border-gray-800 shadow-sm h-full flex flex-col min-h-[600px]">
+                    <div class="flex items-center justify-between mb-10">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary">history_toggle_off</span>
+                            <h3 class="text-lg font-extrabold tracking-tight">Actividad Reciente</h3>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 space-y-0 relative">
+                        @if (Model.RecentActivity.Any())
+                        {
+                            @for (var i = 0; i < Model.RecentActivity.Count; i++)
+                            {
+                                var activity = Model.RecentActivity[i];
+                                var isLast = i == Model.RecentActivity.Count - 1;
+                                var timeAgo = GetTimeAgo(activity.Timestamp);
+
+                                <div class="grid grid-cols-[48px_1fr] group">
+                                    <div class="flex flex-col items-center">
+                                        <div class="size-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center z-10 border border-gray-100 dark:border-gray-700 transition-transform group-hover:scale-110">
+                                            <span class="material-symbols-outlined text-primary text-[20px]">@activity.Icon</span>
+                                        </div>
+                                        @if (!isLast)
+                                        {
+                                            <div class="w-[2px] bg-primary/10 h-full"></div>
+                                        }
+                                    </div>
+                                    <div class="@(isLast ? "pb-0" : "pb-10") pl-4">
+                                        <p class="text-[#25231e] dark:text-gray-200 text-sm font-semibold leading-relaxed">
+                                            @Html.Raw(activity.Description)
                                         </p>
-                                        <small class="text-muted">@activity.Timestamp.ToString("dd/MM/yyyy HH:mm")</small>
+                                        <p class="text-gray-400 text-xs font-medium mt-1">@timeAgo</p>
                                     </div>
                                 </div>
                             }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted text-center py-3">No hay actividad reciente</p>
-                    }
+                        }
+                        else
+                        {
+                            <div class="text-center py-12">
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-3xl">inbox</span>
+                                </div>
+                                <p class="text-sm text-gray-400">No hay actividad reciente</p>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Top Categorías -->
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Top Categorías</h5>
+        <!-- Quick Actions -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <a asp-action="Users" 
+               class="flex items-center gap-4 p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 rounded-xl hover:border-primary/50 hover:shadow-md transition-all group">
+                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-primary group-hover:text-white">group</span>
                 </div>
-                <div class="card-body">
-                    @if (Model.TopCategories.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var category in Model.TopCategories)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @category.CategoryName
-                                    <span class="badge bg-primary rounded-pill">@category.PostCount</span>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p class="text-muted text-center py-3">No hay categorías</p>
-                    }
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase">Gestionar</p>
+                    <p class="text-sm font-bold text-[#25231e] dark:text-white">Usuarios</p>
                 </div>
-            </div>
-        </div>
-    </div>
+            </a>
 
-    <!-- Enlaces rápidos -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Accesos Rápidos</h5>
+            <a asp-action="Posts" 
+               class="flex items-center gap-4 p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 rounded-xl hover:border-primary/50 hover:shadow-md transition-all group">
+                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-primary group-hover:text-white">article</span>
                 </div>
-                <div class="card-body">
-                    <a asp-action="Users" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-people"></i> Gestionar Usuarios
-                    </a>
-                    <a asp-action="Posts" class="btn btn-outline-success me-2">
-                        <i class="bi bi-file-post"></i> Gestionar Posts
-                    </a>
-                    <a asp-action="Categories" class="btn btn-outline-warning">
-                        <i class="bi bi-tags"></i> Gestionar Categorías
-                    </a>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase">Gestionar</p>
+                    <p class="text-sm font-bold text-[#25231e] dark:text-white">Publicaciones</p>
                 </div>
-            </div>
+            </a>
+
+            <a asp-action="Categories" 
+               class="flex items-center gap-4 p-4 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 rounded-xl hover:border-primary/50 hover:shadow-md transition-all group">
+                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-primary group-hover:text-white">category</span>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase">Gestionar</p>
+                    <p class="text-sm font-bold text-[#25231e] dark:text-white">Categorías</p>
+                </div>
+            </a>
         </div>
-    </div>
+    </main>
 </div>
-</div>
+
+@functions {
+    private static string GetTimeAgo(DateTime timestamp)
+    {
+        var timeSpan = DateTime.Now - timestamp;
+        
+        switch (timeSpan.TotalMinutes)
+        {
+            case < 1:
+                return "Ahora mismo";
+            case < 60:
+                return $"Hace {(int)timeSpan.TotalMinutes} minuto(s)";
+        }
+        if (timeSpan.TotalHours < 24) return $"Hace {(int)timeSpan.TotalHours} hora(s)";
+        return timeSpan.TotalDays < 7 ? $"Hace {(int)timeSpan.TotalDays} día(s)" : timestamp.ToString("dd/MM/yyyy HH:mm");
+    }
+}

@@ -104,7 +104,7 @@ public class AdminService(
                     Type = "user",
                     Description = $"Nuevo usuario: {user.Username}",
                     Timestamp = user.CreatedAt,
-                    Icon = "bi-person-plus",
+                    Icon = "person_add",
                     Color = "text-success"
                 })
                 .ToList();
@@ -123,7 +123,7 @@ public class AdminService(
                     Type = "post",
                     Description = $"Nueva publicación: {post.Title} por {author?.Username ?? "Usuario"}",
                     Timestamp = post.CreatedAt,
-                    Icon = "bi-file-post",
+                    Icon = "post_add",
                     Color = "text-primary"
                 });
             }
@@ -131,7 +131,7 @@ public class AdminService(
             // Ordenar por timestamp y tomar los 10 más recientes
             recentActivity = recentActivity
                 .OrderByDescending(a => a.Timestamp)
-                .Take(10)
+                .Take(6)
                 .ToList();
 
             // Top categorías (las 4 con más posts)

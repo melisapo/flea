@@ -50,6 +50,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseStatusCodePagesWithReExecute("/Error/404");
+
 app.UseSession();
 
 app.UseAuthorization();

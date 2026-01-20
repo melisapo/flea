@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace flea_WebProj.Controllers
 {
     [RequireAuth]
-    [RequireAdmin]
+    [RequireAdminOrModerator]
     public class AdminController(
         IAdminService adminService,
         IPostService postService,
@@ -103,6 +103,7 @@ namespace flea_WebProj.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequireAdmin]
         public async Task<IActionResult> AssignRole(int userId, int roleId)
         {
             try
@@ -127,6 +128,7 @@ namespace flea_WebProj.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequireAdmin]
         public async Task<IActionResult> RemoveRole(int userId, int roleId)
         {
             try
@@ -150,6 +152,7 @@ namespace flea_WebProj.Controllers
         }
 
         [HttpGet]
+        [RequireAdmin]
         public async Task<IActionResult> DeleteUserConfirm(int id)
         {
             try
@@ -176,6 +179,7 @@ namespace flea_WebProj.Controllers
 
         [HttpDelete]
         [ValidateAntiForgeryToken]
+        [RequireAdmin]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
@@ -246,6 +250,7 @@ namespace flea_WebProj.Controllers
         }
 
         [HttpGet]
+        [RequireModerator]
         public async Task<IActionResult> DeletePostConfirm(int id)
         {
             try
@@ -277,6 +282,7 @@ namespace flea_WebProj.Controllers
 
         [HttpDelete]
         [ValidateAntiForgeryToken]
+        [RequireModerator]
         public async Task<IActionResult> DeletePost(int id)
         {
             try
@@ -339,6 +345,7 @@ namespace flea_WebProj.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequireAdmin]
         public async Task<IActionResult> SaveCategory(CategoryFormViewModel form)
         {
             if (!ModelState.IsValid)
@@ -376,6 +383,7 @@ namespace flea_WebProj.Controllers
 
         
         [HttpGet]
+        [RequireAdmin]
         public async Task<IActionResult> DeleteCategoryConfirm(int id)
         {
             try
@@ -406,7 +414,7 @@ namespace flea_WebProj.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [RequireAdmin]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try

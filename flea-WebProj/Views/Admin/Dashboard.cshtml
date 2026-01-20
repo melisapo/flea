@@ -9,14 +9,14 @@
     @await Html.PartialAsync("_AdminSidebar")
 
     <!-- Main Content Area -->
-    <main class="flex-1 max-w-[1300px] mx-auto w-full px-6 py-8">
+    <main class="flex-1 max-w-[1300px] mx-auto w-full px-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full items-start">
             
             <!-- Left Column (8/12) -->
             <div class="lg:col-span-8 flex flex-col gap-6">
                 
                 <!-- Executive Snapshot -->
-                <div class="bg-[#25231e] rounded-3xl p-8 border border-gray-100 shadow-sm overflow-hidden relative group">
+                <div class="bg-[#25231e] rounded-3xl p-8 shadow-sm overflow-hidden relative group">
                     <div class="absolute top-0 right-0 p-8 text-muted opacity-5 group-hover:opacity-10 transition-opacity">
                         <span class="material-symbols-outlined text-9xl">auto_graph</span>
                     </div>
@@ -75,7 +75,7 @@
                     <div class="flex items-center justify-between rounded-2xl p-6 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 shadow-sm">
                         <div class="flex flex-col gap-1">
                             <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Posts Activos</p>
-                            <p class="text-[#25231e] dark:text-white text-3xl font-extrabold">@Model.ActivePosts.ToString("N0")</p>
+                            <p class="text-[#25231e] dark:text-white text-3xl pl-3 font-extrabold">@Model.ActivePosts.ToString("N0")</p>
                         </div>
                         <div class="h-14 w-14 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
                             <span class="material-symbols-outlined text-primary text-3xl">bolt</span>
@@ -86,7 +86,7 @@
                     <div class="flex items-center justify-between rounded-2xl p-6 bg-white dark:bg-[#23291a] border border-gray-100 dark:border-gray-800 shadow-sm">
                         <div class="flex flex-col gap-1">
                             <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">Posts Vendidos</p>
-                            <p class="text-[#25231e] dark:text-white text-3xl font-extrabold">@Model.SoldPosts.ToString("N0")</p>
+                            <p class="text-[#25231e] dark:text-white text-3xl pl-3 font-extrabold">@Model.SoldPosts.ToString("N0")</p>
                         </div>
                         <div class="h-14 w-14 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
                             <span class="material-symbols-outlined text-primary text-3xl">shopping_bag</span>

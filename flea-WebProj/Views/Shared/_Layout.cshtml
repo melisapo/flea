@@ -132,7 +132,7 @@
                             Mis Publicaciones
                         </a>
 
-                        @if (Context.Session.IsAdmin())
+                        @if (Context.Session.IsAdmin() || Context.Session.IsModerator())
                         {
                             <div class="border-t border-black/5 my-2"></div>
 
@@ -202,7 +202,7 @@
             <a asp-controller="Posts" asp-action="MyPosts" class="mobile-link">Mis Posts</a>
             <a asp-controller="Account" asp-action="Profile" class="mobile-link">Mi Perfil</a>
 
-            @if (Context.Session.IsAdmin())
+            @if (Context.Session.IsAdmin() || Context.Session.IsModerator())
             {
                 <hr class="my-4">
                 <a asp-controller="Admin" asp-action="Dashboard"

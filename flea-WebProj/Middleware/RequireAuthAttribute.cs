@@ -36,8 +36,23 @@ public class RequireAdminAttribute : ActionFilterAttribute
         base.OnActionExecuting(context);
     }
 }
-
 public class RequireModeratorAttribute : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        if (!context.HttpContext.Session.IsAuthenticated())
+        {
+            context.Result = new RedirectToActionResult("Login", "Account", null);
+            return;
+        }
+
+        if (!context.HttpContext.Session.IsModerator())
+            context.Result = new RedirectToActionResult("AccessDenied", "Account", null);
+
+        base.OnActionExecuting(context);
+    }
+}
+public class RequireAdminOrModeratorAttribute : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {

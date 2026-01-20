@@ -131,7 +131,7 @@ public class AdminService(
             // Ordenar por timestamp y tomar los 10 más recientes
             recentActivity = recentActivity
                 .OrderByDescending(a => a.Timestamp)
-                .Take(6)
+                .Take(7)
                 .ToList();
 
             // Top categorías (las 4 con más posts)

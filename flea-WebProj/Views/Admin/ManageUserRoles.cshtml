@@ -1,65 +1,140 @@
 @model flea_WebProj.Models.ViewModels.Admin.ManageUserRolesViewModel
+
 @{
     ViewData["Title"] = "Gestionar Roles";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-shield"></i> Gestionar Roles de Usuario</h1>
-        <a asp-action="Users" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Volver
-        </a>
-    </div>
+<div class="flex">
+    <!-- Sidebar -->
+    @await Html.PartialAsync("_AdminSidebar")
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Usuario: <strong>@Model.Username</strong></h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                @foreach (var role in Model.AvailableRoles)
-                {
-                    <div class="col-md-6 mb-3">
-                        <div class="card @(role.IsAssigned ? "border-success" : "")">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-1">
-                                        <i class="bi @(role.IsAssigned ? "bi-check-circle-fill text-success" : "bi-circle")"></i>
-                                        @role.RoleName
-                                    </h6>
-                                    <small class="text-muted">
-                                        @(role.IsAssigned ? "Rol asignado" : "Rol no asignado")
-                                    </small>
+    <!-- Main Content Area -->
+    <main class="flex-1 px-10 ">
+        <div class="max-w-[900px] mx-auto">
+            
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold text-[#25231e] dark:text-white tracking-tight mb-2">
+                            Gestionar Roles de Usuario
+                        </h1>
+                        <p class="text-[#718d58] text-sm">
+                            Configura los permisos y accesos para 
+                            <span class="font-bold text-[#25231e] dark:text-white">@@@Model.Username</span>
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Info Card -->
+            <div class="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-8">
+                <div class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">info</span>
+                    <div>
+                        <h4 class="font-bold text-[#25231e] dark:text-white mb-1">Gestión de Roles</h4>
+                        <p class="text-sm text-[#25231e]/70 dark:text-white/70">
+                            Asigna o remueve roles para controlar los permisos del usuario. Los cambios se aplican inmediatamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roles Grid -->
+            <div class="bg-white dark:bg-gray-900 rounded-2xl border border-[#dce3d3] dark:border-gray-800 overflow-hidden shadow-sm">
+                <div class="h-2 bg-primary"></div>
+                
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @foreach (var role in Model.AvailableRoles)
+                        {
+                            <div class="@(role.IsAssigned ? "bg-primary/5 border-primary/30" : "bg-gray-50 dark:bg-gray-800/50 border-[#dce3d3] dark:border-gray-700") border-2 rounded-xl p-6 transition-all hover:shadow-md">
+                                <div class="flex items-start justify-between gap-4">
+                                    <!-- Role Info -->
+                                    <div class="flex items-start gap-3 flex-1">
+                                        <div class="@(role.IsAssigned ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-400") w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="material-symbols-outlined text-xl">
+                                                @(role.IsAssigned ? "check_circle" : "radio_button_unchecked")
+                                            </span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="text-lg font-bold text-[#25231e] dark:text-white mb-1">
+                                                @role.RoleName
+                                            </h3>
+                                            <p class="text-sm @(role.IsAssigned ? "text-primary font-medium" : "text-gray-500")">
+                                                @(role.IsAssigned ? "✓ Rol asignado" : "Rol no asignado")
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <div class="flex-shrink-0">
+                                        @if (role.IsAssigned)
+                                        {
+                                            <form asp-action="RemoveRole" method="post" onsubmit="return confirm('¿Está seguro de remover el rol @role.RoleName?');">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@Model.UserId" />
+                                                <input type="hidden" name="roleId" value="@role.RoleId" />
+                                                <button type="submit" 
+                                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-sm">
+                                                    <span class="material-symbols-outlined text-sm">remove_circle</span>
+                                                    Remover
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="AssignRole" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userId" value="@Model.UserId" />
+                                                <input type="hidden" name="roleId" value="@role.RoleId" />
+                                                <button type="submit" 
+                                                        class="px-4 py-2 bg-primary hover:bg-primary/90 text-[#25231e] rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-sm">
+                                                    <span class="material-symbols-outlined text-sm">add_circle</span>
+                                                    Asignar
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
                                 </div>
-                                <div>
-                                    @if (role.IsAssigned)
-                                    {
-                                        <form asp-action="RemoveRole" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="userId" value="@Model.UserId" />
-                                            <input type="hidden" name="roleId" value="@role.RoleId" />
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de remover este rol?')">
-                                                <i class="bi bi-dash-circle"></i> Remover
-                                            </button>
-                                        </form>
-                                    }
-                                    else
-                                    {
-                                        <form asp-action="AssignRole" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="userId" value="@Model.UserId" />
-                                            <input type="hidden" name="roleId" value="@role.RoleId" />
-                                            <button type="submit" class="btn btn-sm btn-success">
-                                                <i class="bi bi-plus-circle"></i> Asignar
-                                            </button>
-                                        </form>
-                                    }
+
+                                <!-- Role Description (Optional) -->
+                                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                        @switch (role.RoleName.ToLower())
+                                        {
+                                            case "admin":
+                                                <text>Acceso completo a todas las funciones del sistema</text>
+                                                break;
+                                            case "moderator":
+                                                <text>Puede moderar contenido y gestionar publicaciones</text>
+                                                break;
+                                            case "user":
+                                                <text>Usuario estándar con permisos básicos</text>
+                                                break;
+                                            default:
+                                                <text>Rol personalizado del sistema</text>
+                                                break;
+                                        }
+                                    </p>
                                 </div>
                             </div>
-                        </div>
+                        }
                     </div>
-                }
+
+                    @if (!Model.AvailableRoles.Any())
+                    {
+                        <!-- Empty State -->
+                        <div class="py-16 text-center">
+                            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-gray-400 text-4xl">badge</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#25231e] dark:text-white mb-2">No hay roles disponibles</h3>
+                            <p class="text-sm text-gray-500">Contacta al administrador del sistema</p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 </div>

@@ -281,7 +281,6 @@ namespace flea_WebProj.Controllers
         }
 
         [HttpDelete]
-        [ValidateAntiForgeryToken]
         [RequireModerator]
         public async Task<IActionResult> DeletePost(int id)
         {

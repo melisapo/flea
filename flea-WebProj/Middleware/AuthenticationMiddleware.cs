@@ -14,8 +14,6 @@ public class AuthenticationMiddleware(RequestDelegate next)
             "/",
             "/home",
             "/home/index",
-            "/home/about",
-            "/home/contact",
             "/account/login",
             "/account/register",
             "/account/accessdenied"

@@ -9,14 +9,9 @@
     @await Html.PartialAsync("_AdminSidebar")
 
     <!-- Main Content Area -->
-    <main class="flex-1 px-5">
+    <main class="flex-col px-2 md:px-6 lg:px-24">
         <!-- Header & Breadcrumbs -->
         <header class="mb-8">
-            <nav class="flex items-center gap-2 text-sm text-mutedForeground mb-4">
-                <span class="hover:text-primary cursor-pointer">Admin Panel</span>
-                <span class="material-symbols-outlined text-xs">chevron_right</span>
-                <span class="text-text-main dark:text-white font-medium">Categorías</span>
-            </nav>
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <h2 class="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">Gestión de Categorías</h2>
             </div>

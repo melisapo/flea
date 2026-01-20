@@ -124,30 +124,42 @@ ViewData["Title"] = "Mi Perfil";
 
                 @if (Model.Contact != null)
                 {
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs font-bold tracking-widest text-[#25231e]/30">Email</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[#25231e]/80 font-semibold">@Model.Contact.Email</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Email</span>
+                            <div class="flex items-center gap-2">
+                                <a href="mailto:@Model.Contact.Email" 
+                                   class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
+                                    @Model.Contact.Email
+                                </a>
+                            </div>
                         </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
+                        {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Teléfono</span>
+                                <div class="flex items-center gap-2">
+                                    <a href="tel:@Model.Contact.PhoneNumber" 
+                                       class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
+                                        @Model.Contact.PhoneNumber
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
+                        {
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Telegram</span>
+                                <div class="flex items-center gap-2">
+                                    <a  href="https://t.me/@Model.Contact.TelegramUser"
+                                       class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
+                                        @Model.Contact.TelegramUser
+                                    </a>
+                                </div>
+                            </div>
+                        }
                     </div>
-
-                    @if (!string.IsNullOrEmpty(Model.Contact.PhoneNumber))
-                    {
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs font-bold tracking-widest text-[#25231e]/30">Teléfono</span>
-                        <span class="text-[#25231e]/80 font-semibold">@Model.Contact.PhoneNumber</span>
-                    </div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(Model.Contact.TelegramUser))
-                    {
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs font-bold tracking-widest text-[#25231e]/30">Telegram</span>
-                        <span class="text-[#25231e]/80 font-semibold">@@@Model.Contact.TelegramUser</span>
-                    </div>
-                    }
-                </div>
                 }
                 else
                 {

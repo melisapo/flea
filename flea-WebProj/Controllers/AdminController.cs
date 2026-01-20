@@ -231,6 +231,7 @@ namespace flea_WebProj.Controllers
                             StatusText = product.GetStatusText(),
                             MainImage = product.Images.FirstOrDefault()?.Path,
                             CreatedAt = post.CreatedAt,
+                            Reprted = post.Reported,
                             AuthorId = author.Id,
                             AuthorUsername = author.Username,
                             AuthorName = author.Name,
@@ -249,6 +250,25 @@ namespace flea_WebProj.Controllers
             }
         }
 
+       
+        
+        [HttpPost]
+        [RequireModerator]
+        public async Task<IActionResult> RemoveReport(int postId)
+        {
+            try{
+                var post = await adminService.GetPostByIdAsync(postId);
+                post?.Reported = string.Empty;
+
+                TempData["SuccessMessage"] = "Reporte eliminado correctamente";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+            }
+            return RedirectToAction("Users");
+        }
+        
         [HttpGet]
         [RequireModerator]
         public async Task<IActionResult> DeletePostConfirm(int id)

@@ -98,7 +98,12 @@
                     {
                         <div class="flex flex-col gap-1">
                             <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Teléfono</span>
-                            <span class="text-[#25231e]/80 font-semibold">@Model.PhoneNumber</span>
+                            <div class="flex items-center gap-2">
+                                <a href="tel:@Model.PhoneNumber" 
+                                   class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
+                                    @Model.PhoneNumber
+                                </a>
+                            </div>
                         </div>
                     }
 
@@ -106,15 +111,19 @@
                     {
                         <div class="flex flex-col gap-1">
                             <span class="text-sm font-bold tracking-widest text-[#25231e]/30">Telegram</span>
-                            <span class="text-[#25231e]/80 font-semibold">@@@Model.TelegramUser</span>
+                            <div class="flex items-center gap-2">
+                                <a  href="https://t.me/@Model.TelegramUser"
+                                    class="text-[#25231e]/80 font-semibold hover:text-[#98cf54] transition-colors">
+                                    @Model.TelegramUser
+                                </a>
+                            </div>
                         </div>
                     }
                 </div>
             </div>
 
             <!-- Publications Section -->
-            <div class="bg-white rounded-2xl shadow-touch overflow-hidden">
-                <div class="h-2 bg-primary"></div>
+            <div class="bg-white rounded-2xl shadow-touch overflow-hidden border-t-4 border-[#98cf54]">
                 <div class="px-6 sm:px-8 py-5 border-b border-[#f0f4e4] flex items-center gap-3">
                     <h5 class="text-[#25231e] font-bold text-lg">
                         Publicaciones de @Model.Username
@@ -153,26 +162,21 @@
                                         <img src="@post.MainImage"
                                              alt="@post.Title"
                                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                                        <div class="absolute top-3 left-3">
-                                            <span class="bg-[#98cf54]/90 backdrop-blur-sm text-[#25231e] text-[10px] uppercase tracking-widest font-black px-2.5 py-1 rounded-full">
-                                                Disponible
-                                            </span>
-                                        </div>
                                     </div>
 
                                     <!-- Content -->
                                     <div class="p-4 flex-1 flex flex-col">
-                                        <h3 class="font-bold text-base text-[#25231e] mb-2 line-clamp-1">
+                                        <h3 class="font-bold mb-2 line-clamp-1">
                                             @post.Title
                                         </h3>
-                                        <p class="text-sm text-[#25231e]/60 mb-4 line-clamp-2">
+                                        <p class="text-sm text-mutedForeground mb-4 line-clamp-2">
                                             @post.Description
                                         </p>
                                         <div class="mt-auto flex items-center justify-between pt-3 border-t border-[#f0f4e4]">
                                             <span class="font-black text-xl text-[#25231e]">
                                                 $@post.Price.ToString("N2")
                                             </span>
-                                            <span class="text-xs text-[#25231e]/40 flex items-center gap-1">
+                                            <span class="text-xs text-mutedForeground flex items-center gap-1">
                                                 <span class="material-symbols-outlined text-sm">schedule</span>
                                                 @post.CreatedAt.ToString("dd/MM/yyyy")
                                             </span>

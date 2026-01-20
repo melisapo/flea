@@ -33,6 +33,7 @@ public class PostManageItem
     public string StatusText { get; set; } = string.Empty;
     public string? MainImage { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public string? Reprted { get; set; } = string.Empty;
     
     // Info del autor
     public int AuthorId { get; set; }

@@ -11,6 +11,7 @@ namespace flea_WebProj.Services;
 
 public interface IPostService
 {
+    Task<Post?> GetByIdAsync(int postId);
     Task<ProductDetailViewModel?> GetPostDetailAsync(int postId, int? currentUserId);
     Task<Product> GetProductByPostIdAsync(int postId);
     Task<(bool success, string message, int postId)> CreatePostAsync(
@@ -47,6 +48,12 @@ public class PostService(
 ) : IPostService
 {
     // Obtener detalle completo de un post
+    public async Task<Post?> GetByIdAsync(int postId)
+    {
+        var post = await postRepository.GetByIdAsync(postId);
+        return post;
+    }
+
     public async Task<ProductDetailViewModel?> GetPostDetailAsync(int postId, int? currentUserId)
     {
         var post = await postRepository.GetWithFullDetailsAsync(postId);

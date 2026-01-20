@@ -2,32 +2,50 @@
     var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
 }
 
-<aside class="w-64 bg-background flex flex-col fixed h-full transition-colors duration-300 z-40">
+<!-- Mobile Menu Button -->
+<button id="mobileMenuBtn" 
+        class="md:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-white rounded-lg shadow-lg">
+    <span class="material-symbols-outlined">menu</span>
+</button>
+
+<!-- Overlay for mobile -->
+<div id="sidebarOverlay" 
+     class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"
+     onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside id="adminSidebar" 
+       class="w-64 bg-background flex flex-col fixed h-full transition-all duration-300 z-40 
+              -translate-x-full md:translate-x-0">
+    
     <!-- Header -->
     <div class="p-6 flex items-center gap-3">
         <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
             <span class="material-symbols-outlined">inventory_2</span>
         </div>
-        <div>
-            <h1 class="text-foreground dark:text-white font-bold text-md leading-tight tracking-wider">Admin Panel</h1>
+        <div class="flex-1">
+            <h1 class="text-text-main dark:text-white font-bold text-sm leading-tight uppercase tracking-wider">Admin Panel</h1>
             <p class="text-mutedForeground text-xs">Gestión de Tienda</p>
         </div>
+        <!-- Close button for mobile -->
+        <button class="md:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                onclick="toggleSidebar()">
+            <span class="material-symbols-outlined text-sm">close</span>
+        </button>
     </div>
 
     <!-- Navigation -->
     <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <!-- Dashboard -->
-        <a 
-           asp-controller="Admin" 
+        <a asp-controller="Admin" 
            asp-action="Dashboard"
-           class="flex items-center gap-3 px-4 py-3 @(currentAction == "Dashboard" ? " bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
+           class="flex items-center gap-3 px-4 py-3 @(currentAction == "Dashboard" ? "bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
             <span class="material-symbols-outlined @(currentAction == "Dashboard" ? "text-primary" : "group-hover:text-primary")">dashboard</span>
             <span class="text-sm @(currentAction == "Dashboard" ? "font-semibold" : "font-medium")">Dashboard</span>
         </a>
 
         <!-- Categories -->
-        <a 
-           asp-controller="Admin" 
+        <a asp-controller="Admin" 
            asp-action="Categories"
            class="flex items-center gap-3 px-4 py-3 @(currentAction == "Categories" ? "bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
             <span class="material-symbols-outlined @(currentAction == "Categories" ? "text-primary" : "group-hover:text-primary")">category</span>
@@ -35,24 +53,50 @@
         </a>
 
         <!-- Posts -->
-        <a 
-           asp-controller="Admin" 
+        <a asp-controller="Admin" 
            asp-action="Posts"
-           class="flex items-center gap-3 px-4 py-3 @(currentAction == "Posts" ? "bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
+           class="flex items-center gap-3 px-4 py-3 @(currentAction == "Posts" ? " bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
             <span class="material-symbols-outlined @(currentAction == "Posts" ? "text-primary" : "group-hover:text-primary")">article</span>
             <span class="text-sm @(currentAction == "Posts" ? "font-semibold" : "font-medium")">Publicaciones</span>
         </a>
 
         <!-- Users -->
-        <a 
-            asp-controller="Admin" 
+        <a asp-controller="Admin" 
            asp-action="Users"
-           class="flex items-center gap-3 px-4 py-3 @(currentAction == "Users" ? "bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
-            <span class="material-symbols-outlined @(currentAction == "Users" ? "text-primary" : "group-hover:text-primary")">group</span>
-            <span class="text-sm @(currentAction == "Users" ? "font-semibold" : "font-medium")">Usuarios</span>
+           class="flex items-center gap-3 px-4 py-3 @(currentAction is "Users" or "ManageUserRoles" ? "bg-primary/10 border-r-4 border-primary" : "text-mutedForeground hover:bg-primary/10") rounded-lg transition-all group">
+            <span class="material-symbols-outlined @(currentAction is "Users" or "ManageUserRoles" ? "text-primary" : "group-hover:text-primary")">group</span>
+            <span class="text-sm @(currentAction is "Users" or "ManageUserRoles" ? "font-semibold" : "font-medium")">Usuarios</span>
         </a>
     </nav>
 </aside>
 
-<!-- Spacer for fixed sidebar -->
-<div class="w-64 flex-shrink-0"></div>
+<!-- Spacer for fixed sidebar (only on desktop) -->
+<div class="w-64 flex-shrink-0 hidden md:block"></div>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    }
+
+    // Close sidebar when clicking on a link (mobile only)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth < 768) {
+            const sidebarLinks = document.querySelectorAll('#adminSidebar a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    toggleSidebar();
+                });
+            });
+        }
+    });
+
+    // Handle mobile menu button
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+    }
+</script>

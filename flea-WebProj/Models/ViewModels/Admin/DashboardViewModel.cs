@@ -26,7 +26,7 @@ public class RecentActivityItem
     public string Type { get; set; } = string.Empty; // "user", "post", "category"
     public string Description { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; }
-    public string Icon { get; set; } = string.Empty; // Bootstrap icon class
+    public string Icon { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty; // CSS class
 }
 

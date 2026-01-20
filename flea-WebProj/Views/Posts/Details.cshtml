@@ -47,12 +47,48 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col gap-4 mt-8">
-                    @if (Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available && !Model.IsOwner)
+                    @if (Model is { Status: flea_WebProj.Models.Enums.ProductStatus.Available, IsOwner: false })
                     {
-                        <button class="w-full bg-[#98cf54] hover:bg-[#88bf44] text-[#25231e] px-10 py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#98cf54]/20">
-                            <span class="material-symbols-outlined">chat_bubble</span>
-                            Contactar Vendedor
-                        </button>
+                        <!-- Seller Card -->
+        <section class="flex flex-col md:flex-row items-center justify-between gap-10 p-10 bg-[#25231e] rounded-[3rem] text-white">
+            <a asp-action="Profile" 
+               asp-controller="User" 
+               asp-route-id="@Model.AuthorId" class="flex flex-col md:flex-row items-center gap-6">
+                <div class="size-20 rounded-full bg-cover bg-center ring-4 ring-[#98cf54]/40 shadow-2xl shadow-[#98cf54]/20" 
+                     style="background-image: url('@Model.AuthorProfilePic')"></div>
+                <div class="text-center md:text-left">
+                    <h4 class="text-2xl font-extrabold">@Model.AuthorName</h4>
+                    <p class="text-[#98cf54] font-medium text-sm">@@@Model.AuthorUsername</p>
+                </div>
+            </a>
+            
+            @if (Model is { Status: flea_WebProj.Models.Enums.ProductStatus.Available, IsOwner: false })
+            {
+                <div class="flex gap-3">
+                    @if (!string.IsNullOrEmpty(Model.AuthorEmail))
+                    {
+                        <a href="mailto:@Model.AuthorEmail"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">mail</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AuthorPhoneNumber))
+                    {
+                        <a href="tel:@Model.AuthorPhoneNumber"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">call</span>
+                        </a>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AuthorTelegramUser))
+                    {
+                        <a href="https://t.me/@Model.AuthorTelegramUser" target="_blank"
+                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xl">send</span>
+                        </a>
+                    }
+                </div>
+            }
+        </section>
                     }
 
                     @if (Model.IsOwner)
@@ -137,44 +173,7 @@
             </div>
         </section>
 
-        <!-- Seller Card -->
-        <section class="flex flex-col md:flex-row items-center justify-between gap-10 p-10 bg-[#25231e] rounded-[3rem] text-white">
-            <div class="flex flex-col md:flex-row items-center gap-6">
-                <div class="size-20 rounded-full bg-cover bg-center ring-4 ring-[#98cf54]/40 shadow-2xl shadow-[#98cf54]/20" 
-                     style="background-image: url('@Model.AuthorProfilePic')"></div>
-                <div class="text-center md:text-left">
-                    <h4 class="text-2xl font-extrabold">@Model.AuthorName</h4>
-                    <p class="text-[#98cf54] font-medium text-sm">@@@Model.AuthorUsername</p>
-                </div>
-            </div>
-            
-            @if (Model is { Status: flea_WebProj.Models.Enums.ProductStatus.Available, IsOwner: false })
-            {
-                <div class="flex gap-3">
-                    @if (!string.IsNullOrEmpty(Model.AuthorEmail))
-                    {
-                        <a href="mailto:@Model.AuthorEmail"
-                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
-                            <span class="material-symbols-outlined text-xl">mail</span>
-                        </a>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.AuthorPhoneNumber))
-                    {
-                        <a href="tel:@Model.AuthorPhoneNumber"
-                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
-                            <span class="material-symbols-outlined text-xl">call</span>
-                        </a>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.AuthorTelegramUser))
-                    {
-                        <a href="https://t.me/@Model.AuthorTelegramUser" target="_blank"
-                           class="size-12 rounded-full bg-white/10 hover:bg-[#98cf54] hover:text-[#25231e] transition-all flex items-center justify-center">
-                            <span class="material-symbols-outlined text-xl">send</span>
-                        </a>
-                    }
-                </div>
-            }
-        </section>
+        
     </div>
 
     <!-- Footer Metadata -->

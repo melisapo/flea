@@ -155,4 +155,21 @@ public class PostsController(
         
         return View(model);
     }
+    
+    [HttpGet]
+    public IActionResult Report()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Report(ReportViewModel model, int postId)
+    {
+        var post = await postService.GetByIdAsync(postId);
+        var motive = model.ReportMotive ?? "No definido";
+
+        post?.Reported = motive;
+
+        return RedirectToAction("Details");
+    }
 }

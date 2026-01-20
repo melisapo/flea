@@ -1,0 +1,48 @@
+@model flea_WebProj.Models.ViewModels.Product.ReportViewModel
+
+@{
+    ViewData["Title"] = "Reportar";
+}
+<div>
+<main class="flex-1 flex flex-col items-center justify-center p-6">
+<div class="w-full max-w-[640px] bg-white dark:bg-slate-900 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] overflow-hidden border border-[#e1e4dd] dark:border-slate-800">
+<!-- Card Header -->
+<div class="p-8 border-b border-[#f2f4f1] dark:border-slate-800 flex flex-col items-center text-center">
+<div class="size-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-4xl">warning</span>
+</div>
+<h1 class="text-text-main dark:text-white tracking-tight text-[28px] font-bold leading-tight font-display">Reportar Publicación</h1>
+<p class="mt-2 text-mutedForeground dark:text-slate-400 text-base max-w-[420px]">
+                        Tu seguridad es nuestra prioridad. Ayúdanos a mantener la plataforma limpia. Tu reporte será procesado de forma anónima.
+                    </p>
+</div>
+<!-- Card Content -->
+<div class="px-8 py-6">
+
+<!-- Report Reason Field -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center mb-1">
+<label class="font-semibold leading-normal font-display">Motivo del reporte</label>
+<span class="text-mutedForeground text-sm font-normal italic">Opcional</span>
+</div>
+<div class="relative">
+<textarea class="form-input flex w-full min-w-0 resize-none rounded-xl focus:outline-0 focus:ring-2 focus:ring-primary border border-primary bg-white min-h-[160px] placeholder:text-text-muted/60 dark:placeholder:text-slate-500 p-4 text-base font-normal leading-relaxed transition-all" placeholder="Cuéntanos por qué reportas esta publicación..."></textarea>
+</div>
+<p class="mt-2 text-xs text-mutedForeground flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">info</span>
+                            Solo se enviará el texto y los metadatos de la publicación.
+                        </p>
+</div>
+</div>
+<!-- Card Actions -->
+<div class="px-8 pb-8 pt-2 flex items-center justify-end gap-4">
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-transparent text-text-main dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 text-base font-bold transition-colors">
+<span>Cancelar</span>
+</button>
+<button class="flex flex-1 md:flex-none min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-8 bg-primary text-text-main text-base font-bold shadow-lg shadow-primary/20 hover:brightness-105 active:scale-[0.98] transition-all">
+<span class="truncate">Enviar Reporte</span>
+</button>
+</div>
+</div>
+</main>
+</div>

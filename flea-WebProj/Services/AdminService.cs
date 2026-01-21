@@ -7,7 +7,7 @@ namespace flea_WebProj.Services;
 public interface IAdminService
 {
     // User Management
-    Task<List<User>> GetAllUsersAsync();
+    Task<(List<User> users, int total)> GetAllUsersAsync(int page, int pageSize);
     Task<User> GetUserByIdAsync(int userId);
     Task<List<Role>> GetUserRolesAsync(int userId);
     Task<DashboardViewModel> GetDashboardStatsAsync();
@@ -16,7 +16,7 @@ public interface IAdminService
     Task<bool> DeleteUserAsync(int userId);
         
     // Post Management
-    Task<List<Post>> GetAllPostsAsync();
+    Task<(List<Post> posts, int total)> GetAllPostsAsync(int page, int pageSize);
     Task<Post?> GetPostByIdAsync(int postId);
     Task<bool> DeletePostAsync(int postId);
     
@@ -36,19 +36,12 @@ public class AdminService(
     IAddressRepository addressRepository)
     : IAdminService
 {
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<(List<User> users, int total)> GetAllUsersAsync(int page, int pageSize)
     {
-        var users =  await userRepository.GetAllAsync();
-        
-        foreach (var user in users)
-        {
-            user.Contact = await contactRepository.GetByUserIdAsync(user.Id);
-            user.Address = await addressRepository.GetByUserIdAsync(user.Id);
-            user.Posts = await postRepository.GetByAuthorAsync(user.Id);
-            user.Roles = await roleRepository.GetUserRolesAsync(user.Id);
-        }
+        var allUsers = await userRepository.GetAllAsync(1, int.MaxValue);
+        var users =  await userRepository.GetAllAsync(page, pageSize);
 
-        return users;
+        return (users, allUsers.Count);
     }
 
     public async Task<User> GetUserByIdAsync(int userId)
@@ -168,9 +161,20 @@ public class AdminService(
         return userDeleted.success;
     }
 
-    public async Task<List<Post>> GetAllPostsAsync()
+    public async Task<(List<Post> posts, int total)> GetAllPostsAsync(int page, int pageSize)
     {
-        return await postRepository.GetAllAsync();
+        // Total sin paginar (para TotalPages)
+        var allPosts = await postRepository.GetWithFiltersAsync(
+            page: 1,
+            pageSize: int.MaxValue
+        );
+
+        var pagedPosts = await postRepository.GetWithFiltersAsync(
+            page: page,
+            pageSize: pageSize
+        );
+
+        return (pagedPosts, allPosts.Count);
     }
 
     public async Task<Post?> GetPostByIdAsync(int postId)

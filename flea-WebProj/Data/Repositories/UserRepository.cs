@@ -6,6 +6,7 @@ namespace flea_WebProj.Data.Repositories;
 public interface IUserRepository
 {
     Task<List<User>> GetAllAsync();
+    Task<List<User>> GetAllAsync(int page = 1, int pageSize = 12);
     Task<User?> GetByIdAsync(int id);
     Task<User?> GetByUsernameAsync(string username);
     Task<bool> UsernameExistsAsync(string username, int userId);
@@ -17,7 +18,6 @@ public interface IUserRepository
     Task<bool> UpdatePasswordAsync(int userId, string newPasswordHash);
     Task<bool> DeleteAsync(int id);
     Task<User?> GetWithRolesAsync(int id);
-    Task<List<User>> GetByRoleIdAsync(int roleId);
     Task<User?> GetFullUserAsync(int id);
 }
 
@@ -31,6 +31,23 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
                              """;
         return await dbContext.ExecuteQueryAsync(query, MapUser);
     }
+
+    public async Task<List<User>> GetAllAsync(int page, int pageSize = 12)
+    {
+        const string query = """
+                             SELECT id, username, name, profile_pic, created_at
+                             FROM users
+                             ORDER BY created_at DESC
+                             LIMIT @pageSize OFFSET @offset
+                             """;
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@pageSize", pageSize),
+            new NpgsqlParameter("@offset", (page - 1) * pageSize) 
+        };
+        return await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
+    }
+
 
     public async Task<User?> GetByIdAsync(int id)
     {
@@ -246,7 +263,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             return null;
         user.Address = await addressRepository.GetByUserIdAsync(id);
         user.Contact = await contactRepository.GetByUserIdAsync(id);
-        user.Posts = await postRepository.GetByAuthorAsync(id);
+        user.Posts = await postRepository.GetByAuthorAsync(id, 4);
 
         return user;
     }

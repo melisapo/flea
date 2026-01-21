@@ -198,8 +198,8 @@ namespace flea_WebProj.Controllers
             return View();
         }
         
-        // PUT: /Account/ChangePassword
-        [HttpPut]
+        // post: /Account/ChangePassword
+        [HttpPost]
         [RequireAuth]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)

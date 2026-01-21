@@ -20,29 +20,33 @@
 <div class="px-8 py-6">
 
 <!-- Report Reason Field -->
-<div class="flex flex-col gap-2">
+<form asp-action="Report" method="post" class="flex flex-col gap-2">
 <div class="flex justify-between items-center mb-1">
-<label class="font-semibold leading-normal font-display">Motivo del reporte</label>
-<span class="text-mutedForeground text-sm font-normal italic">Opcional</span>
+<label asp-for="ReportMotive" class="font-semibold leading-normal font-display">Motivo del reporte</label>
+    <span class="text-mutedForeground text-sm font-normal italic">Opcional</span>
 </div>
 <div class="relative">
-<textarea class="form-input flex w-full min-w-0 resize-none rounded-xl focus:outline-0 focus:ring-2 focus:ring-primary border border-primary bg-white min-h-[160px] placeholder:text-text-muted/60 dark:placeholder:text-slate-500 p-4 text-base font-normal leading-relaxed transition-all" placeholder="Cuéntanos por qué reportas esta publicación..."></textarea>
+    <textarea asp-for="ReportMotive" class="form-input flex w-full min-w-0 resize-none rounded-xl focus:outline-0 focus:ring-2 focus:primary border border-primary bg-white min-h-[160px] placeholder:text-text-muted/60 dark:placeholder:text-slate-500 p-4 text-base font-normal leading-relaxed transition-all" placeholder="Cuéntanos por qué reportas esta publicación..."></textarea>
 </div>
+<input type="hidden" asp-for="PostId" />
 <p class="mt-2 text-xs text-mutedForeground flex items-center gap-1">
-<span class="material-symbols-outlined text-sm">info</span>
-                            Solo se enviará el texto y los metadatos de la publicación.
-                        </p>
+    <span class="material-symbols-outlined text-sm">info</span>
+    Solo se enviará el texto y los metadatos de la publicación.
+</p>
+<div class="px-8 pb-8 pt-2 flex items-center justify-end gap-4">
+    <a asp-action="Details"
+       asp-route-id="@Model.PostId"
+       class="px-6 py-3 text-sm font-bold rounded-xl text-foreground hover:bg-primary/15">
+        Cancelar
+    </a>
+    <button type="submit" class="flex flex-1 md:flex-none min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-8 bg-primary text-text-main text-base font-bold shadow-lg shadow-primary/20 hover:brightness-105 active:scale-[0.98] transition-all">
+        <span class="truncate">Enviar Reporte</span>
+    </button>
 </div>
+</form>
 </div>
 <!-- Card Actions -->
-<div class="px-8 pb-8 pt-2 flex items-center justify-end gap-4">
-<button class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-transparent text-text-main dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 text-base font-bold transition-colors">
-<span>Cancelar</span>
-</button>
-<button class="flex flex-1 md:flex-none min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-8 bg-primary text-text-main text-base font-bold shadow-lg shadow-primary/20 hover:brightness-105 active:scale-[0.98] transition-all">
-<span class="truncate">Enviar Reporte</span>
-</button>
-</div>
+
 </div>
 </main>
 </div>

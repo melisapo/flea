@@ -138,6 +138,8 @@ public class UserService(
                     await postRepository.DeleteAsync(post.Id);
                 }
 
+            await userRepository.DeleteAsync(userId);
+
             return (true, "Usuario eliminado");
         }
         catch (Exception ex)

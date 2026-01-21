@@ -33,17 +33,21 @@ namespace flea_WebProj.Controllers
         // ============ USER MANAGEMENT ============
 
         [HttpGet]
-        public async Task<IActionResult> Users()
+        public async Task<IActionResult> Users(int pageSize = 6, int page = 1)
         {
             try
             {
-                var users = await adminService.GetAllUsersAsync();
+                var users = await adminService.GetAllUsersAsync(1, 6);
                 var viewModel = new UserListViewModel
                 {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalUsers = users.total,
+                    TotalPages = (int)Math.Ceiling(users.total / (double)pageSize),
                     Users = []
                 };
 
-                foreach (var user in users)
+                foreach (var user in users.users)
                 {
                     var roles = await adminService.GetUserRolesAsync(user.Id);
                     if (user is { Contact: not null, Posts: not null })
@@ -205,13 +209,17 @@ namespace flea_WebProj.Controllers
         // ============ POST MANAGEMENT ============
 
         [HttpGet]
-        public async Task<IActionResult> Posts()
+        public async Task<IActionResult> Posts(int pageSize = 5, int page = 1)
         {
             try
             {
-                var posts = await adminService.GetAllPostsAsync();
+                var (posts, totalPosts) = await adminService.GetAllPostsAsync(page, pageSize);
                 var viewModel = new ManagePostsViewModel
                 {
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPosts = totalPosts,
+                    TotalPages = (int)Math.Ceiling(totalPosts / (double)pageSize),
                     Posts = []
                 };
 
@@ -231,10 +239,11 @@ namespace flea_WebProj.Controllers
                             StatusText = product.GetStatusText(),
                             MainImage = product.Images.FirstOrDefault()?.Path,
                             CreatedAt = post.CreatedAt,
-                            Reprted = post.Reported,
+                            Reported = post.Reported,
                             AuthorId = author.Id,
                             AuthorUsername = author.Username,
                             AuthorName = author.Name,
+                            
                             Categories = categoryList
                                 .Select(c => c.Name)
                                 .ToList()

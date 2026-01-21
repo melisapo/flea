@@ -113,10 +113,30 @@
                     </div>
 
                     <!-- Pagination Bar -->
-                    <div class="flex items-center justify-between px-6 py-4 bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-800">
-                        <p class="text-sm text-gray-500">
-                            Mostrando <span class="font-bold text-main-text dark:text-white">@Model.Users.Count</span> usuario(s)
-                        </p>
+                    <div class="px-6 py-4 bg-[#fafbf9]/30 flex items-center justify-between border-t">
+                        <span class="text-xs font-bold text-[#718d58] uppercase">
+                            Página @Model.Page de @Model.TotalPages
+                        </span>
+
+                        <div class="flex gap-2">
+                            @if (Model.Page > 1)
+                            {
+                                <a asp-action="Posts"
+                                   asp-route-page="@(Model.Page - 1)"
+                                   class="px-3 py-1 rounded bg-gray-200">
+                                    Anterior
+                                </a>
+                            }
+
+                            @if (Model.Page < Model.TotalPages)
+                            {
+                                <a asp-action="Posts"
+                                   asp-route-page="@(Model.Page + 1)"
+                                   class="px-3 py-1 rounded bg-gray-200">
+                                    Siguiente
+                                </a>
+                            }
+                        </div>
                     </div>
                 }
                 else

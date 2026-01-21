@@ -8,14 +8,12 @@ public interface IPostRepository
     Task<List<Post>> GetAllAsync();
     Task<Post?> GetByIdAsync(int id);
     Task<Post?> GetWithFullDetailsAsync(int id);
-    Task<int> CreateAsync(Post post);
+    Task<int> CreateAsync(Post post, NpgsqlConnection conn, NpgsqlTransaction tx);
     Task<bool> UpdateAsync(Post post);
     Task<bool> DeleteAsync(int id);
     Task<List<Post>> GetRecentPostsAsync(int limit = 20);
     Task<List<Post>> GetRecentPostsAsync(int authorId, int limit);
     Task<List<Post>?> GetByAuthorAsync(int authorId, int limit = 20);
-    Task<Post?> GetByProductIdAsync(int productId);
-    Task<List<Post>> SearchPostsAsync(string searchTerm, int limit = 20);
     Task<List<Post>?> GetByCategoryAsync(int categoryId, int limit = 20);
     Task<List<Post>> GetWithFiltersAsync(
         string? searchTerm = null,
@@ -34,7 +32,7 @@ public interface IPostRepository
         string? status = null
     );
 
-    Task<int> CreateAsync(Post post, NpgsqlConnection conn, NpgsqlTransaction tx);
+    
 }
 
 public class PostRepository(DatabaseContext dbContext) : IPostRepository
@@ -85,30 +83,6 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         post.Author = await userRepository.GetByIdAsync(post.AuthorId);
 
         return post;
-    }
-    
-    public async Task<int> CreateAsync(Post post)
-    {
-        const string query = """
-                             INSERT INTO posts (id, title, description, created_at, updated_at, product_id, author_id)
-                             VALUES (@id, @title, @description, CURRENT_TIMESTAMP, @updated_at, @product_id, @author_id)
-                             RETURNING id
-                             """;
-        
-        post.Id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
-        
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@id", post.Id),
-            new NpgsqlParameter("@title", post.Title),
-            new NpgsqlParameter("@description", post.Description),
-            new NpgsqlParameter("@updated_at", (object?)post.UpdatedAt ?? DBNull.Value),
-            new NpgsqlParameter("@product_id", post.ProductId),
-            new NpgsqlParameter("@author_id", post.AuthorId)
-        };
-        
-        var result = await dbContext.ExecuteScalarAsync(query, parameters);
-        return Convert.ToInt32(result);
     }
     public async Task<int> CreateAsync(
         Post post,
@@ -208,38 +182,6 @@ public class PostRepository(DatabaseContext dbContext) : IPostRepository
         var parameters = new[]
         {
             new NpgsqlParameter("@authorId", authorId),
-            new NpgsqlParameter("@limit", limit)
-        };
-        
-        return await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
-    }
-    
-    public async Task<Post?> GetByProductIdAsync(int productId)
-    {
-        const string query = """
-                             SELECT id, title, description, created_at, updated_at, product_id, author_id
-                             FROM posts
-                             WHERE product_id = @productId
-                             """;
-        
-        var parameters = new[] { new NpgsqlParameter("@productId", productId) };
-        var posts = await dbContext.ExecuteQueryAsync(query, MapPost, parameters);
-        return posts.FirstOrDefault();
-    }
-    
-    public async Task<List<Post>> SearchPostsAsync(string searchTerm, int limit = 20)
-    {
-        const string query = """
-                             SELECT id, title, description, created_at, updated_at, product_id, author_id
-                             FROM posts
-                             WHERE LOWER(title) LIKE @searchTerm OR LOWER(description) LIKE @searchTerm
-                             ORDER BY created_at DESC
-                             LIMIT @limit
-                             """;
-        
-        var parameters = new[]
-        {
-            new NpgsqlParameter("@searchTerm", $"%{searchTerm.ToLower()}%"),
             new NpgsqlParameter("@limit", limit)
         };
         

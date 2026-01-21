@@ -32,7 +32,7 @@ public interface IPostService
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int limit = 20);
     Task<List<PostCardViewModel>> GetRecentPostsAsync(int authorId, int limit);
     Task<List<PostCardViewModel>> SearchPostsAsync(SearchPostViewModel searchModel);
-    
+    Task<(bool success, string message)> Report(ReportViewModel reportModel);
 }
 
 public class PostService(
@@ -130,7 +130,6 @@ public class PostService(
     CreatePostViewModel model,
     int authorId)
 {
-    // VALIDACIÓN PREVIA (clave)
     if (model.PostCategoriesIds.Count == 0)
         return (false, "Debe seleccionar al menos una categoría", 0);
 
@@ -552,5 +551,23 @@ public class PostService(
         }
 
         return model;
+    }
+
+    public async Task<(bool success, string message)> Report(ReportViewModel reportModel)
+    {
+        try
+        {
+            var post = await GetByIdAsync(reportModel.PostId);
+            var motive = reportModel.ReportMotive ?? "No definido";
+            
+            post?.Reported = motive;
+
+            return (true, "Publicacion reportada");
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Error al reportar publicación: {ex.Message}");
+        }
+        
     }
 }

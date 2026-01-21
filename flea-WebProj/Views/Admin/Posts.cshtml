@@ -20,43 +20,6 @@
                 </div>
             </div>
 
-            <!-- Filter Bar -->
-            <div class="bg-white dark:bg-background-dark/50 border border-[#edf1e9] dark:border-white/5 rounded-xl p-4 shadow-sm">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <div class="lg:col-span-2 space-y-1.5">
-                        <label class="text-xs font-bold uppercase tracking-wider text-[#718d58] ml-1">Buscar</label>
-                        <div class="relative group">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#718d58] group-focus-within:text-primary transition-colors">
-                                <span class="material-symbols-outlined">search</span>
-                            </span>
-                            <input class="w-full bg-[#fafbf9] dark:bg-white/5 border-none rounded-lg pl-10 pr-4 h-11 text-sm focus:ring-2 focus:ring-primary/50 transition-all outline-none" 
-                                   placeholder="Buscar por título o autor..." 
-                                   type="text"
-                                   id="searchInput"/>
-                        </div>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold uppercase tracking-wider text-[#718d58] ml-1">Estado</label>
-                        <div class="relative">
-                            <select class="w-full bg-[#fafbf9] dark:bg-white/5 border-none rounded-lg px-4 h-11 text-sm focus:ring-2 focus:ring-primary/50 appearance-none outline-none">
-                                <option>Todos los estados</option>
-                                <option>Disponible</option>
-                                <option>Vendido</option>
-                            </select>
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#718d58]">
-                                <span class="material-symbols-outlined">expand_more</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex items-center h-11">
-                        <button class="w-full h-full bg-primary text-[#25231e] rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 shadow-sm shadow-primary/20">
-                            <span class="material-symbols-outlined">filter_list</span>
-                            Filtrar Resultados
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Data Table -->
             <div class="bg-white dark:bg-background-dark/50 border border-[#edf1e9] dark:border-white/5 rounded-xl overflow-hidden shadow-sm">
                 @if (Model.Posts.Any())
@@ -76,13 +39,15 @@
                             <tbody class="divide-y divide-[#edf1e9] dark:divide-white/5">
                                 @foreach (var post in Model.Posts)
                                 {
-                                    <tr class="hover:bg-[#fafbf9]/30 dark:hover:bg-white/5 transition-colors">
+                                    var isReported = !string.IsNullOrEmpty(post.Reported);
+                                    
+                                    <tr class="@(isReported ? "bg-destructive/10 border-l-4 border-destructive" : "hover:bg-[#fafbf9]/30 transition-colors")">
                                         <!-- Product -->
                                         <td class="px-6 py-4">
                                             <div class="flex items-center gap-3">
                                                 @if (!string.IsNullOrEmpty(post.MainImage))
                                                 {
-                                                    <div class="size-10 rounded-lg bg-center bg-cover border border-[#edf1e9] dark:border-white/10" 
+                                                    <div class="size-10 rounded-lg bg-center bg-cover border border-[#edf1e9] dark:border-white/10"
                                                          style="background-image: url('@post.MainImage')"></div>
                                                 }
                                                 else
@@ -155,17 +120,17 @@
                                         <!-- Actions -->
                                         <td class="px-6 py-4 text-right">
                                             <div class="flex items-center justify-end gap-2">
-                                                <a asp-controller="Posts" 
-                                                   asp-action="Details" 
+                                                <a asp-controller="Posts"
+                                                   asp-action="Details"
                                                    asp-route-id="@post.PostId"
                                                    target="_blank"
-                                                   class="p-2 text-[#718d58] hover:text-primary hover:bg-primary/10 rounded-lg transition-all" 
+                                                   class="p-2 text-[#718d58] hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                                                    title="Ver Detalles">
                                                     <span class="material-symbols-outlined">visibility</span>
                                                 </a>
-                                                <a asp-action="DeletePostConfirm" 
+                                                <a asp-action="DeletePostConfirm"
                                                    asp-route-id="@post.PostId"
-                                                   class="p-2 text-[#718d58] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" 
+                                                   class="p-2 text-[#718d58] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                                                    title="Eliminar">
                                                     <span class="material-symbols-outlined">delete</span>
                                                 </a>
@@ -178,11 +143,32 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="px-6 py-4 bg-[#fafbf9]/30 dark:bg-white/5 flex items-center justify-between border-t border-[#edf1e9] dark:border-white/5">
-                        <span class="text-xs font-bold text-[#718d58] uppercase tracking-wider">
-                            Mostrando @Model.Posts.Count publicación(es)
+                    <div class="px-6 py-4 bg-[#fafbf9]/30 flex items-center justify-between border-t">
+                        <span class="text-xs font-bold text-[#718d58] uppercase">
+                            Página @Model.Page de @Model.TotalPages
                         </span>
+
+                        <div class="flex gap-2">
+                            @if (Model.Page > 1)
+                            {
+                                <a asp-action="Posts"
+                                   asp-route-page="@(Model.Page - 1)"
+                                   class="px-3 py-1 rounded bg-gray-200">
+                                    Anterior
+                                </a>
+                            }
+
+                            @if (Model.Page < Model.TotalPages)
+                            {
+                                <a asp-action="Posts"
+                                   asp-route-page="@(Model.Page + 1)"
+                                   class="px-3 py-1 rounded bg-gray-200">
+                                    Siguiente
+                                </a>
+                            }
+                        </div>
                     </div>
+
                 }
                 else
                 {

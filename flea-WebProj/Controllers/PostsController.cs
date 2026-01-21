@@ -157,19 +157,33 @@ public class PostsController(
     }
     
     [HttpGet]
-    public IActionResult Report()
+    public IActionResult Report(int id)
     {
-        return View();
+        Console.WriteLine("post id: " + id);
+        
+        var model = new ReportViewModel
+        {
+            PostId = id
+        };
+        
+        return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Report(ReportViewModel model, int postId)
+    public async Task<IActionResult> Report(ReportViewModel model)
     {
-        var post = await postService.GetByIdAsync(postId);
-        var motive = model.ReportMotive ?? "No definido";
+        if (!ModelState.IsValid)
+            return View(model);
+        Console.WriteLine(model.PostId);
+        var (success, message) = await postService.Report(model);
 
-        post?.Reported = motive;
+        if (success)
+        {
+            TempData["SuccessMessage"] = message;
+            return RedirectToAction("Details", new { id = model.PostId });
+        }
 
-        return RedirectToAction("Details");
+        TempData["ErrorMessage"] = message;
+        return RedirectToAction("Details", new { id = model.PostId });
     }
 }

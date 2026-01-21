@@ -7,15 +7,9 @@ public class ManagePostsViewModel
 {
     public List<PostManageItem> Posts { get; set; } = [];
     
-    // Filtros
-    public string? SearchTerm { get; set; }
-    public int? CategoryFilter { get; set; }
-    public ProductStatus? StatusFilter { get; set; }
-    public int? AuthorFilter { get; set; }
-    
     // Paginación
     public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
+    public int PageSize { get; set; } = 10;
     public int TotalPosts { get; set; }
     public int TotalPages { get; set; }
     
@@ -33,7 +27,7 @@ public class PostManageItem
     public string StatusText { get; set; } = string.Empty;
     public string? MainImage { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
-    public string? Reprted { get; set; } = string.Empty;
+    public string? Reported { get; set; } = string.Empty;
     
     // Info del autor
     public int AuthorId { get; set; }

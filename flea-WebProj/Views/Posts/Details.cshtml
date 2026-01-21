@@ -5,12 +5,12 @@
 }
 
 <main class="flex-1">
-    <section class="max-w-7xl mx-auto px-6 md:px-10 lg:px-20 pt-10 pb-6">
+    <section class="max-w-7xl mx-auto px-6 md:px-10 lg:px-20 pt-10 pb-4">
         <!-- Hero Section: Image + Main Info -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <!-- Main Image -->
             <div class="relative group">
-                <div class="aspect-square rounded-3xl overflow-hidden bg-white shadow-lg border border-border">
+                <div class="aspect-square rounded-3xl overflow-hidden bg-white shadow-lg">
                     @if (Model.Images.Any())
                     {
                         <div id="mainImage"
@@ -32,7 +32,7 @@
             <!-- Main Product Info -->
             <div class="flex flex-col justify-center h-full">
                 <div class="mb-6">
-                    <span class="inline-flex items-center px-4 py-1 rounded-full @(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-[#98cf54]/20 text-[#758c5a]" : "bg-gray-200 text-gray-600") text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                    <span class="inline-flex items-center px-4 py-1 rounded-full @(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available ? "bg-primary/20 text-primary" : "bg-gray-200 text-gray-600") text-[10px] font-black uppercase tracking-[0.2em] mb-4">
                         @Model.StatusText
                     </span>
                     
@@ -90,20 +90,18 @@
             }
         </section>
                     }
-                    <a asp-action="Report" asp-route-id="@Model.PostId" class="bg-destructive p-10">REPORTARAAAA</a>
-
                     @if (Model.IsOwner)
                     {
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="flex items-center gap-3">
                             <a asp-action="Edit" 
                                asp-route-id="@Model.PostId"
-                               class="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+                               class=" w-full py-4 text-white bg-primary hover:bg-primary/80 rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-xl">edit</span>
                                 <span>Editar</span>
                             </a>
                             <form asp-action="Delete" asp-route-id="@Model.PostId" method="post" class="inline">
                                 <button type="submit" 
-                                        class="px-6 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all">
+                                        class="py-4 px-8 rounded-2xl border-2 border-destructive bg-destructive/10 text-destructive font-bold hover:bg-destructive hover:text-white transition-all">
                                     Eliminar
                                 </button>
                             </form>
@@ -117,7 +115,7 @@
     <!-- Thumbnail Gallery -->
     @if (Model.Images.Count > 1)
     {
-        <section class="mb-12">
+        <section class="mb-8">
             <div class="max-w-7xl mx-auto px-6 md:px-10 lg:px-20">
                 <div class="flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x">
                     @foreach (var image in Model.Images)
@@ -133,9 +131,9 @@
     }
 
     <!-- Description & Details Section -->
-    <div class="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-20">
+    <div class="max-w-4xl mx-auto px-6 py-6 flex flex-col gap-8">
         <!-- Description -->
-        <section class="space-y-10">
+        <section class="space-y-6">
             <div class="flex flex-col gap-2">
                 <h3 class="text-xs font-black uppercase tracking-[0.3em] text-[#758c5a]">Detalles</h3>
                 <h4 class="text-3xl font-extrabold text-[#25231e]">Descripción del Producto</h4>
@@ -159,7 +157,7 @@
         </section>
 
         <!-- Quick Info Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 p-10 bg-white rounded-3xl shadow-xl border border-[#25231e]/5">
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-8 p-10 bg-white rounded-3xl shadow-xl border border-[#25231e]/5">
             <div class="flex flex-col gap-2 md:border-r border-[#eef1e9] last:border-0 md:pr-4">
                 <span class="text-xs font-black uppercase tracking-widest text-[#7A808A]">Estado</span>
                 <span class="text-lg font-bold text-[#25231e]">@Model.StatusText</span>
@@ -178,8 +176,8 @@
     </div>
 
     <!-- Footer Metadata -->
-    <footer class="max-w-7xl mx-auto px-6 mt-10 pt-10 border-t border-[#eef1e9] flex flex-col md:flex-row justify-between items-center gap-6 text-[#7A808A] text-[10px] font-black uppercase tracking-[0.2em] pb-16">
-        <div class="flex flex-col md:flex-row items-center gap-8">
+    <footer class="max-w-7xl mx-auto px-6 mt-4 pt-4 border-t border-[#eef1e9] flex flex-col md:flex-row md:gap-6 justify-between items-center gap-4 text-mutedForeground text-[12px] font-black tracking-[0.2em] pb-2">
+        <div class="flex flex-col md:flex-row md:gap-6 items-center gap-4">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-base">event</span>
                 Publicado el @Model.CreatedAt.ToString("dd 'de' MMMM, yyyy")
@@ -192,9 +190,9 @@
                 </div>
             }
         </div>
-        <div class="flex items-center gap-8">
-            <button class="hover:text-[#25231e] transition-colors">Denunciar publicación</button>
-            <button class="hover:text-[#25231e] transition-colors">Compartir</button>
+        <div class="flex items-center gap-3 hover:text-destructive transition-colors">
+            <span class="material-symbols-outlined text-[18px]"> report </span>
+            <a asp-action="Report" asp-route-id="@Model.PostId">Reportar publicacion</a>
         </div>
     </footer>
 </main>

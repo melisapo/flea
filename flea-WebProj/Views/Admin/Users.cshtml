@@ -121,7 +121,7 @@
                         <div class="flex gap-2">
                             @if (Model.Page > 1)
                             {
-                                <a asp-action="Posts"
+                                <a asp-action="Users"
                                    asp-route-page="@(Model.Page - 1)"
                                    class="px-3 py-1 rounded bg-gray-200">
                                     Anterior
@@ -130,7 +130,7 @@
 
                             @if (Model.Page < Model.TotalPages)
                             {
-                                <a asp-action="Posts"
+                                <a asp-action="Users"
                                    asp-route-page="@(Model.Page + 1)"
                                    class="px-3 py-1 rounded bg-gray-200">
                                     Siguiente

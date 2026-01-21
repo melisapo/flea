@@ -45,7 +45,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
             new NpgsqlParameter("@pageSize", pageSize),
             new NpgsqlParameter("@offset", (page - 1) * pageSize) 
         };
-        return await dbContext.ExecuteQueryAsync(query, MapUser, parameters);
+        return await dbContext.ExecuteQueryAsync(query, MapPagedUser, parameters);
     }
 
 
@@ -267,7 +267,15 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
 
         return user;
     }
-
+    private static User MapPagedUser(NpgsqlDataReader reader) 
+        => new()
+        {
+            Id = reader.GetInt32(0),
+            Username = reader.GetString(1),
+            Name = reader.GetString(2),
+            ProfilePicture = reader.GetString(3),
+            CreatedAt = reader.GetDateTime(4)
+        };
     private static User MapUser(NpgsqlDataReader reader) 
         => new()
         {

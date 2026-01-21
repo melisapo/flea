@@ -22,6 +22,10 @@ public interface IAdminService
     
     //Role Management
     Task<List<Role>> GetAllRolesAsync();
+    
+    //Category
+    Task<(List<Category> categories, int total)> GetAllCategoriesAsync(int page, int pageSize);
+
 }
 
 public class AdminService(
@@ -38,8 +42,8 @@ public class AdminService(
 {
     public async Task<(List<User> users, int total)> GetAllUsersAsync(int page, int pageSize)
     {
-        var allUsers = await userRepository.GetAllAsync(1, int.MaxValue);
-        var users =  await userRepository.GetAllAsync(page, pageSize);
+        var allUsers = await userRepository.GetAllPagedAsync(1, int.MaxValue);
+        var users =  await userRepository.GetAllPagedAsync(page, pageSize);
 
         return (users, allUsers.Count);
     }
@@ -190,5 +194,13 @@ public class AdminService(
     public async Task<List<Role>> GetAllRolesAsync()
     {
         return await roleRepository.GetAllAsync();
+    }
+
+    public async Task<(List<Category> categories, int total)> GetAllCategoriesAsync(int page, int pageSize)
+    {
+        var allCats = await categoryRepository.GetAllPagedAsync(1, int.MaxValue);
+        var cats =  await categoryRepository.GetAllPagedAsync(page, pageSize);
+
+        return (cats, allCats.Count);
     }
 }

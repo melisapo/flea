@@ -258,8 +258,6 @@ namespace flea_WebProj.Controllers
                 return RedirectToAction("Dashboard");
             }
         }
-
-       
         
         [HttpPost]
         [RequireModerator]
@@ -335,25 +333,35 @@ namespace flea_WebProj.Controllers
 
         // ============ CATEGORY MANAGEMENT ============
         [HttpGet]
-        public async Task<IActionResult> Categories(int? editId = null)
+        public async Task<IActionResult> Categories(int? editId, int pageSize = 8, int page = 1)
         {
             try
             {
-                var categories = await categoryService.GetAllCategoriesAsync() ?? [];
+                var categories = await adminService.GetAllCategoriesAsync(1, 8);
                     var viewModel = new ManageCategoriesViewModel
                     {
-                        Categories = categories.Select(c => new CategoryManageItem
-                        {
-                            CategoryId = c.Id,
-                            Name = c.Name,
-                            Slug = c.Slug,
-                            PostCount = c.Products.Count
-                        }).ToList()
+                        Page = page,
+                        PageSize = pageSize,
+                        TotalCats = categories.total,
+                        TotalPages = (int)Math.Ceiling(categories.total / (double)pageSize),
+                        Categories = []
                     };
+
+                    foreach (var cat in categories.categories)
+                    {
+                        viewModel.Categories.Add(new CategoryManageItem
+                        {
+                            Name = cat.Name,
+                            CategoryId = cat.Id,
+                            Slug = cat.Slug,
+                            PostCount = cat.Products.Count
+                        });
+                    }
+                
                 
                     if (!editId.HasValue) return View(viewModel);
                     {
-                        var category = categories.FirstOrDefault(c => c.Id == editId.Value);
+                        var category = categories.categories.FirstOrDefault(c => c.Id == editId.Value);
                         if (category == null) return View(viewModel);
                     
                         viewModel.IsEditMode = true;

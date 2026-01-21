@@ -6,7 +6,7 @@ namespace flea_WebProj.Data.Repositories;
 public interface IUserRepository
 {
     Task<List<User>> GetAllAsync();
-    Task<List<User>> GetAllAsync(int page = 1, int pageSize = 12);
+    Task<List<User>> GetAllPagedAsync(int page = 1, int pageSize = 12);
     Task<User?> GetByIdAsync(int id);
     Task<User?> GetByUsernameAsync(string username);
     Task<bool> UsernameExistsAsync(string username, int userId);
@@ -32,7 +32,7 @@ public class UserRepository(DatabaseContext dbContext) : IUserRepository
         return await dbContext.ExecuteQueryAsync(query, MapUser);
     }
 
-    public async Task<List<User>> GetAllAsync(int page, int pageSize = 12)
+    public async Task<List<User>> GetAllPagedAsync(int page, int pageSize = 12)
     {
         const string query = """
                              SELECT id, username, name, profile_pic, created_at

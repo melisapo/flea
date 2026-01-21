@@ -9,6 +9,7 @@ public interface ICategoryRepository
     Task<Category?> GetByIdAsync(int id);
     Task<Category?> GetBySlugAsync(string slug);
     Task<List<Category>> GetAllAsync();
+    Task<List<Category>> GetAllPagedAsync(int page = 1, int pageSize = 12);
     Task<int> CreateAsync(Category category);
     Task<bool> UpdateAsync(Category category);
     Task<bool> DeleteAsync(int id);
@@ -46,6 +47,22 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
                              ORDER BY id
                              """;
         return await dbContext.ExecuteQueryAsync(query, MapCategory);
+    }
+
+    public async Task<List<Category>> GetAllPagedAsync(int page = 1, int pageSize = 12)
+    {
+        const string query = """
+                             SELECT id, name, slug 
+                             FROM categories 
+                             ORDER BY id
+                             LIMIT @pageSize OFFSET @offset
+                             """;
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@pageSize", pageSize),
+            new NpgsqlParameter("@offset", (page - 1) * pageSize) 
+        };
+        return await dbContext.ExecuteQueryAsync(query, MapCategory, parameters);
     }
 
     public async Task<int> CreateAsync(Category category)
@@ -129,8 +146,8 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         
         const string insertQuery =
             """
-            INSERT INTO product_categories (id, product_id, category_id)
-            VALUES (@id, @productId, @categoryId)
+            INSERT INTO product_categories ( product_id, category_id)
+            VALUES ( @productId, @categoryId)
             """;
 
         var id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);
@@ -151,8 +168,8 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         NpgsqlTransaction tx)
     {
         const string sql = """
-                               INSERT INTO product_categories (id, product_id, category_id)
-                               VALUES (@id, @productId, @categoryId);
+                               INSERT INTO product_categories ( product_id, category_id)
+                               VALUES ( @productId, @categoryId);
                            """;
 
         var id = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond % int.MaxValue);

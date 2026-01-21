@@ -10,6 +10,12 @@ public class ManageCategoriesViewModel
     public CategoryFormViewModel Form { get; set; } = new();
     // UI state
     public bool IsEditMode { get; set; }
+    
+    // Paginación
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 8;
+    public int TotalCats { get; set; }
+    public int TotalPages { get; set; }
 }
 
 public class CategoryManageItem

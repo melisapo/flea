@@ -30,7 +30,7 @@ public class HomeController(
                 ? null
                 : Enum.Parse<Models.Enums.ProductStatus>(status),
             Page = page,
-            PageSize = 12,
+            PageSize = 6,
             Results = [], // ← INICIALIZAR
             AvailableCategories = [] // ← INICIALIZAR
         };

@@ -30,11 +30,10 @@
         </div>
     </div>
 
-    <div class="flex gap-10">
+    <div class="flex flex-col xl:flex-row xl:items-start items-center gap-10">
         <!-- Sidebar: Filters (25%) -->
-        <aside class="w-1/4 sticky top-24 h-fit">
+        <aside class="xl:w-1/4 xl:sticky top-24 h-fit">
             <div>
-                <h3 class="text-lg font-bold tracking-widest text-mutedForeground mb-4">Filtros</h3>
                 
                 <form asp-action="Index" method="get" id="filterForm">
                     <!-- Search -->
@@ -50,36 +49,125 @@
                         </div>
                     </div>
 
-                    <!-- Categories -->
-                    <div class="space-y-2 mb-4">
-                        <h4 class="font-bold text-sm">Categorías</h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" 
-                                       name="categoryId" 
-                                       value="" 
-                                       checked="@(!Model.CategoryId.HasValue)"
-                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4" 
-                                       onchange="this.form.submit()"/>
-                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Todas las categorías</span>
-                            </label>
-                            @if (Model.AvailableCategories != null)
-                            {
-                                @foreach (var category in Model.AvailableCategories)
+                    <div class="flex gap-2 items-center justify-around m-2">                    <!-- Categories -->
+                    <button type="button"
+                            onclick="toggleFilters()"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 
+               bg-white hover:bg-gray-50 text-sm font-medium 
+               transition-all shadow-sm">
+                        <!-- Icono embudo (Heroicons / SVG inline) -->
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="w-4 h-4 text-[#98cf54]"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12.414V19a1 1 0 01-.553.894l-4 2A1 1 0 019 20v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                        </svg>
+                        Categorías
+                    </button>
+                    
+                    <div id="filtersPanel"
+                         class="mt-4 overflow-hidden transition-all duration-300
+            max-h-0 opacity-0 scale-95 pointer-events-none">
+
+                        <div class="space-y-2 mb-4 p-4 rounded-2xl 
+                border border-gray-200 bg-white shadow-sm">
+                            <h4 class="font-bold text-sm">Categorías</h4>
+
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio"
+                                           name="categoryId"
+                                           value=""
+                                           checked="@(!Model.CategoryId.HasValue)"
+                                           class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                           onchange="this.form.submit()" />
+                                    <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">
+                                        Todas las categorías
+                                    </span>
+                                </label>
+
+                                @if (Model.AvailableCategories != null)
                                 {
-                                    <label class="flex items-center gap-3 cursor-pointer group">
-                                        <input type="radio" 
-                                               name="categoryId" 
-                                               value="@category.Id" 
-                                               checked="@(Model.CategoryId == category.Id)"
-                                               class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
-                                               onchange="this.form.submit()"/>
-                                        <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">@category.Name</span>
-                                    </label>
+                                    @foreach (var category in Model.AvailableCategories)
+                                    {
+                                        <label class="flex items-center gap-3 cursor-pointer group">
+                                            <input type="radio"
+                                                   name="categoryId"
+                                                   value="@category.Id"
+                                                   checked="@(Model.CategoryId == category.Id)"
+                                                   class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                                                   onchange="this.form.submit()" />
+                                            <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">
+                                                @category.Name
+                                            </span>
+                                        </label>
+                                    }
                                 }
-                            }
+                            </div>
                         </div>
                     </div>
+                    
+                                        <!-- Status -->
+                    <button type="button"
+                            onclick="toggleStatusFilters()"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 
+               bg-white hover:bg-gray-50 text-sm font-medium 
+               transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="w-4 h-4 text-[#98cf54]"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12.414V19a1 1 0 01-.553.894l-4 2A1 1 0 019 20v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                        </svg>
+                        Estado
+                    </button>
+<div id="statusFiltersPanel"
+     class="mt-4 overflow-hidden transition-all duration-300
+            max-h-0 opacity-0 scale-95 pointer-events-none">
+
+    <div class="space-y-4 mb-4 p-4 rounded-2xl 
+                border border-gray-200 bg-white shadow-sm">
+        <h4 class="font-bold text-sm">Estado del Producto</h4>
+
+        <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="radio"
+                       name="status"
+                       value=""
+                       checked="@(!Model.Status.HasValue)"
+                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                       onchange="this.form.submit()" />
+                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">
+                    Todos
+                </span>
+            </label>
+
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="radio"
+                       name="status"
+                       value="0"
+                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available)"
+                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                       onchange="this.form.submit()" />
+                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">
+                    Disponible
+                </span>
+            </label>
+
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="radio"
+                       name="status"
+                       value="1"
+                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Sold)"
+                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
+                       onchange="this.form.submit()" />
+                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">
+                    Vendido
+                </span>
+            </label>
+        </div>
+    </div>
+</div></div>
 
                     <!-- Price Range -->
                     <div class="space-y-4 mb-4">
@@ -107,52 +195,6 @@
                         </div>
                     </div>
 
-                    <!-- Status -->
-                    <div class="space-y-4 mb-4">
-                        <h4 class="font-bold text-sm">Estado del Producto</h4>
-                        <div class="space-y-3">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" 
-                                       name="status" 
-                                       value="" 
-                                       checked="@(!Model.Status.HasValue)"
-                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
-                                       onchange="this.form.submit()"/>
-                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Todos</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" 
-                                       name="status" 
-                                       value="0" 
-                                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Available)"
-                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
-                                       onchange="this.form.submit()"/>
-                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Disponible</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input type="radio" 
-                                       name="status" 
-                                       value="1" 
-                                       checked="@(Model.Status == flea_WebProj.Models.Enums.ProductStatus.Sold)"
-                                       class="border-gray-300 text-[#98cf54] focus:ring-[#98cf54] h-4 w-4"
-                                       onchange="this.form.submit()"/>
-                                <span class="text-sm font-medium group-hover:text-[#98cf54] transition-colors">Vendido</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="submit" 
-                            class="w-full py-3 bg-[#25231e] text-white font-bold rounded-xl hover:opacity-90 transition-opacity">
-                        Aplicar Filtros
-                    </button>
-
-                    @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.CategoryId.HasValue || Model.MinPrice.HasValue || Model.MaxPrice.HasValue || Model.Status.HasValue)
-                    {
-                        <a asp-action="Index" 
-                           class="w-full py-3 mt-2 text-sm font-medium text-gray-500 hover:text-[#25231e] transition-colors flex items-center justify-center">
-                            Limpiar Todo
-                        </a>
-                    }
                 </form>
             </div>
         </aside>
@@ -172,17 +214,6 @@
                             <text>Productos Recientes</text>
                         }
                     </h1>
-                    <p class="text-sm text-gray-500">
-                        Mostrando <span class="font-bold text-[#25231e]">@Model.TotalResults</span> resultado(s)
-                    </p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-500">Ordenar:</span>
-                    <select class="bg-white border-none ring-1 ring-gray-200 rounded-lg py-2 pl-4 pr-10 text-sm font-bold focus:ring-2 focus:ring-[#98cf54] cursor-pointer outline-none">
-                        <option>Recientes</option>
-                        <option>Precio: Menor a Mayor</option>
-                        <option>Precio: Mayor a Menor</option>
-                    </select>
                 </div>
             </div>
 
@@ -342,3 +373,36 @@
         border-radius: 10px;
     }
 </style>
+
+<script>
+    function toggleFilters() {
+        const panel = document.getElementById('filtersPanel');
+        const isOpen = panel.classList.contains('max-h-[500px]');
+
+        panel.classList.toggle('max-h-0', isOpen);
+        panel.classList.toggle('opacity-0', isOpen);
+        panel.classList.toggle('scale-95', isOpen);
+        panel.classList.toggle('pointer-events-none', isOpen);
+
+        panel.classList.toggle('max-h-[500px]', !isOpen);
+        panel.classList.toggle('opacity-100', !isOpen);
+        panel.classList.toggle('scale-100', !isOpen);
+        panel.classList.toggle('pointer-events-auto', !isOpen);
+    }
+
+        function toggleStatusFilters() {
+        const panel = document.getElementById('statusFiltersPanel');
+        const isOpen = panel.classList.contains('max-h-[400px]');
+
+        panel.classList.toggle('max-h-0', isOpen);
+        panel.classList.toggle('opacity-0', isOpen);
+        panel.classList.toggle('scale-95', isOpen);
+        panel.classList.toggle('pointer-events-none', isOpen);
+
+        panel.classList.toggle('max-h-[400px]', !isOpen);
+        panel.classList.toggle('opacity-100', !isOpen);
+        panel.classList.toggle('scale-100', !isOpen);
+        panel.classList.toggle('pointer-events-auto', !isOpen);
+    }
+
+</script>

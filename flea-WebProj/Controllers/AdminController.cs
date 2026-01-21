@@ -33,33 +33,30 @@ namespace flea_WebProj.Controllers
         // ============ USER MANAGEMENT ============
 
         [HttpGet]
-        public async Task<IActionResult> Users(int pageSize = 6, int page = 1)
+        public async Task<IActionResult> Users()
         {
             try
             {
-                var users = await adminService.GetAllUsersAsync(1, 6);
+                var users = await adminService.GetAllUsersAsync();
                 var viewModel = new UserListViewModel
                 {
-                    Page = page,
-                    PageSize = pageSize,
-                    TotalUsers = users.total,
-                    TotalPages = (int)Math.Ceiling(users.total / (double)pageSize),
                     Users = []
                 };
+                Console.WriteLine("users:" + users.Count);
 
-                foreach (var user in users.users)
+                foreach (var user in users)
                 {
+                    Console.WriteLine("users:" + user.Name);
                     var roles = await adminService.GetUserRolesAsync(user.Id);
-                    if (user is { Contact: not null, Posts: not null })
                         viewModel.Users.Add(new UserListItem
                         {
                             UserId = user.Id,
                             Username = user.Username,
                             Name = user.Name,
-                            Email = user.Contact.Email,
+                            Email = user.Contact?.Email,
                             ProfilePic = user.ProfilePicture,
                             CreatedAt = user.CreatedAt,
-                            PostCount = user.Posts.Count,
+                            PostCount = user.Posts?.Count ?? 0,
                             Roles = roles.Select(r => r.Name).ToList()
                         });
                 }
@@ -333,35 +330,32 @@ namespace flea_WebProj.Controllers
 
         // ============ CATEGORY MANAGEMENT ============
         [HttpGet]
-        public async Task<IActionResult> Categories(int? editId, int pageSize = 8, int page = 1)
+        public async Task<IActionResult> Categories(int? editId)
         {
             try
             {
-                var categories = await adminService.GetAllCategoriesAsync(1, 8);
+                var categories = await adminService.GetAllCategoriesAsync();
                     var viewModel = new ManageCategoriesViewModel
                     {
-                        Page = page,
-                        PageSize = pageSize,
-                        TotalCats = categories.total,
-                        TotalPages = (int)Math.Ceiling(categories.total / (double)pageSize),
                         Categories = []
                     };
 
-                    foreach (var cat in categories.categories)
+                    foreach (var cat in categories)
                     {
+                        var posts = await adminService.GetCategoryPostsCount(cat.Id);
                         viewModel.Categories.Add(new CategoryManageItem
                         {
                             Name = cat.Name,
                             CategoryId = cat.Id,
                             Slug = cat.Slug,
-                            PostCount = cat.Products.Count
+                            PostCount = posts
                         });
                     }
                 
                 
                     if (!editId.HasValue) return View(viewModel);
                     {
-                        var category = categories.categories.FirstOrDefault(c => c.Id == editId.Value);
+                        var category = categories.FirstOrDefault(c => c.Id == editId.Value);
                         if (category == null) return View(viewModel);
                     
                         viewModel.IsEditMode = true;

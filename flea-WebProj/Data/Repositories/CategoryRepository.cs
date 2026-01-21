@@ -19,6 +19,7 @@ public interface ICategoryRepository
     Task<List<int>> GetProductCategoriesIdsAsync(int productId);
     Task<bool> ExistSlugAsync(string modelSlug, int modelCategoryId);
     Task AssignCategoryToProductAsync(int productId, int categoryId, NpgsqlConnection conn, NpgsqlTransaction tx);
+    Task<int> GetPostCount(int catId);
 }
 
 public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
@@ -180,6 +181,19 @@ public class CategoryRepository(DatabaseContext dbContext) : ICategoryRepository
         cmd.Parameters.AddWithValue("@categoryId", categoryId);
 
         await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task<int> GetPostCount(int catId)
+    {
+        const string query = """
+                             SELECT COUNT(*) FROM product_categories
+                             WHERE category_id = @categoryId
+                             """;
+        var checkParams = new[]
+        {
+            new NpgsqlParameter("@categoryId", catId)
+        };
+        return Convert.ToInt32(await dbContext.ExecuteScalarAsync(query, checkParams) ?? 0);
     }
 
 

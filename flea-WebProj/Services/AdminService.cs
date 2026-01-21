@@ -7,7 +7,7 @@ namespace flea_WebProj.Services;
 public interface IAdminService
 {
     // User Management
-    Task<(List<User> users, int total)> GetAllUsersAsync(int page, int pageSize);
+    Task<List<User>> GetAllUsersAsync();
     Task<User> GetUserByIdAsync(int userId);
     Task<List<Role>> GetUserRolesAsync(int userId);
     Task<DashboardViewModel> GetDashboardStatsAsync();
@@ -24,8 +24,9 @@ public interface IAdminService
     Task<List<Role>> GetAllRolesAsync();
     
     //Category
-    Task<(List<Category> categories, int total)> GetAllCategoriesAsync(int page, int pageSize);
+    Task<List<Category>> GetAllCategoriesAsync();
 
+    Task<int> GetCategoryPostsCount(int catId);
 }
 
 public class AdminService(
@@ -40,12 +41,11 @@ public class AdminService(
     IAddressRepository addressRepository)
     : IAdminService
 {
-    public async Task<(List<User> users, int total)> GetAllUsersAsync(int page, int pageSize)
+    public async Task<List<User>> GetAllUsersAsync()
     {
-        var allUsers = await userRepository.GetAllPagedAsync(1, int.MaxValue);
-        var users =  await userRepository.GetAllPagedAsync(page, pageSize);
+        var users = await userRepository.GetAllAsync();
 
-        return (users, allUsers.Count);
+        return users;
     }
 
     public async Task<User> GetUserByIdAsync(int userId)
@@ -196,11 +196,16 @@ public class AdminService(
         return await roleRepository.GetAllAsync();
     }
 
-    public async Task<(List<Category> categories, int total)> GetAllCategoriesAsync(int page, int pageSize)
+    
+    
+    public async Task<List<Category>> GetAllCategoriesAsync()
     {
-        var allCats = await categoryRepository.GetAllPagedAsync(1, int.MaxValue);
-        var cats =  await categoryRepository.GetAllPagedAsync(page, pageSize);
+        var allCats = await categoryRepository.GetAllAsync();
+        return allCats;
+    }
 
-        return (cats, allCats.Count);
+    public async Task<int> GetCategoryPostsCount(int catId)
+    {
+        return await categoryRepository.GetPostCount(catId);
     }
 }

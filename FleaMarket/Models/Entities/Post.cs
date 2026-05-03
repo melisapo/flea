@@ -7,11 +7,9 @@ public class Post
     public string Description { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public int ProductId { get; set; }
     public int AuthorId { get; set; }
-    public string? Reported { get; set; } = string.Empty;
-    
-    public Product? Product { get; set; }
     public User? Author { get; set; }
-    public List<Image> Images { get; set; } = [];
+
+    public int ProductId { get; set; }
+    public Product? Product { get; set; }
 }

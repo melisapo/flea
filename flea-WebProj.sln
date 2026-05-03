@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "flea-WebProj", "flea-WebProj\flea-WebProj.csproj", "{1FD99240-5371-4F96-A988-89C9C27D08BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleaMarket", "FleaMarket\FleaMarket.csproj", "{1FD99240-5371-4F96-A988-89C9C27D08BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "flea-WebProj.Tests", "flea-WebProj.Tests\flea-WebProj.Tests.csproj", "{819273A8-9712-4CE8-88A0-25CD47162F03}"
 EndProject
